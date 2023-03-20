@@ -1,4 +1,4 @@
-package com.tubetoast.envelopes.android.presentation.theme
+package com.tubetoast.envelopes.android.presentation.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

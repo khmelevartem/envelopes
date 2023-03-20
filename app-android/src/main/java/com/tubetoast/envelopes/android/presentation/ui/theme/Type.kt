@@ -1,4 +1,4 @@
-package com.tubetoast.envelopes.android.presentation.theme
+package com.tubetoast.envelopes.android.presentation.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
