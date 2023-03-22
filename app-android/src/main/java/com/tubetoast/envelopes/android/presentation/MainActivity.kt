@@ -10,7 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.tubetoast.envelopes.android.presentation.theme.EnvelopesTheme
+import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
 import com.tubetoast.envelopes.common.di.DomainApi
 import com.tubetoast.envelopes.common.di.api
 

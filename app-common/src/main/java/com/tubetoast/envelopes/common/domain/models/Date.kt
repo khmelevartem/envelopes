@@ -1,9 +1,9 @@
 package com.tubetoast.envelopes.common.domain.models
 
-class Date {
-
-    companion object {
-        val now = Date()
-    }
-}
-
+data class Date(
+    val minute: Int,
+    val hour: Int,
+    val day: Int,
+    val month: Int,
+    val year: Int
+)

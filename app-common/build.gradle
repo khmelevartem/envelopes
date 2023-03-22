@@ -8,7 +8,13 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     api "io.insert-koin:koin-core:$koin_version"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+    testImplementation "com.google.truth:truth:1.1.3"
 }
