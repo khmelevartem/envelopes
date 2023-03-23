@@ -1,6 +1,7 @@
 package com.tubetoast.envelopes.common.domain.models
 
-class Category(
-    val spendings: MutableList<Transaction>,
+data class Category(
+    val name: String,
+    val spending: List<Transaction>,
     val limit: Amount? = null
 )

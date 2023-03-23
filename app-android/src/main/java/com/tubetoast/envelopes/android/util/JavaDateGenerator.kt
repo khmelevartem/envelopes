@@ -4,7 +4,7 @@ import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.util.DateGenerator
 import java.util.Calendar
 
-class AndroidDateGenerator : DateGenerator {
+class JavaDateGenerator : DateGenerator {
     override fun now(): Date =
         Calendar.getInstance().run {
             Date(

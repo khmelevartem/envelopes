@@ -30,7 +30,7 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
     buildFeatures {
         compose true
@@ -40,7 +40,8 @@ android {
     }
     packagingOptions {
         resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            excludes += '/META-INF/**'
+            excludes += "DebugProbesKt.bin"
         }
     }
     namespace 'com.tubetoast.envelopes'
@@ -70,8 +71,8 @@ dependencies {
 
     // test
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+    testImplementation "com.google.truth:truth:1.1.3"
+    testImplementation "io.mockk:mockk:1.4.1"
 }

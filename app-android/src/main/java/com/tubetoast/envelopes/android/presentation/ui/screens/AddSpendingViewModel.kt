@@ -8,6 +8,7 @@ import com.tubetoast.envelopes.common.util.DateGenerator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class AddSpendingViewModel(
@@ -21,6 +22,16 @@ class AddSpendingViewModel(
     private val comment: MutableStateFlow<String?> = MutableStateFlow(null)
     private val _uiState: MutableStateFlow<UIState> = MutableStateFlow(UIState.Default)
     val uiState = _uiState.asStateFlow()
+    val envelopes = addSpendingInteractor.getEnvelopes()
+
+    fun setAmount(newAmount: Int) {
+        amount.value = newAmount
+    }
+
+    // need to set category before each confirm, because updated category is another object
+    fun setCategory(newCategory: Category) {
+        category.value = newCategory
+    }
 
     fun confirm() {
         val amountToConfirm = amount.value
