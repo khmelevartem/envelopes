@@ -2,7 +2,7 @@ package com.tubetoast.envelopes.common.domain.models
 
 data class Envelope(
     val name: String,
-    val categories: List<Category>,
+    val categories: MutableList<Category>,
     val limit: Amount
 ) {
     val sum: Amount

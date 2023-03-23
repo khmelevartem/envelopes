@@ -17,7 +17,7 @@ import com.tubetoast.envelopes.common.di.api
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        api<DomainApi>().interactor
+        api<DomainApi>().addSpendingInteractor
         setContent {
             EnvelopesTheme {
                 Surface(modifier = Modifier.fillMaxSize(),
