@@ -1,6 +1,6 @@
 package com.tubetoast.envelopes.common.data
 
-import com.tubetoast.envelopes.common.domain.SpendingRepository
+import com.tubetoast.envelopes.common.domain.EnvelopesRepository
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.DomainException
 import com.tubetoast.envelopes.common.domain.models.Envelope
@@ -9,10 +9,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class SpendingRepositoryImpl(
-    private val _envelopes: MutableStateFlow<Set<Envelope>> = MutableStateFlow(emptySet())
-) : SpendingRepository {
+class EnvelopesRepositoryImpl: EnvelopesRepository {
 
+    private val _envelopes: MutableStateFlow<Set<Envelope>> = MutableStateFlow(emptySet())
     override val envelopes: StateFlow<Set<Envelope>>
         get() = _envelopes.asStateFlow()
 

@@ -11,13 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
-import com.tubetoast.envelopes.common.di.DomainApi
-import com.tubetoast.envelopes.common.di.api
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        api<DomainApi>().addSpendingInteractor
         setContent {
             EnvelopesTheme {
                 Surface(modifier = Modifier.fillMaxSize(),
