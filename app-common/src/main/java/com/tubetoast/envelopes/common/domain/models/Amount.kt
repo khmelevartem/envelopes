@@ -4,7 +4,7 @@ data class Amount(
     val units: Int,
     val shares: Int = 0,
     val currency: Currency = Currency.Ruble,
-) {
+) : ImmutableModel<Amount>() {
     init {
         check(units >= 0 && shares >= 0) {
             "Cannot create negative amount $this"

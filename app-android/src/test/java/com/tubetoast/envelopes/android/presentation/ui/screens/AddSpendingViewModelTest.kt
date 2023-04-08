@@ -5,8 +5,8 @@ import com.tubetoast.envelopes.android.util.JavaDateGenerator
 import com.tubetoast.envelopes.common.data.EnvelopesRepositoryImpl
 import com.tubetoast.envelopes.common.domain.EnvelopesInteractorImpl
 import com.tubetoast.envelopes.common.domain.models.Amount
-import com.tubetoast.envelopes.common.domain.models.Category
-import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
+import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -18,9 +18,9 @@ internal class AddSpendingViewModelTest {
 
     private val sum = 4
     private val limit = 20
-    private val startCategory = Category(name = "Shops", spending = listOf(), limit = null)
+    private val startCategory = CategorySnapshot(name = "Shops", spending = listOf(), limit = null)
     private val startEnvelope =
-        Envelope(name = "Food", categories = setOf(startCategory), limit = Amount(limit))
+        EnvelopeSnapshot(name = "Food", categories = setOf(startCategory), limit = Amount(limit))
     private val interactor = EnvelopesInteractorImpl(EnvelopesRepositoryImpl())
     private val viewModel = AddSpendingViewModel(interactor, JavaDateGenerator())
 

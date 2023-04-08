@@ -21,13 +21,12 @@ class AddSpendingViewModel(
     private val comment: MutableStateFlow<String?> = MutableStateFlow(null)
     private val _uiState: MutableStateFlow<UIState> = MutableStateFlow(UIState.Default)
     val uiState = _uiState.asStateFlow()
-    val envelopes = envelopesInteractor.envelopes
+    val envelopes = envelopesInteractor.envelopeSnapshot
 
     fun setAmount(newAmount: Int) {
         amount.value = newAmount
     }
 
-    // need to set category before each confirm, because updated category is another object
     fun setCategory(newCategory: Category) {
         category.value = newCategory
     }
@@ -42,7 +41,7 @@ class AddSpendingViewModel(
 
         try {
             envelopesInteractor.addSpending(
-                Transaction(
+                Spending(
                     amount = Amount(
                         units = amountToConfirm,
                     ),

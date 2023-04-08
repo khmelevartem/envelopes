@@ -1,24 +1,37 @@
 package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.common.domain.models.*
+import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
+import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.*
 
 class EnvelopesInteractorImpl(
-    private val repository: EnvelopesRepository
+    private val spendingRepository: SpendingRepository,
+    private val categoryRepository: CategoryRepository,
+    private val envelopesRepository: EnvelopesRepository
 ) : EnvelopesInteractor {
 
-    override val envelopes get() = repository.envelopes
+    private val flow = MutableStateFlow(envelopeSnapshot)
 
-    override fun addSpending(spending: Transaction, category: Category) {
-        val envelope = envelopes.value.find { it.categories.contains(category) }
-            ?: throw DomainException("$category is not known to be in any envelope")
-        repository.addTransaction(spending, category, envelope)
+    init {
+        listOf(spendingRepository, categoryRepository, envelopesRepository).forEach {
+//            it.listener = flow.emit(envelopeSnapshot)
+        }
     }
 
-    override fun addCategory(category: Category, envelope: Envelope) {
-        repository.addCategory(category, envelope)
-    }
+    override val envelopeSnapshot: Set<EnvelopeSnapshot>
+        get() = envelopesRepository.get().mapTo(mutableSetOf()) { envelope ->
+            EnvelopeSnapshot(
+                envelope,
+                categoryRepository.get(envelope.hash).mapTo(mutableSetOf()) { category ->
+                    CategorySnapshot(
+                        category,
+                        spendingRepository.get(category.hash)
+                    )
+                }
+            )
+        }
 
-    override fun addEnvelope(envelope: Envelope) {
-        repository.addEnvelope(envelope)
-    }
+    override val envelopeSnapshotFlow: Flow<Set<EnvelopeSnapshot>> = flow.asStateFlow()
+
 }
