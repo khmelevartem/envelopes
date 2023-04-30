@@ -5,8 +5,9 @@ abstract class ImmutableModel<T: ImmutableModel<T>> {
 }
 
 @JvmInline
-value class Hash<T>(val hasCode: Int) {
+value class Hash<out T> constructor(val hashCode: Int) {
     companion object {
-        fun <K> any() = Hash<K>(0)
+        val any = Hash<Nothing>(0)
+        fun <K> any(): Hash<K> = any
     }
 }

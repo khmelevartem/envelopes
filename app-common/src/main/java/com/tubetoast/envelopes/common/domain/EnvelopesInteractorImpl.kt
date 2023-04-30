@@ -1,8 +1,8 @@
 package com.tubetoast.envelopes.common.domain
 
+import com.tubetoast.envelopes.common.domain.models.Hash
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 
 class EnvelopesInteractorImpl(
@@ -15,12 +15,14 @@ class EnvelopesInteractorImpl(
 
     init {
         listOf(spendingRepository, categoryRepository, envelopesRepository).forEach {
-//            it.listener = flow.emit(envelopeSnapshot)
+            it.listener = {
+                flow.value = envelopeSnapshot
+            }
         }
     }
 
     override val envelopeSnapshot: Set<EnvelopeSnapshot>
-        get() = envelopesRepository.get().mapTo(mutableSetOf()) { envelope ->
+        get() = envelopesRepository.get(Hash.any()).mapTo(mutableSetOf()) { envelope ->
             EnvelopeSnapshot(
                 envelope,
                 categoryRepository.get(envelope.hash).mapTo(mutableSetOf()) { category ->
@@ -32,6 +34,6 @@ class EnvelopesInteractorImpl(
             )
         }
 
-    override val envelopeSnapshotFlow: Flow<Set<EnvelopeSnapshot>> = flow.asStateFlow()
+    override val envelopeSnapshotFlow: StateFlow<Set<EnvelopeSnapshot>> = flow.asStateFlow()
 
 }

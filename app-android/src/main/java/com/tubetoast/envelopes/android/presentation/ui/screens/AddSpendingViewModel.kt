@@ -40,16 +40,16 @@ class AddSpendingViewModel(
             ?: dateGenerator.now()
 
         try {
-            envelopesInteractor.addSpending(
-                Spending(
-                    amount = Amount(
-                        units = amountToConfirm,
-                    ),
-                    date = dateToConfirm,
-                    comment = comment.value
-                ),
-                categoryToConfirm
-            )
+//            envelopesInteractor.addSpending(
+//                Spending(
+//                    amount = Amount(
+//                        units = amountToConfirm,
+//                    ),
+//                    date = dateToConfirm,
+//                    comment = comment.value
+//                ),
+//                categoryToConfirm
+//            )
             showConfirmation()
         } catch (e: DomainException) {
             showWarning(UIState.Warning.Reason.DOMAIN)
