@@ -2,7 +2,7 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tubetoast.envelopes.common.domain.EnvelopesInteractor
+import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.*
 import com.tubetoast.envelopes.common.util.DateGenerator
 import kotlinx.coroutines.delay
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AddSpendingViewModel(
-    private val envelopesInteractor: EnvelopesInteractor,
+    private val snapshotsInteractor: SnapshotsInteractor,
     private val dateGenerator: DateGenerator
 ) : ViewModel() {
 
@@ -21,7 +21,7 @@ class AddSpendingViewModel(
     private val comment: MutableStateFlow<String?> = MutableStateFlow(null)
     private val _uiState: MutableStateFlow<UIState> = MutableStateFlow(UIState.Default)
     val uiState = _uiState.asStateFlow()
-    val envelopes = envelopesInteractor.envelopeSnapshot
+    val envelopes = snapshotsInteractor.envelopeSnapshot
 
     fun setAmount(newAmount: Int) {
         amount.value = newAmount

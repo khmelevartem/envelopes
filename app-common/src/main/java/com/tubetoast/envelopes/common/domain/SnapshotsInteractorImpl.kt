@@ -5,11 +5,11 @@ import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.flow.*
 
-class EnvelopesInteractorImpl(
+class SnapshotsInteractorImpl(
     private val spendingRepository: SpendingRepository,
     private val categoryRepository: CategoryRepository,
     private val envelopesRepository: EnvelopesRepository
-) : EnvelopesInteractor {
+) : SnapshotsInteractor {
 
     private val flow = MutableStateFlow(envelopeSnapshot)
 

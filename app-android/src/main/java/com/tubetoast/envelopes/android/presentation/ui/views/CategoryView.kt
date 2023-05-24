@@ -10,7 +10,7 @@ import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 fun CategoryView(snapshot: CategorySnapshot) {
     Surface(color = Color.Green) {
         snapshot.category.let {
-            Text(text = "${it.name} with ${it.limit?.units?.toString().orEmpty()}")
+            Text(text = "${it.name} with ${it.limit?.units?.toString()}")
         }
     }
 }

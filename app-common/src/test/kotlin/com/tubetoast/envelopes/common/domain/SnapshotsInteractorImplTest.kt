@@ -9,12 +9,12 @@ import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Hash
 import org.junit.jupiter.api.Test
 
-class EnvelopesInteractorImplTest {
+class SnapshotsInteractorImplTest {
 
     private val spendingRepositoryImpl = SpendingRepositoryImpl()
     private val categoriesRepositoryImpl = CategoriesRepositoryImpl()
     private val envelopesRepositoryImpl = EnvelopesRepositoryImpl()
-    private val interactor: EnvelopesInteractorImpl = EnvelopesInteractorImpl(
+    private val interactor: SnapshotsInteractorImpl = SnapshotsInteractorImpl(
         spendingRepositoryImpl,
         categoriesRepositoryImpl,
         envelopesRepositoryImpl
