@@ -29,7 +29,10 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Ke
     protected abstract fun editImpl(oldValue: M, newValue: M): Boolean
 }
 
+fun <M> Repository<M, *>.put(value: M) where M : ImmutableModel<M> {
+    add(Hash.any, value)
+}
+
 typealias SpendingRepository = UpdatingRepository<Spending, Category>
 typealias CategoryRepository = UpdatingRepository<Category, Envelope>
-typealias EnvelopesRepository = UpdatingRepository<Envelope, Any>
-
+typealias EnvelopesRepository = UpdatingRepository<Envelope, Unit>

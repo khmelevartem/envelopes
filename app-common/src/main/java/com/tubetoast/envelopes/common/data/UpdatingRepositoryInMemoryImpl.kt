@@ -33,6 +33,6 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
             } ?: throw IllegalArgumentException("There was no old value $oldValue found")
 }
 
-class EnvelopesRepositoryImpl : UpdatingRepositoryInMemoryImpl<Envelope, Any>()
+class EnvelopesRepositoryImpl : UpdatingRepositoryInMemoryImpl<Envelope, Unit>()
 class CategoriesRepositoryImpl : UpdatingRepositoryInMemoryImpl<Category, Envelope>()
 class SpendingRepositoryImpl : UpdatingRepositoryInMemoryImpl<Spending, Category>()
