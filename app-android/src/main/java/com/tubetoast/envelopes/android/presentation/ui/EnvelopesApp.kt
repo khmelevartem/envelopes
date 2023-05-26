@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
 import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
 import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeView
 import com.tubetoast.envelopes.android.presentation.ui.views.MainListView
@@ -16,21 +17,19 @@ import com.tubetoast.envelopes.android.presentation.ui.views.PlusView
 import com.tubetoast.envelopes.common.data.CategoriesRepositoryImpl
 import com.tubetoast.envelopes.common.data.EnvelopesRepositoryImpl
 import com.tubetoast.envelopes.common.data.SpendingRepositoryImpl
-import com.tubetoast.envelopes.common.domain.EditInteractor
-import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractorImpl
 import com.tubetoast.envelopes.common.domain.stub.StubEditInteractorImpl
 
 @Composable
-fun EnvelopesApp(snapshotsInteractor: SnapshotsInteractor, editInteractor: EditInteractor) {
-    val snapshots = snapshotsInteractor.envelopeSnapshotFlow.collectAsState(initial = emptySet())
+fun EnvelopesApp(envelopesListViewModel: EnvelopesListViewModel) {
+    val snapshots = envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
     EnvelopesTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
             LazyColumn {
-                items(snapshots.value.toList()) { snapshot ->
+                items(snapshots.value) { snapshot ->
                     MainListView {
                         EnvelopeView(snapshot)
                     }
@@ -38,7 +37,7 @@ fun EnvelopesApp(snapshotsInteractor: SnapshotsInteractor, editInteractor: EditI
                 item {
                     MainListView {
                         PlusView {
-                            editInteractor.addEnvelope()
+                            envelopesListViewModel.addEnvelope()
                         }
                     }
                 }
@@ -52,13 +51,16 @@ fun EnvelopesApp(snapshotsInteractor: SnapshotsInteractor, editInteractor: EditI
 fun DefaultPreview() {
     val repository = EnvelopesRepositoryImpl()
     EnvelopesApp(
-        SnapshotsInteractorImpl(
-            SpendingRepositoryImpl(),
-            CategoriesRepositoryImpl(),
-            repository
-        ),
-        StubEditInteractorImpl(
-            repository
+        EnvelopesListViewModel(
+            SnapshotsInteractorImpl(
+                SpendingRepositoryImpl(),
+                CategoriesRepositoryImpl(),
+                repository
+            ),
+            StubEditInteractorImpl(
+                repository
+            )
         )
+
     )
 }

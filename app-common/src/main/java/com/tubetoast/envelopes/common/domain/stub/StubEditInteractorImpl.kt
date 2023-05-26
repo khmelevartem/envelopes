@@ -9,7 +9,7 @@ import java.util.LinkedList
 import java.util.Queue
 
 class StubEditInteractorImpl(
-    private val envelopesRepository: EnvelopesRepository
+    private val envelopesRepository: EnvelopesRepository,
 ) : EditInteractor {
     private val envelopes: Queue<Envelope> = LinkedList(
         listOf(
@@ -20,6 +20,7 @@ class StubEditInteractorImpl(
             Envelope("fun", Amount(123)),
             Envelope("cat", Amount(30)),
             Envelope("child", Amount(50)),
+            Envelope("wife", Amount(50)),
         )
     )
 

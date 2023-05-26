@@ -6,11 +6,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import com.tubetoast.envelopes.android.presentation.ui.theme.EColor
 
 @Composable
 fun PlusView(onClick: () -> Unit) {
-    Surface(color = Color.Gray) {
+    Surface(color = EColor.GrayLight) {
         IconButton(onClick = onClick) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "add new envelope")
         }

@@ -4,21 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.tubetoast.envelopes.android.presentation.ui.EnvelopesApp
-import com.tubetoast.envelopes.common.di.DomainApi
-import com.tubetoast.envelopes.common.di.api
-import com.tubetoast.envelopes.common.domain.EditInteractor
-import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
+import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
 
-    private val domainApi: DomainApi by lazy { api() }
-    private val snapshotsInteractor: SnapshotsInteractor by lazy { domainApi.envelopesInteractor }
-    private val editInteractor: EditInteractor by lazy { domainApi.editInteractor }
+    private val envelopesListViewModel: EnvelopesListViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            EnvelopesApp(snapshotsInteractor, editInteractor)
+            EnvelopesApp(envelopesListViewModel)
         }
     }
 }
