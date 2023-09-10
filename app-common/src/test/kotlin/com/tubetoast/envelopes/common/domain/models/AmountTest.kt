@@ -10,10 +10,9 @@ class AmountTest {
             Amount(5),
             Amount(2),
             Amount(3),
-            Amount(0),
+            Amount.ZERO,
         ).sum().let {
             assertThat(it).isEqualTo(Amount(10))
         }
-
     }
 }

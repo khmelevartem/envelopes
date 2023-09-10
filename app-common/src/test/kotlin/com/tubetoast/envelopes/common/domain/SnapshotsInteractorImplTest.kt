@@ -17,7 +17,7 @@ class SnapshotsInteractorImplTest {
     private val interactor: SnapshotsInteractorImpl = SnapshotsInteractorImpl(
         spendingRepositoryImpl,
         categoriesRepositoryImpl,
-        envelopesRepositoryImpl
+        envelopesRepositoryImpl,
     )
 
     @Test
@@ -28,11 +28,9 @@ class SnapshotsInteractorImplTest {
     @Test
     fun testAdd() {
         assertThat(interactor.envelopeSnapshotFlow.value).isEmpty()
-        envelopesRepositoryImpl.add(Hash.any(), Envelope("empty", Amount(0)))
-        envelopesRepositoryImpl.add(Hash.any(), Envelope("empty", Amount(0)))
+        envelopesRepositoryImpl.add(Hash.any(), Envelope("empty", Amount.ZERO))
+        envelopesRepositoryImpl.add(Hash.any(), Envelope("empty", Amount.ZERO))
         envelopesRepositoryImpl.add(Hash.any(), Envelope("not empty", Amount(5)))
         assertThat(interactor.envelopeSnapshotFlow.value).hasSize(2)
     }
-
-
 }

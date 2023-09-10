@@ -32,12 +32,16 @@ data class Amount(
             "Need to use converter to sum $this and $another"
         }
     }
+
+    companion object {
+        val ZERO = Amount(0)
+    }
 }
 
 fun Iterable<Amount>.sum(): Amount = sumOf { it }
 
 inline fun Iterable<Amount>.sumOf(selector: (Amount) -> Amount): Amount {
-    var sum = Amount(0)
+    var sum = Amount.ZERO
     for (element in this) {
         sum += selector(element)
     }
