@@ -12,4 +12,4 @@ value class Hash<out T> constructor(val hashCode: Int) {
     }
 }
 
-fun Any.hashKey() = Hash<Nothing>(hashCode())
+fun <T> Any.hash() = Hash<T>(hashCode())

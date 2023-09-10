@@ -39,7 +39,7 @@ fun EnvelopesListScreen(
                 item {
                     MainListView {
                         PlusView {
-                            navController.navigate(AppNavigation.editEnvelope)
+                            navController.navigate(AppNavigation.addEnvelope)
                         }
                     }
                 }

@@ -17,14 +17,15 @@ class SnapshotsInteractorImpl(
 
     init {
         listOf(spendingRepository, categoryRepository, envelopesRepository).forEach {
-            it.listener = {
+            it.listener = { force ->
+                if (force) flow.value = emptySet() // todo HACK, remove it!!!
                 flow.value = envelopeSnapshot
             }
         }
     }
 
     override val envelopeSnapshot: Set<EnvelopeSnapshot>
-        get() = envelopesRepository.get(Hash.any()).mapTo(mutableSetOf()) { envelope ->
+        get() = envelopesRepository.get(Hash.any<String>()).mapTo(mutableSetOf()) { envelope ->
             EnvelopeSnapshot(
                 envelope,
                 categoryRepository.get(envelope.hash).mapTo(mutableSetOf()) { category ->

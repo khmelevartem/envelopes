@@ -1,5 +1,8 @@
 package com.tubetoast.envelopes.common.data
 
+import com.tubetoast.envelopes.common.domain.CategoryRepository
+import com.tubetoast.envelopes.common.domain.EnvelopesRepository
+import com.tubetoast.envelopes.common.domain.SpendingRepository
 import com.tubetoast.envelopes.common.domain.UpdatingRepository
 import com.tubetoast.envelopes.common.domain.models.*
 
@@ -9,11 +12,20 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     private val sets = mutableMapOf<Hash<Key>, MutableSet<M>>()
     private val keys = mutableMapOf<Hash<M>, Hash<Key>>()
 
-    override fun get(keyHash: Hash<Key>) = sets.getOrPut(keyHash) { mutableSetOf() }
+    // if ANY, then no modification can be made
+    override fun get(modelHash: Hash<Key>) = if (modelHash == Hash.any) {
+        sets.flatMapTo(mutableSetOf()) { it.value } // toSet()
+    } else {
+        sets.getOrPut(modelHash) { mutableSetOf() }
+    }
 
     override fun addImpl(value: M, keyHash: Hash<Key>): Boolean {
         keys[value.hash] = keyHash
         return get(keyHash).add(value)
+    }
+
+    override fun get(modelHash: Hash<M>): M? {
+        return get(Hash.any<Key>()).find { it.hash == modelHash }
     }
 
     override fun deleteImpl(value: M): Boolean =
@@ -33,6 +45,11 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
             } ?: throw IllegalArgumentException("There was no old value $oldValue found")
 }
 
-class EnvelopesRepositoryImpl : UpdatingRepositoryInMemoryImpl<Envelope, Unit>()
-class CategoriesRepositoryImpl : UpdatingRepositoryInMemoryImpl<Category, Envelope>()
-class SpendingRepositoryImpl : UpdatingRepositoryInMemoryImpl<Spending, Category>()
+/** [EnvelopesRepository] */
+typealias EnvelopesRepositoryImpl = UpdatingRepositoryInMemoryImpl<Envelope, String>
+
+/** [CategoryRepository] */
+typealias CategoriesRepositoryImpl = UpdatingRepositoryInMemoryImpl<Category, Envelope>
+
+/** [SpendingRepository] */
+typealias SpendingRepositoryImpl = UpdatingRepositoryInMemoryImpl<Spending, Category>

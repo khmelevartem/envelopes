@@ -1,10 +1,13 @@
 package com.tubetoast.envelopes.android.presentation.ui
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListScreen
@@ -16,6 +19,8 @@ import com.tubetoast.envelopes.common.domain.SnapshotsInteractorImpl
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.stub.StubEditInteractorImpl
 
+private const val NO_VALUE = -1
+
 @Composable
 fun EnvelopesApp(
     envelopesListViewModel: EnvelopesListViewModel,
@@ -26,16 +31,49 @@ fun EnvelopesApp(
         composable(route = AppNavigation.envelopesList) {
             EnvelopesListScreen(navController, envelopesListViewModel)
         }
-        composable(route = AppNavigation.editEnvelope) {
-            EditEnvelopeScreen(navController, editEnvelopeViewModel)
+        composable(route = AppNavigation.addEnvelope) {
+            EditEnvelopeScreen(
+                navController,
+                editEnvelopeViewModel,
+            )
+        }
+        composable(
+            route = AppNavigation.editEnvelope,
+            arguments = listOf(
+                navArgument(AppNavigation.argEnvelopeHash) {
+                    type = NavType.IntType
+                },
+            ),
+        ) { navBackStackEntry ->
+            EditEnvelopeScreen(
+                navController,
+                editEnvelopeViewModel.also { vm ->
+                    navBackStackEntry.arguments?.takeIntAndRemove(AppNavigation.argEnvelopeHash) {
+                        vm.setEnvelopeHash(it)
+                    }
+                },
+            )
         }
     }
 }
 
+private fun Bundle.takeIntAndRemove(key: String, action: (Int) -> Unit) {
+    getInt(key, NO_VALUE)
+        .takeUnless { it == NO_VALUE }
+        ?.also {
+            action(it)
+            remove(key)
+        }
+}
+
 object AppNavigation {
-    const val envelopesList = "envelopes list"
-    const val editEnvelope = "edit envelope"
-    fun editEnvelope(envelope: Envelope) = "$editEnvelope/${envelope.hash}"
+    const val envelopesList = "envelopesList"
+    const val addEnvelope = "addEnvelope"
+    const val argEnvelopeHash = "envelopeHash"
+    const val editEnvelope = "editEnvelope/{$argEnvelopeHash}"
+
+    fun editEnvelope(envelope: Envelope) =
+        editEnvelope.replace("{$argEnvelopeHash}", "${envelope.hashCode()}")
 
     const val start = envelopesList
 }
@@ -57,6 +95,7 @@ fun DefaultPreview() {
         ),
         EditEnvelopeViewModel(
             editInteractor,
+            repository,
         ),
     )
 }

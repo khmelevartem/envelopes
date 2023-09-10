@@ -8,6 +8,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -21,15 +22,14 @@ fun EditEnvelopeScreen(
 ) {
     EnvelopesTheme {
         Column {
-            val name = remember { editEnvelopeViewModel.name }
-            val limit = remember { editEnvelopeViewModel.limit }
+            val envelope by remember { editEnvelopeViewModel.envelope }
             TextField(
-                value = name.value,
-                onValueChange = { editEnvelopeViewModel.name.value = it },
+                value = envelope.name,
+                onValueChange = { editEnvelopeViewModel.setName(it) },
                 modifier = Modifier.fillMaxWidth(),
             )
             TextField(
-                value = limit.value?.units?.toString().orEmpty(),
+                value = envelope.limit.units.toString(),
                 onValueChange = { editEnvelopeViewModel.setLimit(it) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),

@@ -6,7 +6,6 @@ import com.tubetoast.envelopes.common.data.EnvelopesRepositoryImpl
 import com.tubetoast.envelopes.common.data.SpendingRepositoryImpl
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Hash
 import org.junit.jupiter.api.Test
 
 class SnapshotsInteractorImplTest {
@@ -28,9 +27,9 @@ class SnapshotsInteractorImplTest {
     @Test
     fun testAdd() {
         assertThat(interactor.envelopeSnapshotFlow.value).isEmpty()
-        envelopesRepositoryImpl.add(Hash.any(), Envelope("empty", Amount.ZERO))
-        envelopesRepositoryImpl.add(Hash.any(), Envelope("empty", Amount.ZERO))
-        envelopesRepositoryImpl.add(Hash.any(), Envelope("not empty", Amount(5)))
+        envelopesRepositoryImpl.put(Envelope("empty", Amount.ZERO))
+        envelopesRepositoryImpl.put(Envelope("empty", Amount.ZERO))
+        envelopesRepositoryImpl.put(Envelope("not empty", Amount(5)))
         assertThat(interactor.envelopeSnapshotFlow.value).hasSize(2)
     }
 }

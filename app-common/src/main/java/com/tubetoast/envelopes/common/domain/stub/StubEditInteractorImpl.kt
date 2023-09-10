@@ -3,7 +3,6 @@ package com.tubetoast.envelopes.common.domain.stub
 import com.tubetoast.envelopes.common.domain.EditInteractor
 import com.tubetoast.envelopes.common.domain.EnvelopesRepository
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Hash
 import com.tubetoast.envelopes.common.domain.put
 
 class StubEditInteractorImpl(
@@ -17,9 +16,7 @@ class StubEditInteractorImpl(
         envelopesRepository.delete(envelope)
     }
 
-    override fun deleteEnvelope(envelopeName: String) {
-        envelopesRepository.get(Hash.any).find {
-            it.name == envelopeName
-        }?.let { deleteEnvelope(it) }
+    override fun editEnvelope(old: Envelope, new: Envelope) {
+        envelopesRepository.edit(old, new)
     }
 }

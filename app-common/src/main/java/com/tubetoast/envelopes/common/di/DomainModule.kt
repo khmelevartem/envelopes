@@ -16,9 +16,8 @@ val domainModule = module {
         SnapshotsInteractorImpl(
             SpendingRepositoryImpl(),
             CategoriesRepositoryImpl(),
-            envelopesRepository = get()
+            envelopesRepository = get(),
         )
     }
     single<EditInteractor> { StubEditInteractorImpl(envelopesRepository = get()) }
-
 }
