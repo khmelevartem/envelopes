@@ -12,18 +12,18 @@ interface Repository<M : ImmutableModel<M>, Key> {
 }
 
 abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Key> {
-    var listener: ((force: Boolean) -> Unit)? = null
+    var listener: (() -> Unit)? = null
 
     override fun add(keyHash: Hash<Key>, value: M) {
-        if (addImpl(value, keyHash)) listener?.invoke(false)
+        if (addImpl(value, keyHash)) listener?.invoke()
     }
 
     override fun delete(value: M) {
-        if (deleteImpl(value)) listener?.invoke(false)
+        if (deleteImpl(value)) listener?.invoke()
     }
 
     override fun edit(oldValue: M, newValue: M) {
-        if (editImpl(oldValue, newValue)) listener?.invoke(true)
+        if (editImpl(oldValue, newValue)) listener?.invoke()
     }
 
     protected abstract fun addImpl(value: M, keyHash: Hash<Key>): Boolean
@@ -34,6 +34,9 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Ke
 fun <M, Key> Repository<M, Key>.put(value: M) where M : ImmutableModel<M> {
     add(value.hash(), value)
 }
+
+fun <M, Key> Repository<M, Key>.getAll() where M : ImmutableModel<M> =
+    get(Hash.any<Key>())
 
 typealias SpendingRepository = UpdatingRepository<Spending, Category>
 typealias CategoryRepository = UpdatingRepository<Category, Envelope>

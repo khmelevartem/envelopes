@@ -1,9 +1,6 @@
 package com.tubetoast.envelopes.common.data
 
-import com.tubetoast.envelopes.common.domain.CategoryRepository
-import com.tubetoast.envelopes.common.domain.EnvelopesRepository
-import com.tubetoast.envelopes.common.domain.SpendingRepository
-import com.tubetoast.envelopes.common.domain.UpdatingRepository
+import com.tubetoast.envelopes.common.domain.*
 import com.tubetoast.envelopes.common.domain.models.*
 
 open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
@@ -25,7 +22,7 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     }
 
     override fun get(modelHash: Hash<M>): M? {
-        return get(Hash.any<Key>()).find { it.hash == modelHash }
+        return getAll().find { it.hash == modelHash }
     }
 
     override fun deleteImpl(value: M): Boolean =

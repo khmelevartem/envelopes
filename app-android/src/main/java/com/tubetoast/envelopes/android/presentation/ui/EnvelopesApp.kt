@@ -95,7 +95,6 @@ fun DefaultPreview() {
         ),
         EditEnvelopeViewModel(
             editInteractor,
-            repository,
         ),
     )
 }

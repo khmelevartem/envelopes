@@ -13,3 +13,4 @@ value class Hash<out T> constructor(val hashCode: Int) {
 }
 
 fun <T> Any.hash() = Hash<T>(hashCode())
+fun <T> Int.hash() = Hash<T>(this)

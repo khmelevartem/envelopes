@@ -3,7 +3,7 @@ package com.tubetoast.envelopes.common.di
 import com.tubetoast.envelopes.common.data.CategoriesRepositoryImpl
 import com.tubetoast.envelopes.common.data.EnvelopesRepositoryImpl
 import com.tubetoast.envelopes.common.data.SpendingRepositoryImpl
-import com.tubetoast.envelopes.common.domain.EditInteractor
+import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
 import com.tubetoast.envelopes.common.domain.EnvelopesRepository
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractorImpl
@@ -19,5 +19,5 @@ val domainModule = module {
             envelopesRepository = get(),
         )
     }
-    single<EditInteractor> { StubEditInteractorImpl(envelopesRepository = get()) }
+    single<EnvelopeInteractor> { StubEditInteractorImpl(envelopesRepository = get()) }
 }

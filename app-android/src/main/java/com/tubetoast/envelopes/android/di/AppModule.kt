@@ -10,5 +10,5 @@ import org.koin.dsl.module
 val appModule = module {
     viewModel { AddSpendingViewModel(get(), JavaDateGenerator()) }
     viewModel { EnvelopesListViewModel(get(), get()) }
-    viewModel { EditEnvelopeViewModel(get(), get()) }
+    viewModel { EditEnvelopeViewModel(get()) }
 }

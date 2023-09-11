@@ -1,6 +1,5 @@
 package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.common.domain.models.Hash
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,15 +16,14 @@ class SnapshotsInteractorImpl(
 
     init {
         listOf(spendingRepository, categoryRepository, envelopesRepository).forEach {
-            it.listener = { force ->
-                if (force) flow.value = emptySet() // todo HACK, remove it!!!
+            it.listener = {
                 flow.value = envelopeSnapshot
             }
         }
     }
 
     override val envelopeSnapshot: Set<EnvelopeSnapshot>
-        get() = envelopesRepository.get(Hash.any<String>()).mapTo(mutableSetOf()) { envelope ->
+        get() = envelopesRepository.getAll().mapTo(mutableSetOf()) { envelope ->
             EnvelopeSnapshot(
                 envelope,
                 categoryRepository.get(envelope.hash).mapTo(mutableSetOf()) { category ->

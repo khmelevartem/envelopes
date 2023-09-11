@@ -1,5 +1,6 @@
 package com.tubetoast.envelopes.android.presentation.ui.views
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -19,20 +20,26 @@ fun EnvelopeView(
     onEditClick: (Envelope) -> Unit,
     onDeleteClick: (Envelope) -> Unit,
     modifier: Modifier = Modifier,
-) = Surface(color = itemModel.color) {
-    Row {
+) = Surface(color = itemModel.color, modifier = modifier) {
+    Row(horizontalArrangement = Arrangement.SpaceBetween) {
         itemModel.snapshot.run {
-            Column(modifier = modifier.padding(4.dp)) {
+            Column(modifier = Modifier.padding(8.dp)) {
                 Text(text = envelope.name)
                 Text(text = "limit: ${envelope.limit.units}")
                 Text(text = "used on $percentage%")
             }
         }
-        Button(onClick = { onEditClick(itemModel.snapshot.envelope) }) {
-            Text(text = "Edit")
-        }
-        Button(onClick = { onDeleteClick(itemModel.snapshot.envelope) }) {
-            Text(text = "Delete")
+        Row {
+            Button(
+                onClick = { onEditClick(itemModel.snapshot.envelope) },
+            ) {
+                Text(text = "Edit")
+            }
+            Button(
+                onClick = { onDeleteClick(itemModel.snapshot.envelope) },
+            ) {
+                Text(text = "Delete")
+            }
         }
     }
 }
