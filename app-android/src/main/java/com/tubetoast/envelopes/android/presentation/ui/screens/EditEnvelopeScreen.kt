@@ -29,16 +29,19 @@ fun EditEnvelopeScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
             TextField(
-                value = envelope.limit.units.toString(),
+                value = envelope.limit.units.takeIf { it > 0 }?.toString().orEmpty(),
                 onValueChange = { editEnvelopeViewModel.setLimit(it) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             )
             Row {
-                Button(onClick = {
-                    editEnvelopeViewModel.confirm()
-                    navController.popBackStack()
-                }) {
+                Button(
+                    onClick = {
+                        editEnvelopeViewModel.confirm()
+                        navController.popBackStack()
+                    },
+                    enabled = editEnvelopeViewModel.canConfirm(),
+                ) {
                     Text(text = "Confirm")
                 }
                 Button(

@@ -26,8 +26,12 @@ class EditEnvelopeViewModel(
     }
 
     fun setLimit(input: String) {
-        input.toIntOrNull()?.let {
-            envelope.value = envelope.value.copy(limit = Amount(it))
+        if (input.isBlank()) {
+            envelope.value = envelope.value.copy(limit = Amount.ZERO)
+        } else {
+            input.toIntOrNull()?.let {
+                envelope.value = envelope.value.copy(limit = Amount(it))
+            }
         }
     }
 
@@ -39,6 +43,18 @@ class EditEnvelopeViewModel(
         reset()
     }
 
+    fun canConfirm(): Boolean {
+        return envelope.value.run {
+            name.isNotBlank() && notSameAsOld && (notSameNameAsExistingIfNew || notSameAsExistingIfEdit)
+        }
+    }
+
+    private val Envelope.notSameAsExistingIfEdit get() = old != null && getExistingEnvelope() != this
+
+    private val Envelope.notSameNameAsExistingIfNew get() = old == null && getExistingEnvelope()?.name != this.name
+
+    private val Envelope.notSameAsOld get() = old != this
+
     fun delete() {
         val existingEnvelope = getExistingEnvelope()
         if (canDelete(existingEnvelope)) envelopeInteractor.deleteEnvelope(existingEnvelope!!)
@@ -46,7 +62,7 @@ class EditEnvelopeViewModel(
     }
 
     fun canDelete(envelope: Envelope? = getExistingEnvelope()): Boolean {
-        return envelope != null
+        return envelope != null && old != null
     }
 
     private fun getExistingEnvelope(): Envelope? =
