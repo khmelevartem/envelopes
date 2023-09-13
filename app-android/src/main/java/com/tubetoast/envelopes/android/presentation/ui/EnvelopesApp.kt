@@ -12,9 +12,10 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.*
 import com.tubetoast.envelopes.common.data.CategoriesRepositoryImpl
 import com.tubetoast.envelopes.common.data.EnvelopesRepositoryImpl
 import com.tubetoast.envelopes.common.data.SpendingRepositoryImpl
+import com.tubetoast.envelopes.common.domain.CategoryInteractorImpl
+import com.tubetoast.envelopes.common.domain.EnvelopeInteractorImpl
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractorImpl
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.stub.StubEditInteractorImpl
 
 private const val NO_VALUE = -1
 
@@ -22,6 +23,7 @@ private const val NO_VALUE = -1
 fun EnvelopesApp(
     envelopesListViewModel: EnvelopesListViewModel,
     editEnvelopeViewModel: EditEnvelopeViewModel,
+    editCategoryViewModel: EditCategoryViewModel,
 ) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = AppNavigation.start) {
@@ -37,16 +39,14 @@ fun EnvelopesApp(
         composable(
             route = AppNavigation.editEnvelope,
             arguments = listOf(
-                navArgument(AppNavigation.argEnvelopeHash) {
-                    type = NavType.IntType
-                },
+                navArgument(AppNavigation.argEnvelopeHash) { type = NavType.IntType },
             ),
         ) { navBackStackEntry ->
             EditEnvelopeScreen(
                 navController,
                 editEnvelopeViewModel.also { vm ->
                     navBackStackEntry.arguments?.takeIntAndRemove(AppNavigation.argEnvelopeHash) {
-                        vm.setEnvelopeHash(it)
+                        vm.setEditedEnvelopeHash(it)
                     }
                 },
             )
@@ -54,12 +54,32 @@ fun EnvelopesApp(
         composable(
             route = AppNavigation.addCategory,
             arguments = listOf(
-                navArgument(AppNavigation.argEnvelopeHash) {
-                    type = NavType.IntType
-                },
+                navArgument(AppNavigation.argEnvelopeHash) { type = NavType.IntType },
             ),
-        ) {
-            AddCategoryScreen()
+        ) { navBackStackEntry ->
+            EditCategoryScreen(
+                navController,
+                editCategoryViewModel.also { vm ->
+                    navBackStackEntry.arguments?.takeIntAndRemove(AppNavigation.argEnvelopeHash) {
+                        vm.setEnvelopeHash(it)
+                    }
+                },
+            )
+        }
+        composable(
+            route = AppNavigation.editCategory,
+            arguments = listOf(
+                navArgument(AppNavigation.argCategoryHash) { type = NavType.IntType },
+            ),
+        ) { navBackStackEntry ->
+            EditCategoryScreen(
+                navController,
+                editCategoryViewModel.also { vm ->
+                    navBackStackEntry.arguments?.takeIntAndRemove(AppNavigation.argCategoryHash) {
+                        vm.setEditedCategoryHash(it)
+                    }
+                },
+            )
         }
     }
 }
@@ -77,8 +97,10 @@ object AppNavigation {
     const val envelopesList = "envelopesList"
     const val addEnvelope = "addEnvelope"
     const val argEnvelopeHash = "envelopeHash"
+    const val argCategoryHash = "categoryHash"
     const val editEnvelope = "editEnvelope/{$argEnvelopeHash}"
     const val addCategory = "addCategory/{$argEnvelopeHash}"
+    const val editCategory = "addCategory/{$argCategoryHash}"
 
     fun editEnvelope(envelope: Envelope) =
         editEnvelope.replace("{$argEnvelopeHash}", "${envelope.hashCode()}")
@@ -92,20 +114,26 @@ object AppNavigation {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    val repository = EnvelopesRepositoryImpl()
-    val editInteractor = StubEditInteractorImpl(repository)
+    val envelopesRepository = EnvelopesRepositoryImpl()
+    val categoriesRepository = CategoriesRepositoryImpl()
+    val categoryInteractor = CategoryInteractorImpl(categoriesRepository)
+    val envelopeInteractor = EnvelopeInteractorImpl(envelopesRepository)
     val snapshotsInteractor = SnapshotsInteractorImpl(
         SpendingRepositoryImpl(),
         CategoriesRepositoryImpl(),
-        repository,
+        envelopesRepository,
     )
     EnvelopesApp(
         EnvelopesListViewModel(
             snapshotsInteractor,
-            editInteractor,
+            envelopeInteractor,
         ),
         EditEnvelopeViewModel(
-            editInteractor,
+            envelopeInteractor,
+        ),
+        EditCategoryViewModel(
+            categoryInteractor,
+            envelopeInteractor,
         ),
     )
 }

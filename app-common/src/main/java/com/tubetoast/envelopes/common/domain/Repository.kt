@@ -3,7 +3,7 @@ package com.tubetoast.envelopes.common.domain
 import com.tubetoast.envelopes.common.domain.models.*
 
 interface Repository<M : ImmutableModel<M>, Key> {
-    fun get(keyHash: Hash<Key>): Set<M>
+    fun getCollection(keyHash: Hash<Key>): Set<M>
 
     fun get(modelHash: Hash<M>): M?
     fun add(keyHash: Hash<Key>, value: M)
@@ -35,9 +35,9 @@ fun <M, Key> Repository<M, Key>.put(value: M) where M : ImmutableModel<M> {
     add(value.hash(), value)
 }
 
-fun <M, Key> Repository<M, Key>.getAll() where M : ImmutableModel<M> =
-    get(Hash.any<Key>())
+fun <M, Key> Repository<M, Key>.getAll(): Collection<M> where M : ImmutableModel<M> =
+    getCollection(Hash.any)
 
 typealias SpendingRepository = UpdatingRepository<Spending, Category>
-typealias CategoryRepository = UpdatingRepository<Category, Envelope>
+typealias CategoriesRepository = UpdatingRepository<Category, Envelope>
 typealias EnvelopesRepository = UpdatingRepository<Envelope, String>

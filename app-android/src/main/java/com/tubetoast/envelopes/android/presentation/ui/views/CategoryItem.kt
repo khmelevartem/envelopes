@@ -7,8 +7,8 @@ import androidx.compose.ui.graphics.Color
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 
 @Composable
-fun CategoryView(snapshot: CategorySnapshot) {
-    Surface(color = Color.Green) {
+fun CategoryView(snapshot: CategorySnapshot, color: Color) {
+    Surface(color = color) {
         snapshot.category.let {
             Text(text = "${it.name} with ${it.limit?.units?.toString()}")
         }

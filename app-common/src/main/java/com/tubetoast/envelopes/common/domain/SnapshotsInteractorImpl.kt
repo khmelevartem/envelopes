@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class SnapshotsInteractorImpl(
     private val spendingRepository: SpendingRepository,
-    private val categoryRepository: CategoryRepository,
+    private val categoriesRepository: CategoriesRepository,
     private val envelopesRepository: EnvelopesRepository,
 ) : SnapshotsInteractor {
 
     private val flow = MutableStateFlow(envelopeSnapshot)
 
     init {
-        listOf(spendingRepository, categoryRepository, envelopesRepository).forEach {
+        listOf(spendingRepository, categoriesRepository, envelopesRepository).forEach {
             it.listener = {
                 flow.value = envelopeSnapshot
             }
@@ -26,12 +26,13 @@ class SnapshotsInteractorImpl(
         get() = envelopesRepository.getAll().mapTo(mutableSetOf()) { envelope ->
             EnvelopeSnapshot(
                 envelope,
-                categoryRepository.get(envelope.hash).mapTo(mutableSetOf()) { category ->
-                    CategorySnapshot(
-                        category,
-                        spendingRepository.get(category.hash),
-                    )
-                },
+                categoriesRepository.getCollection(envelope.hash)
+                    .mapTo(mutableSetOf()) { category ->
+                        CategorySnapshot(
+                            category,
+                            spendingRepository.getCollection(category.hash),
+                        )
+                    },
             )
         }
 

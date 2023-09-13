@@ -12,12 +12,12 @@ class EditEnvelopeViewModel(
 ) : ViewModel() {
 
     val envelope = mutableStateOf(Envelope.EMPTY)
-    private var old: Envelope? = null
+    private var editedEnvelope: Envelope? = null
 
-    fun setEnvelopeHash(hash: Int) {
+    fun setEditedEnvelopeHash(hash: Int) {
         envelopeInteractor.getExactEnvelope(hash.hash())?.let {
             envelope.value = it
-            old = it
+            editedEnvelope = it
         } ?: throw IllegalStateException("Trying to set envelope hash $hash that doesn't exit")
     }
 
@@ -36,6 +36,7 @@ class EditEnvelopeViewModel(
     }
 
     fun confirm() {
+        if (!canConfirm()) throw IllegalStateException("Cannot confirm!")
         val new = envelope.value
         getExistingEnvelope()?.let { old ->
             envelopeInteractor.editEnvelope(old, new)
@@ -49,11 +50,11 @@ class EditEnvelopeViewModel(
         }
     }
 
-    private val Envelope.notSameAsExistingIfEdit get() = old != null && getExistingEnvelope() != this
+    private val Envelope.notSameAsExistingIfEdit get() = editedEnvelope != null && getExistingEnvelope() != this
 
-    private val Envelope.notSameNameAsExistingIfNew get() = old == null && getExistingEnvelope()?.name != this.name
+    private val Envelope.notSameNameAsExistingIfNew get() = editedEnvelope == null && getExistingEnvelope()?.name != this.name
 
-    private val Envelope.notSameAsOld get() = old != this
+    private val Envelope.notSameAsOld get() = editedEnvelope != this
 
     fun delete() {
         val existingEnvelope = getExistingEnvelope()
@@ -62,16 +63,16 @@ class EditEnvelopeViewModel(
     }
 
     fun canDelete(envelope: Envelope? = getExistingEnvelope()): Boolean {
-        return envelope != null && old != null
+        return envelope != null && editedEnvelope != null
     }
 
     private fun getExistingEnvelope(): Envelope? =
-        old?.name?.let {
+        editedEnvelope?.name?.let {
             envelopeInteractor.getEnvelopeByName(it)
         } ?: envelopeInteractor.getEnvelopeByName(envelope.value.name)
 
     private fun reset() {
         envelope.value = Envelope.EMPTY
-        old = null
+        editedEnvelope = null
     }
 }

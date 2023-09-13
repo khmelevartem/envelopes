@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
@@ -14,14 +16,15 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.tubetoast.envelopes.android.presentation.ui.screens.SnapshotItemModel
+import com.tubetoast.envelopes.android.presentation.ui.screens.asItemModels
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 
 @Composable
 fun EnvelopeView(
-    itemModel: EnvelopeItemModel,
+    itemModel: SnapshotItemModel<EnvelopeSnapshot>,
     onEditClick: (Envelope) -> Unit,
     onDeleteClick: (Envelope) -> Unit,
     onAddClick: (Envelope) -> Unit,
@@ -45,13 +48,15 @@ fun EnvelopeView(
                 }
             }
         }
-        IconButton(onClick = { onAddClick(itemModel.snapshot.envelope) }) {
-            Icon(Icons.Rounded.Add, contentDescription = "add category")
+        LazyRow {
+            items(itemModel.snapshot.categories.asItemModels().toList()) {
+                CategoryView(snapshot = it.snapshot, color = it.color)
+            }
+            item {
+                IconButton(onClick = { onAddClick(itemModel.snapshot.envelope) }) {
+                    Icon(Icons.Rounded.Add, contentDescription = "add category")
+                }
+            }
         }
     }
 }
-
-data class EnvelopeItemModel(
-    val snapshot: EnvelopeSnapshot,
-    var color: Color,
-)

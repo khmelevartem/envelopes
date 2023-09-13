@@ -3,21 +3,19 @@ package com.tubetoast.envelopes.common.di
 import com.tubetoast.envelopes.common.data.CategoriesRepositoryImpl
 import com.tubetoast.envelopes.common.data.EnvelopesRepositoryImpl
 import com.tubetoast.envelopes.common.data.SpendingRepositoryImpl
-import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
-import com.tubetoast.envelopes.common.domain.EnvelopesRepository
-import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
-import com.tubetoast.envelopes.common.domain.SnapshotsInteractorImpl
-import com.tubetoast.envelopes.common.domain.stub.StubEditInteractorImpl
+import com.tubetoast.envelopes.common.domain.*
 import org.koin.dsl.module
 
 val domainModule = module {
-    single<EnvelopesRepository> { EnvelopesRepositoryImpl() }
+    val envelopesRepository = EnvelopesRepositoryImpl()
+    val categoriesRepository = CategoriesRepositoryImpl()
     single<SnapshotsInteractor> {
         SnapshotsInteractorImpl(
             SpendingRepositoryImpl(),
-            CategoriesRepositoryImpl(),
-            envelopesRepository = get(),
+            categoriesRepository = categoriesRepository,
+            envelopesRepository = envelopesRepository,
         )
     }
-    single<EnvelopeInteractor> { StubEditInteractorImpl(envelopesRepository = get()) }
+    single<EnvelopeInteractor> { EnvelopeInteractorImpl(repository = envelopesRepository) }
+    single<CategoryInteractor> { CategoryInteractorImpl(repository = categoriesRepository) }
 }
