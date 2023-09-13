@@ -8,10 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeScreen
-import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
-import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListScreen
-import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
+import com.tubetoast.envelopes.android.presentation.ui.screens.*
 import com.tubetoast.envelopes.common.data.CategoriesRepositoryImpl
 import com.tubetoast.envelopes.common.data.EnvelopesRepositoryImpl
 import com.tubetoast.envelopes.common.data.SpendingRepositoryImpl
@@ -54,6 +51,16 @@ fun EnvelopesApp(
                 },
             )
         }
+        composable(
+            route = AppNavigation.addCategory,
+            arguments = listOf(
+                navArgument(AppNavigation.argEnvelopeHash) {
+                    type = NavType.IntType
+                },
+            ),
+        ) {
+            AddCategoryScreen()
+        }
     }
 }
 
@@ -71,9 +78,13 @@ object AppNavigation {
     const val addEnvelope = "addEnvelope"
     const val argEnvelopeHash = "envelopeHash"
     const val editEnvelope = "editEnvelope/{$argEnvelopeHash}"
+    const val addCategory = "addCategory/{$argEnvelopeHash}"
 
     fun editEnvelope(envelope: Envelope) =
         editEnvelope.replace("{$argEnvelopeHash}", "${envelope.hashCode()}")
+
+    fun addCategory(envelope: Envelope) =
+        addCategory.replace("{$argEnvelopeHash}", "${envelope.hashCode()}")
 
     const val start = envelopesList
 }
