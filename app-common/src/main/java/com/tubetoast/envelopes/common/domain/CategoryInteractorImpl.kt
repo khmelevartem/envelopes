@@ -35,4 +35,8 @@ class CategoryInteractorImpl(
     override fun deleteCategory(category: Category) {
         repository.delete(category)
     }
+
+    override fun deleteCategories(envelopeHash: Hash<Envelope>) {
+        repository.deleteCollection(envelopeHash)
+    }
 }

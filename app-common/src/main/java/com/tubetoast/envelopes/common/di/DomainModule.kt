@@ -16,6 +16,6 @@ val domainModule = module {
             envelopesRepository = envelopesRepository,
         )
     }
-    single<EnvelopeInteractor> { EnvelopeInteractorImpl(repository = envelopesRepository) }
+    single<EnvelopeInteractor> { EnvelopeInteractorImpl(repository = envelopesRepository, get()) }
     single<CategoryInteractor> { CategoryInteractorImpl(repository = categoriesRepository) }
 }

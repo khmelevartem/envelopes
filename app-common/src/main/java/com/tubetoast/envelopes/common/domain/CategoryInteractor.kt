@@ -11,4 +11,5 @@ interface CategoryInteractor {
     fun editCategory(old: Category, new: Category)
     fun moveCategory(category: Category, newEnvelopeHash: Hash<Envelope>)
     fun deleteCategory(category: Category)
+    fun deleteCategories(envelopeHash: Hash<Envelope>)
 }

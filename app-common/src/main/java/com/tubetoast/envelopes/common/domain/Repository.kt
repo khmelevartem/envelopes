@@ -3,12 +3,12 @@ package com.tubetoast.envelopes.common.domain
 import com.tubetoast.envelopes.common.domain.models.*
 
 interface Repository<M : ImmutableModel<M>, Key> {
-    fun getCollection(keyHash: Hash<Key>): Set<M>
-
-    fun get(modelHash: Hash<M>): M?
+    fun get(valueHash: Hash<M>): M?
     fun add(keyHash: Hash<Key>, value: M)
     fun delete(value: M)
     fun edit(oldValue: M, newValue: M)
+    fun getCollection(keyHash: Hash<Key>): Set<M>
+    fun deleteCollection(keyHash: Hash<Key>)
 }
 
 abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Key> {
@@ -26,9 +26,14 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Ke
         if (editImpl(oldValue, newValue)) listener?.invoke()
     }
 
+    override fun deleteCollection(keyHash: Hash<Key>) {
+        if (deleteCollectionImpl(keyHash)) listener?.invoke()
+    }
+
     protected abstract fun addImpl(value: M, keyHash: Hash<Key>): Boolean
     protected abstract fun deleteImpl(value: M): Boolean
     protected abstract fun editImpl(oldValue: M, newValue: M): Boolean
+    protected abstract fun deleteCollectionImpl(keyHash: Hash<Key>): Boolean
 }
 
 fun <M, Key> Repository<M, Key>.put(value: M) where M : ImmutableModel<M> {

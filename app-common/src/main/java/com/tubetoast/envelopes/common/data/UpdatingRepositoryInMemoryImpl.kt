@@ -6,22 +6,15 @@ import com.tubetoast.envelopes.common.domain.SpendingRepository
 import com.tubetoast.envelopes.common.domain.UpdatingRepository
 import com.tubetoast.envelopes.common.domain.models.*
 
-abstract class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
+open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     UpdatingRepository<M, Key>() {
 
     private val sets = mutableMapOf<Hash<Key>, MutableSet<M>>()
     private val keys = mutableMapOf<Hash<M>, Hash<Key>>()
 
-    override fun getCollection(keyHash: Hash<Key>) = if (keyHash == Hash.any) {
-        sets.flatMapTo(mutableSetOf()) { it.value }
-        // No modification can be made!
-    } else {
-        sets.getOrPut(keyHash) { mutableSetOf() }
-    }
-
-    override fun get(modelHash: Hash<M>): M? {
-        val key = keys[modelHash]
-        return sets[key]?.find { it.hash == modelHash }
+    override fun get(valueHash: Hash<M>): M? {
+        val key = keys[valueHash]
+        return sets[key]?.find { it.hash == valueHash }
     }
 
     override fun addImpl(value: M, keyHash: Hash<Key>): Boolean {
@@ -46,6 +39,17 @@ abstract class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
             }?.run {
                 remove(oldValue) && add(newValue)
             } ?: throw IllegalArgumentException("There was no old value $oldValue found")
+
+    override fun getCollection(keyHash: Hash<Key>) = if (keyHash == Hash.any) {
+        sets.flatMapTo(mutableSetOf()) { it.value }
+        // No modification can be made!
+    } else {
+        sets.getOrPut(keyHash) { mutableSetOf() }
+    }
+
+    override fun deleteCollectionImpl(keyHash: Hash<Key>): Boolean {
+        return sets.remove(keyHash) != null // return collection to delete its children?
+    }
 }
 
 /** [EnvelopesRepository] */

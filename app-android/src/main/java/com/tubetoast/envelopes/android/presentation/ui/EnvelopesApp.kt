@@ -117,7 +117,7 @@ fun DefaultPreview() {
     val envelopesRepository = EnvelopesRepositoryImpl()
     val categoriesRepository = CategoriesRepositoryImpl()
     val categoryInteractor = CategoryInteractorImpl(categoriesRepository)
-    val envelopeInteractor = EnvelopeInteractorImpl(envelopesRepository)
+    val envelopeInteractor = EnvelopeInteractorImpl(envelopesRepository, categoryInteractor)
     val snapshotsInteractor = SnapshotsInteractorImpl(
         SpendingRepositoryImpl(),
         CategoriesRepositoryImpl(),
