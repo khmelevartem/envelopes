@@ -16,10 +16,12 @@ class SnapshotsInteractorImpl(
 
     init {
         listOf(spendingRepository, categoriesRepository, envelopesRepository).forEach {
-            it.listener = {
+            it.update = {
                 flow.value = envelopeSnapshot
             }
         }
+        envelopesRepository.deleteListener = categoriesRepository.deleteListenerImpl
+        categoriesRepository.deleteListener = spendingRepository.deleteListenerImpl
     }
 
     override val envelopeSnapshot: Set<EnvelopeSnapshot>

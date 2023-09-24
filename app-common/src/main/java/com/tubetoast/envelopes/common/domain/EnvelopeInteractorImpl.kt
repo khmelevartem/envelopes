@@ -21,7 +21,6 @@ class EnvelopeInteractorImpl(
 
     override fun deleteEnvelope(envelope: Envelope) {
         repository.delete(envelope)
-        categoryInteractor.deleteCategories(envelope.hash)
     }
 
     override fun editEnvelope(old: Envelope, new: Envelope) {

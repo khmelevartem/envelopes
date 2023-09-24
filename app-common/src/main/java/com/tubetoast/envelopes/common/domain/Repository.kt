@@ -8,32 +8,42 @@ interface Repository<M : ImmutableModel<M>, Key> {
     fun delete(value: M)
     fun edit(oldValue: M, newValue: M)
     fun getCollection(keyHash: Hash<Key>): Set<M>
-    fun deleteCollection(keyHash: Hash<Key>)
 }
 
 abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Key> {
-    var listener: (() -> Unit)? = null
+    var update: (() -> Unit)? = null
+    var deleteListener: ((Hash<M>) -> Unit)? = null
+    val deleteListenerImpl: ((Hash<Key>) -> Unit) = {
+        deleteCollection(it)
+    }
 
     override fun add(keyHash: Hash<Key>, value: M) {
-        if (addImpl(value, keyHash)) listener?.invoke()
+        if (addImpl(value, keyHash)) update?.invoke()
     }
 
     override fun delete(value: M) {
-        if (deleteImpl(value)) listener?.invoke()
+        if (deleteImpl(value)) {
+            deleteListener?.invoke(value.hash)
+            update?.invoke()
+        }
     }
 
     override fun edit(oldValue: M, newValue: M) {
-        if (editImpl(oldValue, newValue)) listener?.invoke()
+        if (editImpl(oldValue, newValue)) update?.invoke()
     }
 
-    override fun deleteCollection(keyHash: Hash<Key>) {
-        if (deleteCollectionImpl(keyHash)) listener?.invoke()
+    private fun deleteCollection(keyHash: Hash<Key>) {
+        deleteCollectionImpl(keyHash).forEach {
+            deleteListener?.invoke(it)
+        }
     }
 
     protected abstract fun addImpl(value: M, keyHash: Hash<Key>): Boolean
     protected abstract fun deleteImpl(value: M): Boolean
     protected abstract fun editImpl(oldValue: M, newValue: M): Boolean
-    protected abstract fun deleteCollectionImpl(keyHash: Hash<Key>): Boolean
+
+    /** Returns deleted */
+    protected abstract fun deleteCollectionImpl(keyHash: Hash<Key>): Set<Hash<M>>
 }
 
 fun <M, Key> Repository<M, Key>.put(value: M) where M : ImmutableModel<M> {

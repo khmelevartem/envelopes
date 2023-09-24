@@ -47,8 +47,8 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
         sets.getOrPut(keyHash) { mutableSetOf() }
     }
 
-    override fun deleteCollectionImpl(keyHash: Hash<Key>): Boolean {
-        return sets.remove(keyHash) != null // return collection to delete its children?
+    override fun deleteCollectionImpl(keyHash: Hash<Key>): Set<Hash<M>> {
+        return sets.remove(keyHash)?.mapTo(mutableSetOf()) { it.hash }.orEmpty()
     }
 }
 
