@@ -1,0 +1,20 @@
+package com.tubetoast.envelopes.monefy
+
+import com.tubetoast.envelopes.common.domain.models.Date
+import com.tubetoast.envelopes.monefy.MonefyDataParser.Companion.DATE_DELIMITER
+
+class MonefyDateParser {
+    fun parseDate(it: String): Date {
+        val (day, month, year) = it.split(DATE_DELIMITER).map {
+            it.toIntOrNull() ?: throwNFE("date component $it")
+        }
+        return Date(
+            minute = 0,
+            hour = 0,
+            day = day,
+            month = month,
+            year = year,
+
+        )
+    }
+}

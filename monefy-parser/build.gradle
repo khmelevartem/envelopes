@@ -1,0 +1,25 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation project(":app-common")
+
+    def jupiterVersion = '5.9.3'
+    testImplementation "org.junit.jupiter:junit-jupiter:$jupiterVersion"
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.9.3")
+
+    testImplementation "com.google.truth:truth:1.1.3"
+    testImplementation "io.mockk:mockk:1.4.1"
+
+}
