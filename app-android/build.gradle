@@ -48,6 +48,7 @@ dependencies {
 
     // Project
     implementation project(":app-common")
+    implementation project(":monefy-parser")
 
     // DI
     implementation "io.insert-koin:koin-android:$koin_version"
