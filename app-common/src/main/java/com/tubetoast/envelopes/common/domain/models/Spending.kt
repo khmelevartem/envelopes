@@ -4,4 +4,4 @@ data class Spending(
     override val amount: Amount,
     override val date: Date,
     override val comment: String? = null
-) : ImmutableModel<Spending>(), Operation
+) : ImmutableModel<Spending>(), Transaction

@@ -1,6 +1,6 @@
 package com.tubetoast.envelopes.common.domain.models
 
-interface Operation {
+interface Transaction {
     val amount: Amount
     val date: Date
     val comment: String?

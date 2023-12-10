@@ -1,4 +1,4 @@
-package com.tubetoast.envelopes.monefy
+package com.tubetoast.envelopes.monefy.data
 
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -11,6 +11,12 @@ class MonefyDataParserTest {
 
     @Test
     fun test() {
-        parser.parse().forEach(::println)
+        parser.parse().forEach {
+            println(it.category)
+            it.transactions.forEach(::println)
+            println()
+        }
     }
+
+    // TODO
 }

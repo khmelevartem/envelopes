@@ -1,15 +1,15 @@
-package com.tubetoast.envelopes.monefy
+package com.tubetoast.envelopes.monefy.data
 
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Earning
-import com.tubetoast.envelopes.common.domain.models.Operation
 import com.tubetoast.envelopes.common.domain.models.Spending
-import com.tubetoast.envelopes.monefy.MonefyDataParser.Companion.DECIMAL_DELIMITER
+import com.tubetoast.envelopes.common.domain.models.Transaction
+import com.tubetoast.envelopes.monefy.data.MonefyDataParser.Companion.DECIMAL_DELIMITER
 import kotlin.math.abs
 
-class MonefyOperationParser {
-    fun parse(string: String, date: Date, comment: String?): Operation {
+class MonefyTransactionParser {
+    fun parse(string: String, date: Date, comment: String?): Transaction {
         val number = string.replace(" ", "")
             .split(DECIMAL_DELIMITER)
             .map { it.toIntOrNull() ?: throwNFE("amount $string") }

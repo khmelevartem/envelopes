@@ -1,4 +1,4 @@
-package com.tubetoast.envelopes.monefy
+package com.tubetoast.envelopes.monefy.data
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

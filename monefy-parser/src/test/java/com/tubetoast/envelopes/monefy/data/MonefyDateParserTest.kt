@@ -1,4 +1,4 @@
-package com.tubetoast.envelopes.monefy
+package com.tubetoast.envelopes.monefy.data
 
 import com.tubetoast.envelopes.common.domain.models.Date
 import org.junit.jupiter.api.Assertions

@@ -2,6 +2,7 @@ package com.tubetoast.envelopes.common.domain.snapshots
 
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.Transaction
 import com.tubetoast.envelopes.common.domain.models.sum
 
 data class EnvelopeSnapshot(
@@ -11,9 +12,7 @@ data class EnvelopeSnapshot(
 
     val spending: List<Amount>
         get() = categories.flatMap {
-            it.spending.map { transaction ->
-                transaction.amount
-            }
+            it.transactions.map(Transaction::amount)
         }
 
     val sum: Amount

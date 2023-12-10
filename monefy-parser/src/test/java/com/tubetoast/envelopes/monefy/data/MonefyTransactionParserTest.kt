@@ -1,4 +1,4 @@
-package com.tubetoast.envelopes.monefy
+package com.tubetoast.envelopes.monefy.data
 
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Earning
@@ -7,8 +7,8 @@ import com.tubetoast.envelopes.common.domain.models.randomDate
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class MonefyOperationParserTest {
-    private val parser = MonefyOperationParser()
+class MonefyTransactionParserTest {
+    private val parser = MonefyTransactionParser()
 
     @Test
     fun parseSpending() {
