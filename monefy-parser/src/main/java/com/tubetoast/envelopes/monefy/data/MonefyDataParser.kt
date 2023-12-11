@@ -1,5 +1,6 @@
 package com.tubetoast.envelopes.monefy.data
 
+import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Transaction
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
@@ -10,18 +11,22 @@ class MonefyDataParser(
     private val operationParser: MonefyTransactionParser = MonefyTransactionParser(),
 ) {
 
-    fun parse(file: File): List<CategorySnapshot> {
+    fun parse(lines: List<String>): List<CategorySnapshot> {
         val snapshots: MutableMap<String, MutableSet<Transaction>> = mutableMapOf()
 
+        val columns = MonefyDataColumns.parse(lines.first())
+        lines.subList(1, lines.size).forEach { line ->
+            line.process(columns, snapshots)
+        }
+        return snapshots.map { (key, value) ->
+            CategorySnapshot(category = Category(name = key, limit = Amount(value.size)), transactions = value)
+        }
+    }
+
+    fun parse(file: File): List<CategorySnapshot> {
         file.reader(Charsets.UTF_8).use { reader ->
             val lines = reader.readLines()
-            val columns = MonefyDataColumns.parse(lines.first())
-            lines.subList(1, lines.size).forEach { line ->
-                line.process(columns, snapshots)
-            }
-            return snapshots.map { (key, value) ->
-                CategorySnapshot(category = Category(name = key), transactions = value)
-            }
+            return parse(lines)
         }
     }
 

@@ -22,7 +22,7 @@ data class Amount(
 
     infix operator fun div(another: Amount): Float {
         checkCurrency(another)
-        return this.inShares().toFloat() / another.inShares()
+        return this.units.toFloat() / another.units // avoid shared not to overflow int
     }
 
     fun inShares(): Int = this.units * this.currency.shares + this.shares

@@ -10,13 +10,13 @@ data class EnvelopeSnapshot(
     val categories: Set<CategorySnapshot>,
 ) {
 
-    val spending: List<Amount>
+    val transactions: List<Amount>
         get() = categories.flatMap {
             it.transactions.map(Transaction::amount)
         }
 
     val sum: Amount
-        get() = spending.sum()
+        get() = transactions.sum()
 
     val percentage: Float
         get() = sum / envelope.limit

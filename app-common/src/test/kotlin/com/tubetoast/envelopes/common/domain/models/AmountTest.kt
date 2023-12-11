@@ -15,4 +15,11 @@ class AmountTest {
             assertThat(it).isEqualTo(Amount(10))
         }
     }
+
+    @Test
+    fun testDiv() {
+        val first = Amount(units = 20683720, shares = 18, currency = Currency.Ruble)
+        val second = Amount(units = 50_000_000, shares = 0, currency = Currency.Ruble)
+        assertThat(first / second).isEqualTo(20683720f / 50_000_000)
+    }
 }

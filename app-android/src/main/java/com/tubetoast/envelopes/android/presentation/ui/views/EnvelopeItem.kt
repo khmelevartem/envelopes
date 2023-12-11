@@ -36,6 +36,7 @@ fun EnvelopeView(
                 Column(modifier = Modifier.padding(8.dp)) {
                     Text(text = envelope.name)
                     Text(text = "limit: ${envelope.limit.units}")
+                    Text(text = "sum: ${sum.units}")
                     Text(text = "used on $percentage%")
                 }
             }
