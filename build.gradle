@@ -3,7 +3,7 @@ buildscript {
         compose_version = '1.5.4'
         koin_version = '3.5.0'
         kotlin_version = '1.9.20'
-        android_version = '8.1.1'
+        android_version = '8.2.0'
     }
 }
 plugins {
