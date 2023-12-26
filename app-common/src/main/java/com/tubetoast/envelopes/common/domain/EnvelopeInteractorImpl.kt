@@ -5,7 +5,6 @@ import com.tubetoast.envelopes.common.domain.models.Hash
 
 class EnvelopeInteractorImpl(
     private val repository: EnvelopesRepository,
-    private val categoryInteractor: CategoryInteractor,
 ) : EnvelopeInteractor {
     override fun getEnvelopeByName(name: String): Envelope? {
         return repository.getAll().singleOrNull { it.name == name }
