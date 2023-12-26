@@ -31,14 +31,13 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     }
 
     override fun editImpl(oldValue: M, newValue: M): Boolean =
-        keys[oldValue.hash]
-            ?.let { key ->
-                keys.remove(oldValue.hash)
-                keys[newValue.hash] = key
-                getCollection(key)
-            }?.run {
+        keys[oldValue.hash]?.let { key ->
+            keys.remove(oldValue.hash)
+            keys[newValue.hash] = key
+            getCollection(key).run {
                 remove(oldValue) && add(newValue)
-            } ?: throw IllegalArgumentException("There was no old value $oldValue found")
+            }
+        } ?: throw IllegalArgumentException("There was no old value $oldValue found")
 
     override fun getCollection(keyHash: Hash<Key>) = if (keyHash == Hash.any) {
         sets.flatMapTo(mutableSetOf()) { it.value }

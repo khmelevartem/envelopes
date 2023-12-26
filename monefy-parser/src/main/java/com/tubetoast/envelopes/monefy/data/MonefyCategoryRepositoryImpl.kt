@@ -1,14 +1,22 @@
 package com.tubetoast.envelopes.monefy.data
 
 import com.tubetoast.envelopes.common.data.CategoriesRepositoryImpl
-import com.tubetoast.envelopes.common.domain.models.Amount
-import com.tubetoast.envelopes.common.domain.models.Envelope
 
-class MonefyCategoryRepositoryImpl(monefySource: MonefySource) : CategoriesRepositoryImpl() {
+class MonefyCategoryRepositoryImpl(
+    monefySource: MonefySource,
+    categoryKeySource: CategoryKeySource = CategoryKeySourceImpl()
+) : CategoriesRepositoryImpl() {
     init {
-        val envelopeHash = Envelope("all", Amount.ZERO).hash
-        val categories = monefySource.categorySnapshots.mapTo(mutableSetOf()) { it.category }
-        sets[envelopeHash] = categories
-        categories.forEach { keys[it.hash] = envelopeHash }
+        if (anythingChanged(monefySource, categoryKeySource)) update?.invoke()
+
     }
+
+    private fun anythingChanged(
+        monefySource: MonefySource,
+        categoryKeySource: CategoryKeySource
+    ) = monefySource.categorySnapshots.map { snapshot ->
+        val category = snapshot.category
+        val envelopeHash = categoryKeySource.getKeyHash(category)
+        addImpl(category, envelopeHash)
+    }.any()
 }

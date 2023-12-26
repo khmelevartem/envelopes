@@ -19,6 +19,7 @@ class MonefyDataParser(
             line.process(columns, snapshots)
         }
         return snapshots.map { (key, value) ->
+            // TODO Amount(value.size)) is a stub
             CategorySnapshot(category = Category(name = key, limit = Amount(value.size)), transactions = value)
         }
     }

@@ -17,8 +17,6 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListScre
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
 import com.tubetoast.envelopes.common.domain.models.Envelope
 
-private const val NO_VALUE = -1
-
 @Composable
 fun EnvelopesApp(
     envelopesListViewModel: EnvelopesListViewModel,
@@ -69,6 +67,8 @@ fun EnvelopesApp(
         }
     }
 }
+
+private const val NO_VALUE = -1
 
 private fun Bundle.takeInt(key: String): Int? {
     return getInt(key, NO_VALUE).takeUnless { it == NO_VALUE }
