@@ -19,10 +19,11 @@ import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
 fun EditEnvelopeScreen(
     navController: NavHostController,
     editEnvelopeViewModel: EditEnvelopeViewModel,
+    envelopeHash: Int? = null
 ) {
     EnvelopesTheme {
         Column {
-            val envelope by remember { editEnvelopeViewModel.envelope }
+            val envelope by remember { editEnvelopeViewModel.envelope(envelopeHash) }
             TextField(
                 value = envelope.name,
                 onValueChange = { editEnvelopeViewModel.setName(it) },

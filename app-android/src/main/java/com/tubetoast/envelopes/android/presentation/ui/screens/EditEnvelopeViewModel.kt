@@ -1,5 +1,6 @@
 package com.tubetoast.envelopes.android.presentation.ui.screens
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
@@ -11,33 +12,39 @@ class EditEnvelopeViewModel(
     private val envelopeInteractor: EnvelopeInteractor,
 ) : ViewModel() {
 
-    val envelope = mutableStateOf(Envelope.EMPTY)
+    /** for display, draft of changes */
+    private val draftEnvelope = mutableStateOf(Envelope.EMPTY)
+
+    /** opened for editing */
     private var editedEnvelope: Envelope? = null
 
-    fun setEditedEnvelopeHash(hash: Int) {
-        envelopeInteractor.getExactEnvelope(hash.hash())?.let {
-            envelope.value = it
-            editedEnvelope = it
-        } ?: throw IllegalStateException("Trying to set envelope hash $hash that doesn't exit")
+    fun envelope(envelopeHash: Int?): State<Envelope> {
+        envelopeHash?.let { hash ->
+            envelopeInteractor.getExactEnvelope(hash.hash())?.let {
+                draftEnvelope.value = it
+                editedEnvelope = it
+            } ?: throw IllegalStateException("Trying to set envelope hash $hash that doesn't exit")
+        } ?: reset()
+        return draftEnvelope
     }
 
     fun setName(input: String) {
-        envelope.value = envelope.value.copy(name = input)
+        draftEnvelope.value = draftEnvelope.value.copy(name = input)
     }
 
     fun setLimit(input: String) {
         if (input.isBlank()) {
-            envelope.value = envelope.value.copy(limit = Amount.ZERO)
+            draftEnvelope.value = draftEnvelope.value.copy(limit = Amount.ZERO)
         } else {
             input.toIntOrNull()?.let {
-                envelope.value = envelope.value.copy(limit = Amount(it))
+                draftEnvelope.value = draftEnvelope.value.copy(limit = Amount(it))
             }
         }
     }
 
     fun confirm() {
         if (!canConfirm()) throw IllegalStateException("Cannot confirm!")
-        val new = envelope.value
+        val new = draftEnvelope.value
         getExistingEnvelope()?.let { old ->
             envelopeInteractor.editEnvelope(old, new)
         } ?: envelopeInteractor.addEnvelope(new)
@@ -45,7 +52,7 @@ class EditEnvelopeViewModel(
     }
 
     fun canConfirm(): Boolean {
-        return envelope.value.run {
+        return draftEnvelope.value.run {
             name.isNotBlank() && notSameAsOld && (notSameNameAsExistingIfNew || notSameAsExistingIfEdit)
         }
     }
@@ -69,10 +76,10 @@ class EditEnvelopeViewModel(
     private fun getExistingEnvelope(): Envelope? =
         editedEnvelope?.name?.let {
             envelopeInteractor.getEnvelopeByName(it)
-        } ?: envelopeInteractor.getEnvelopeByName(envelope.value.name)
+        } ?: envelopeInteractor.getEnvelopeByName(draftEnvelope.value.name)
 
     private fun reset() {
-        envelope.value = Envelope.EMPTY
+        draftEnvelope.value = Envelope.EMPTY
         editedEnvelope = null
     }
 }

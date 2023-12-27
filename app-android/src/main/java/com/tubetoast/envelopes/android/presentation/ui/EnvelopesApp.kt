@@ -39,9 +39,8 @@ fun EnvelopesApp(
             ),
         ) {
             navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeHash)?.also {
-                editEnvelopeViewModel.setEditedEnvelopeHash(it)
+                EditEnvelopeScreen(navController, editEnvelopeViewModel, it)
             }
-            EditEnvelopeScreen(navController, editEnvelopeViewModel)
         }
         composable(
             route = AppNavigation.addCategory,
