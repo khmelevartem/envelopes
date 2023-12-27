@@ -51,17 +51,16 @@ class EditEnvelopeViewModel(
         reset()
     }
 
-    fun canConfirm(): Boolean {
-        return draftEnvelope.value.run {
-            name.isNotBlank() && notSameAsOld && (notSameNameAsExistingIfNew || notSameAsExistingIfEdit)
-        }
+    fun canConfirm(): Boolean = draftEnvelope.value.run {
+        name.isNotBlank() &&
+                (notSameAsExistingIfEdit(this) || notSameNameAsExistingIfNew(this))
     }
 
-    private val Envelope.notSameAsExistingIfEdit get() = editedEnvelope != null && getExistingEnvelope() != this
+    private fun notSameNameAsExistingIfNew(draftEnvelope: Envelope) = editedEnvelope == null
+            && envelopeInteractor.getEnvelopeByName(draftEnvelope.name) == null
 
-    private val Envelope.notSameNameAsExistingIfNew get() = editedEnvelope == null && getExistingEnvelope()?.name != this.name
-
-    private val Envelope.notSameAsOld get() = editedEnvelope != this
+    private fun notSameAsExistingIfEdit(draftEnvelope: Envelope) = editedEnvelope != null
+            && editedEnvelope != draftEnvelope
 
     fun delete() {
         val existingEnvelope = getExistingEnvelope()
@@ -74,9 +73,8 @@ class EditEnvelopeViewModel(
     }
 
     private fun getExistingEnvelope(): Envelope? =
-        editedEnvelope?.name?.let {
-            envelopeInteractor.getEnvelopeByName(it)
-        } ?: envelopeInteractor.getEnvelopeByName(draftEnvelope.value.name)
+        editedEnvelope?.name?.let { envelopeInteractor.getEnvelopeByName(it) }
+            ?: envelopeInteractor.getEnvelopeByName(draftEnvelope.value.name)
 
     private fun reset() {
         draftEnvelope.value = Envelope.EMPTY
