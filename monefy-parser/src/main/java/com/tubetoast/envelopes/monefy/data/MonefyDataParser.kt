@@ -1,6 +1,5 @@
 package com.tubetoast.envelopes.monefy.data
 
-import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Transaction
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
@@ -19,8 +18,7 @@ class MonefyDataParser(
             line.process(columns, snapshots)
         }
         return snapshots.map { (key, value) ->
-            // TODO Amount(value.size)) is a stub
-            CategorySnapshot(category = Category(name = key, limit = Amount(value.size)), transactions = value)
+            CategorySnapshot(category = Category(name = key), transactions = value)
         }
     }
 

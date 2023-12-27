@@ -2,6 +2,7 @@ package com.tubetoast.envelopes.android.presentation.ui.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.ui.screens.SnapshotItemModel
@@ -49,7 +51,11 @@ fun EnvelopeView(
                 }
             }
         }
-        LazyRow {
+        LazyRow(
+            modifier = modifier.padding(4.dp),
+            contentPadding = PaddingValues(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             items(itemModel.snapshot.categories.asItemModels().toList()) {
                 CategoryView(snapshot = it.snapshot, color = it.color)
             }
