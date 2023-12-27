@@ -1,16 +1,16 @@
 package com.tubetoast.envelopes.common.domain.models
 
 abstract class ImmutableModel<T : ImmutableModel<T>> {
-    val hash: Hash<T> by lazy { Hash(hashCode()) }
+    val id: Id<T> by lazy { Id(hashCode()) }
 }
 
 @JvmInline
-value class Hash<out T> constructor(val hashCode: Int) {
+value class Id<out T> constructor(val idCode: Int) {
     companion object {
-        val any = Hash<Nothing>(-1)
-        fun <K> any(): Hash<K> = any
+        val any = Id<Nothing>(-1)
+        fun <K> any(): Id<K> = any
     }
 }
 
-fun <T> Any.hash() = Hash<T>(hashCode())
-fun <T> Int.hash() = Hash<T>(this)
+fun <T> Any.id() = Id<T>(hashCode())
+fun <T> Int.id() = Id<T>(this)

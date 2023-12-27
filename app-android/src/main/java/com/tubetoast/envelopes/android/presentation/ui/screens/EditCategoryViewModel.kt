@@ -7,7 +7,7 @@ import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.hash
+import com.tubetoast.envelopes.common.domain.models.id
 
 class EditCategoryViewModel(
     private val categoryInteractor: CategoryInteractor,
@@ -18,17 +18,17 @@ class EditCategoryViewModel(
     private var editedCategory: Category? = null
     private var envelope: Envelope? = null
 
-    fun setEditedCategoryHash(hash: Int) {
-        categoryInteractor.getCategory(hash.hash())?.let {
+    fun setEditedCategoryId(id: Int) {
+        categoryInteractor.getCategory(id.id())?.let {
             category.value = it
             editedCategory = it
-        } ?: throw IllegalStateException("Trying to set envelope hash $hash that doesn't exit")
+        } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
     }
 
-    fun setEnvelopeHash(hash: Int) {
-        envelopeInteractor.getExactEnvelope(hash.hash())?.let {
+    fun setEnvelopeId(id: Int) {
+        envelopeInteractor.getExactEnvelope(id.id())?.let {
             envelope = it
-        } ?: throw IllegalStateException("Trying to set envelope hash $hash that doesn't exit")
+        } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
     }
 
     fun setName(input: String) {
@@ -50,7 +50,7 @@ class EditCategoryViewModel(
         val new = category.value
         getExistingCategory()?.let { old ->
             categoryInteractor.editCategory(old, new)
-        } ?: categoryInteractor.addCategory(new, envelope!!.hash)
+        } ?: categoryInteractor.addCategory(new, envelope!!.id)
         reset()
     }
 

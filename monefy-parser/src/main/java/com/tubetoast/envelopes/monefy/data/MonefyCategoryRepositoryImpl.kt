@@ -16,7 +16,7 @@ class MonefyCategoryRepositoryImpl(
         categoryKeySource: CategoryKeySource
     ) = monefySource.categorySnapshots.map { snapshot ->
         val category = snapshot.category
-        val envelopeHash = categoryKeySource.getKeyHash(category)
-        addImpl(category, envelopeHash)
+        val envelopeId = categoryKeySource.getKeyId(category)
+        addImpl(category, envelopeId)
     }.any()
 }

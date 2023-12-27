@@ -1,7 +1,7 @@
 package com.tubetoast.envelopes.common.domain
 
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Hash
+import com.tubetoast.envelopes.common.domain.models.Id
 
 class EnvelopeInteractorImpl(
     private val repository: EnvelopesRepository,
@@ -10,8 +10,8 @@ class EnvelopeInteractorImpl(
         return repository.getAll().singleOrNull { it.name == name }
     }
 
-    override fun getExactEnvelope(hash: Hash<Envelope>): Envelope? {
-        return repository.get(hash)
+    override fun getExactEnvelope(id: Id<Envelope>): Envelope? {
+        return repository.get(id)
     }
 
     override fun addEnvelope(envelope: Envelope) {

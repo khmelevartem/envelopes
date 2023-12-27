@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.hash
+import com.tubetoast.envelopes.common.domain.models.id
 
 class EditEnvelopeViewModel(
     private val envelopeInteractor: EnvelopeInteractor,
@@ -18,12 +18,12 @@ class EditEnvelopeViewModel(
     /** opened for editing */
     private var editedEnvelope: Envelope? = null
 
-    fun envelope(envelopeHash: Int?): State<Envelope> {
-        envelopeHash?.let { hash ->
-            envelopeInteractor.getExactEnvelope(hash.hash())?.let {
+    fun envelope(envelopeId: Int?): State<Envelope> {
+        envelopeId?.let { id ->
+            envelopeInteractor.getExactEnvelope(id.id())?.let {
                 draftEnvelope.value = it
                 editedEnvelope = it
-            } ?: throw IllegalStateException("Trying to set envelope hash $hash that doesn't exit")
+            } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
         } ?: reset()
         return draftEnvelope
     }

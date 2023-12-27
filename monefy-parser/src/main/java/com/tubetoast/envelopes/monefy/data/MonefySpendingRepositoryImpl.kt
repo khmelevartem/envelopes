@@ -9,8 +9,8 @@ class MonefySpendingRepositoryImpl(monefySource: MonefySource) : SpendingReposit
             val category = snapshot.category
             val transactions = snapshot.transactions
             val spending = transactions.filterIsInstance<Spending>()
-            sets[category.hash] = spending.toMutableSet()
-            spending.forEach { keys[it.hash] = category.hash }
+            sets[category.id] = spending.toMutableSet()
+            spending.forEach { keys[it.id] = category.id }
         }
     }
 }

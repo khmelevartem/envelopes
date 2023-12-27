@@ -35,32 +35,32 @@ fun EnvelopesApp(
         composable(
             route = AppNavigation.editEnvelope,
             arguments = listOf(
-                navArgument(AppNavigation.argEnvelopeHash) { type = NavType.IntType },
+                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType },
             ),
         ) {
-            navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeHash)?.also {
+            navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)?.also {
                 EditEnvelopeScreen(navController, editEnvelopeViewModel, it)
             }
         }
         composable(
             route = AppNavigation.addCategory,
             arguments = listOf(
-                navArgument(AppNavigation.argEnvelopeHash) { type = NavType.IntType },
+                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType },
             ),
         ) {
-            navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeHash)?.also {
-                editCategoryViewModel.setEnvelopeHash(it)
+            navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)?.also {
+                editCategoryViewModel.setEnvelopeId(it)
             }
             EditCategoryScreen(navController, editCategoryViewModel)
         }
         composable(
             route = AppNavigation.editCategory,
             arguments = listOf(
-                navArgument(AppNavigation.argCategoryHash) { type = NavType.IntType },
+                navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
             ),
         ) {
-            navBackStackEntry?.arguments?.takeInt(AppNavigation.argCategoryHash)?.also {
-                editCategoryViewModel.setEditedCategoryHash(it)
+            navBackStackEntry?.arguments?.takeInt(AppNavigation.argCategoryId)?.also {
+                editCategoryViewModel.setEditedCategoryId(it)
             }
             EditCategoryScreen(navController, editCategoryViewModel)
         }
@@ -76,17 +76,17 @@ private fun Bundle.takeInt(key: String): Int? {
 object AppNavigation {
     const val envelopesList = "envelopesList"
     const val addEnvelope = "addEnvelope"
-    const val argEnvelopeHash = "envelopeHash"
-    const val argCategoryHash = "categoryHash"
-    const val editEnvelope = "editEnvelope/{$argEnvelopeHash}"
-    const val addCategory = "addCategory/{$argEnvelopeHash}"
-    const val editCategory = "addCategory/{$argCategoryHash}"
+    const val argEnvelopeId = "envelopeId"
+    const val argCategoryId = "categoryId"
+    const val editEnvelope = "editEnvelope/{$argEnvelopeId}"
+    const val addCategory = "addCategory/{$argEnvelopeId}"
+    const val editCategory = "addCategory/{$argCategoryId}"
 
     fun editEnvelope(envelope: Envelope) =
-        editEnvelope.replace("{$argEnvelopeHash}", "${envelope.hashCode()}")
+        editEnvelope.replace("{$argEnvelopeId}", "${envelope.id}")
 
     fun addCategory(envelope: Envelope) =
-        addCategory.replace("{$argEnvelopeHash}", "${envelope.hashCode()}")
+        addCategory.replace("{$argEnvelopeId}", "${envelope.id}")
 
     const val start = envelopesList
 }

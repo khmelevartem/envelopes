@@ -4,50 +4,54 @@ import com.tubetoast.envelopes.common.domain.CategoriesRepository
 import com.tubetoast.envelopes.common.domain.EnvelopesRepository
 import com.tubetoast.envelopes.common.domain.SpendingRepository
 import com.tubetoast.envelopes.common.domain.UpdatingRepository
-import com.tubetoast.envelopes.common.domain.models.*
+import com.tubetoast.envelopes.common.domain.models.Category
+import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.Id
+import com.tubetoast.envelopes.common.domain.models.ImmutableModel
+import com.tubetoast.envelopes.common.domain.models.Spending
 
 open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     UpdatingRepository<M, Key>() {
 
-    protected val sets = mutableMapOf<Hash<Key>, MutableSet<M>>()
-    protected val keys = mutableMapOf<Hash<M>, Hash<Key>>()
+    protected val sets = mutableMapOf<Id<Key>, MutableSet<M>>()
+    protected val keys = mutableMapOf<Id<M>, Id<Key>>()
 
-    override fun get(valueHash: Hash<M>): M? {
-        val key = keys[valueHash]
-        return sets[key]?.find { it.hash == valueHash }
+    override fun get(valueId: Id<M>): M? {
+        val key = keys[valueId]
+        return sets[key]?.find { it.id == valueId }
     }
 
-    override fun addImpl(value: M, keyHash: Hash<Key>): Boolean {
-        if (keyHash == Hash.any) throw IllegalArgumentException("Can not add with uncertain key")
-        keys[value.hash] = keyHash
-        return getCollection(keyHash).add(value)
+    override fun addImpl(value: M, keyId: Id<Key>): Boolean {
+        if (keyId == Id.any) throw IllegalArgumentException("Can not add with uncertain key")
+        keys[value.id] = keyId
+        return getCollection(keyId).add(value)
     }
 
     override fun deleteImpl(value: M): Boolean {
-        return keys[value.hash]?.let {
-            keys.remove(value.hash)
+        return keys[value.id]?.let {
+            keys.remove(value.id)
             getCollection(it)
         }?.remove(value) ?: false
     }
 
     override fun editImpl(oldValue: M, newValue: M): Boolean =
-        keys[oldValue.hash]?.let { key ->
-            keys.remove(oldValue.hash)
-            keys[newValue.hash] = key
+        keys[oldValue.id]?.let { key ->
+            keys.remove(oldValue.id)
+            keys[newValue.id] = key
             getCollection(key).run {
                 remove(oldValue) && add(newValue)
             }
         } ?: throw IllegalArgumentException("There was no old value $oldValue found")
 
-    override fun getCollection(keyHash: Hash<Key>) = if (keyHash == Hash.any) {
+    override fun getCollection(keyId: Id<Key>) = if (keyId == Id.any) {
         sets.flatMapTo(mutableSetOf()) { it.value }
         // No modification can be made!
     } else {
-        sets.getOrPut(keyHash) { mutableSetOf() }
+        sets.getOrPut(keyId) { mutableSetOf() }
     }
 
-    override fun deleteCollectionImpl(keyHash: Hash<Key>): Set<Hash<M>> {
-        return sets.remove(keyHash)?.mapTo(mutableSetOf()) { it.hash }.orEmpty()
+    override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {
+        return sets.remove(keyId)?.mapTo(mutableSetOf()) { it.id }.orEmpty()
     }
 }
 

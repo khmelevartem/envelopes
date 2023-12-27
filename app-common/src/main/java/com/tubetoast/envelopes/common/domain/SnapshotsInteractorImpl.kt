@@ -28,11 +28,11 @@ class SnapshotsInteractorImpl(
         get() = envelopesRepository.getAll().mapTo(mutableSetOf()) { envelope ->
             EnvelopeSnapshot(
                 envelope,
-                categoriesRepository.getCollection(envelope.hash)
+                categoriesRepository.getCollection(envelope.id)
                     .mapTo(mutableSetOf()) { category ->
                         CategorySnapshot(
                             category,
-                            spendingRepository.getCollection(category.hash),
+                            spendingRepository.getCollection(category.id),
                         )
                     },
             )

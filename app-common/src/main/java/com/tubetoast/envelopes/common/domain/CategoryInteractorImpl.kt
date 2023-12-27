@@ -2,7 +2,7 @@ package com.tubetoast.envelopes.common.domain
 
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Hash
+import com.tubetoast.envelopes.common.domain.models.Id
 
 class CategoryInteractorImpl(
     private val repository: CategoriesRepository,
@@ -15,21 +15,21 @@ class CategoryInteractorImpl(
             }
     }
 
-    override fun getCategory(hash: Hash<Category>): Category? {
-        return repository.get(hash)
+    override fun getCategory(id: Id<Category>): Category? {
+        return repository.get(id)
     }
 
-    override fun addCategory(category: Category, envelopeHash: Hash<Envelope>) {
-        repository.add(envelopeHash, category)
+    override fun addCategory(category: Category, envelopeId: Id<Envelope>) {
+        repository.add(envelopeId, category)
     }
 
     override fun editCategory(old: Category, new: Category) {
         repository.edit(old, new)
     }
 
-    override fun moveCategory(category: Category, newEnvelopeHash: Hash<Envelope>) {
+    override fun moveCategory(category: Category, newEnvelopeId: Id<Envelope>) {
         repository.delete(category)
-        repository.add(newEnvelopeHash, category)
+        repository.add(newEnvelopeId, category)
     }
 
     override fun deleteCategory(category: Category) {
