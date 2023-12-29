@@ -17,6 +17,7 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListScre
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 
 @Composable
 fun EnvelopesApp(
@@ -49,21 +50,32 @@ fun EnvelopesApp(
                 navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType },
             ),
         ) {
-            navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)?.also {
-                editCategoryViewModel.setEnvelopeId(it)
+            navBackStackEntry?.arguments?.run {
+                val envelopeId = takeInt(AppNavigation.argEnvelopeId)
+                EditCategoryScreen(
+                    navController = navController,
+                    viewModel = editCategoryViewModel,
+                    envelopeId = envelopeId,
+                )
             }
-            EditCategoryScreen(navController, editCategoryViewModel)
         }
         composable(
             route = AppNavigation.editCategory,
             arguments = listOf(
                 navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
+                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType },
             ),
         ) {
-            navBackStackEntry?.arguments?.takeInt(AppNavigation.argCategoryId)?.also {
-                editCategoryViewModel.setEditedCategoryId(it)
+            navBackStackEntry?.arguments?.run {
+                val envelopeId = takeInt(AppNavigation.argEnvelopeId)
+                val categoryId = takeInt(AppNavigation.argCategoryId)
+                EditCategoryScreen(
+                    navController = navController,
+                    viewModel = editCategoryViewModel,
+                    categoryId = categoryId,
+                    envelopeId = envelopeId
+                )
             }
-            EditCategoryScreen(navController, editCategoryViewModel)
         }
     }
 }
@@ -81,17 +93,17 @@ object AppNavigation {
     const val argCategoryId = "categoryId"
     const val editEnvelope = "editEnvelope/{$argEnvelopeId}"
     const val addCategory = "addCategory/{$argEnvelopeId}"
-    const val editCategory = "editCategory/{$argCategoryId}"
+    const val editCategory = "editCategory/{$argCategoryId}/{$argEnvelopeId}"
 
-    fun editEnvelope(envelope: Envelope) =
-        editEnvelope.replace("{$argEnvelopeId}", "${envelope.id.code}")
+    fun editEnvelope(envelope: Envelope) = editEnvelope.putArg(argEnvelopeId, envelope)
 
-    fun addCategory(envelope: Envelope) =
-        addCategory.replace("{$argEnvelopeId}", "${envelope.id.code}")
+    fun addCategory(envelope: Envelope) = addCategory.putArg(argEnvelopeId, envelope)
 
-    fun editCategory(category: Category) =
-        editCategory.replace("{$argCategoryId}", "${category.id.code}")
+    fun editCategory(category: Category, envelope: Envelope? = null) =
+        editCategory.putArg(argCategoryId, category).putArg(argEnvelopeId, envelope)
 
+    private fun String.putArg(argName: String, argValue: ImmutableModel<*>?) =
+        this.replace("{$argName}", "${argValue?.id?.code ?: NO_VALUE}")
 
     const val start = envelopesList
 }

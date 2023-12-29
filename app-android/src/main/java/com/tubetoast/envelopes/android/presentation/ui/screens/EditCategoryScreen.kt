@@ -19,10 +19,13 @@ import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
 fun EditCategoryScreen(
     navController: NavController,
     viewModel: EditCategoryViewModel,
+    categoryId: Int? = null,
+    envelopeId: Int? = null,
 ) {
     EnvelopesTheme {
         Column {
-            val category by remember { viewModel.category }
+            val category by remember { viewModel.category(categoryId) }
+            val envelope by remember { viewModel.envelope(envelopeId) }
             TextField(
                 value = category.name,
                 onValueChange = { viewModel.setName(it) },

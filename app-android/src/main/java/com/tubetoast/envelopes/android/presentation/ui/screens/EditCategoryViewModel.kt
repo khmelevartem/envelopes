@@ -1,5 +1,7 @@
 package com.tubetoast.envelopes.android.presentation.ui.screens
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.tubetoast.envelopes.common.domain.CategoryInteractor
@@ -14,21 +16,27 @@ class EditCategoryViewModel(
     private val envelopeInteractor: EnvelopeInteractor,
 ) : ViewModel() {
 
-    val category = mutableStateOf(Category.EMPTY)
+    private val category = mutableStateOf(Category.EMPTY)
     private var editedCategory: Category? = null
-    private var envelope: Envelope? = null
+    private var envelope = mutableStateOf(Envelope.EMPTY)
 
-    fun setEditedCategoryId(id: Int) {
-        categoryInteractor.getCategory(id.id())?.let {
-            category.value = it
-            editedCategory = it
-        } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
+    fun category(id: Int?): State<Category> {
+        id?.let {
+            categoryInteractor.getCategory(id.id())?.let {
+                category.value = it
+                editedCategory = it
+            } ?: throw IllegalStateException("Trying to set category id $id that doesn't exit")
+        }
+        return category
     }
 
-    fun setEnvelopeId(id: Int) {
-        envelopeInteractor.getExactEnvelope(id.id())?.let {
-            envelope = it
-        } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
+    fun envelope(id: Int?): MutableState<Envelope> {
+        id?.let {
+            envelopeInteractor.getExactEnvelope(id.id())?.let {
+                envelope.value = it
+            } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
+        }
+        return envelope
     }
 
     fun setName(input: String) {
@@ -50,16 +58,16 @@ class EditCategoryViewModel(
         val new = category.value
         getExistingCategory()?.let { old ->
             categoryInteractor.editCategory(old, new)
-        } ?: categoryInteractor.addCategory(new, envelope!!.id)
+        } ?: categoryInteractor.addCategory(new, envelope.value.id)
         reset()
     }
 
     fun canConfirm(): Boolean {
         return category.value.run {
             name.isNotBlank() &&
-                notSameAsOld &&
-                (notSameNameAsExistingIfNew || notSameAsExistingIfEdit) &&
-                envelope != null
+                    notSameAsOld &&
+                    (notSameNameAsExistingIfNew || notSameAsExistingIfEdit) &&
+                    envelope != null
         }
     }
 
