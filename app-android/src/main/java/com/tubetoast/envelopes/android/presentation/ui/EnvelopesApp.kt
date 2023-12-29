@@ -31,36 +31,17 @@ fun EnvelopesApp(
         composable(route = AppNavigation.envelopesList) {
             EnvelopesListScreen(navController, envelopesListViewModel)
         }
-        composable(route = AppNavigation.addEnvelope) {
-            EditEnvelopeScreen(navController, editEnvelopeViewModel)
-        }
         composable(
-            route = AppNavigation.editEnvelope,
+            route = AppNavigation.envelopeScreen,
             arguments = listOf(
                 navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType },
             ),
         ) {
-            navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)?.also {
-                EditEnvelopeScreen(navController, editEnvelopeViewModel, it)
-            }
+            val envelopeId = navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)
+            EditEnvelopeScreen(navController, editEnvelopeViewModel, envelopeId)
         }
         composable(
-            route = AppNavigation.addCategory,
-            arguments = listOf(
-                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType },
-            ),
-        ) {
-            navBackStackEntry?.arguments?.run {
-                val envelopeId = takeInt(AppNavigation.argEnvelopeId)
-                EditCategoryScreen(
-                    navController = navController,
-                    viewModel = editCategoryViewModel,
-                    envelopeId = envelopeId,
-                )
-            }
-        }
-        composable(
-            route = AppNavigation.editCategory,
+            route = AppNavigation.categoryScreen,
             arguments = listOf(
                 navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
                 navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType },
@@ -88,19 +69,20 @@ private fun Bundle.takeInt(key: String): Int? {
 
 object AppNavigation {
     const val envelopesList = "envelopesList"
-    const val addEnvelope = "addEnvelope"
     const val argEnvelopeId = "envelopeId"
     const val argCategoryId = "categoryId"
-    const val editEnvelope = "editEnvelope/{$argEnvelopeId}"
-    const val addCategory = "addCategory/{$argEnvelopeId}"
-    const val editCategory = "editCategory/{$argCategoryId}/{$argEnvelopeId}"
+    const val envelopeScreen = "envelopeScreen/{$argEnvelopeId}"
+    const val categoryScreen = "categoryScreen/{$argCategoryId}/{$argEnvelopeId}"
 
-    fun editEnvelope(envelope: Envelope) = editEnvelope.putArg(argEnvelopeId, envelope)
+    fun addEnvelope() = envelopeScreen.putArg(argEnvelopeId, null)
 
-    fun addCategory(envelope: Envelope) = addCategory.putArg(argEnvelopeId, envelope)
+    fun editEnvelope(envelope: Envelope) = envelopeScreen.putArg(argEnvelopeId, envelope)
+
+    fun addCategory(envelope: Envelope) =
+        categoryScreen.putArg(argCategoryId, null).putArg(argEnvelopeId, envelope)
 
     fun editCategory(category: Category, envelope: Envelope? = null) =
-        editCategory.putArg(argCategoryId, category).putArg(argEnvelopeId, envelope)
+        categoryScreen.putArg(argCategoryId, category).putArg(argEnvelopeId, envelope)
 
     private fun String.putArg(argName: String, argValue: ImmutableModel<*>?) =
         this.replace("{$argName}", "${argValue?.id?.code ?: NO_VALUE}")
