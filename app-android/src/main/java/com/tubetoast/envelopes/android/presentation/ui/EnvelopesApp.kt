@@ -83,10 +83,10 @@ object AppNavigation {
     const val editCategory = "addCategory/{$argCategoryId}"
 
     fun editEnvelope(envelope: Envelope) =
-        editEnvelope.replace("{$argEnvelopeId}", "${envelope.id}")
+        editEnvelope.replace("{$argEnvelopeId}", "${envelope.id.code}")
 
     fun addCategory(envelope: Envelope) =
-        addCategory.replace("{$argEnvelopeId}", "${envelope.id}")
+        addCategory.replace("{$argEnvelopeId}", "${envelope.id.code}")
 
     const val start = envelopesList
 }
