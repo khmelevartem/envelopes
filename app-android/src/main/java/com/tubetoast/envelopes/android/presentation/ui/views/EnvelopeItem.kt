@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.ui.screens.SnapshotItemModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.asItemModels
+import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 
@@ -30,6 +31,7 @@ fun EnvelopeView(
     onEditClick: (Envelope) -> Unit,
     onDeleteClick: (Envelope) -> Unit,
     onAddClick: (Envelope) -> Unit,
+    onCategoryClick: (Category) -> Unit,
     modifier: Modifier = Modifier,
 ) = Surface(color = itemModel.color, modifier = modifier) {
     Column {
@@ -57,7 +59,7 @@ fun EnvelopeView(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             items(itemModel.snapshot.categories.asItemModels().toList()) {
-                CategoryView(snapshot = it.snapshot, color = it.color)
+                CategoryView(snapshot = it.snapshot, color = it.color, onClick = onCategoryClick)
             }
             item {
                 IconButton(onClick = { onAddClick(itemModel.snapshot.envelope) }) {

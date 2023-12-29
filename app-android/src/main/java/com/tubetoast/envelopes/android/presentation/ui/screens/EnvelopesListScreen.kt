@@ -37,6 +37,7 @@ fun EnvelopesListScreen(
                             onEditClick = { navController.navigate(AppNavigation.editEnvelope(it)) },
                             onDeleteClick = { envelopesListViewModel.delete(it) },
                             onAddClick = { navController.navigate(AppNavigation.addCategory(it)) },
+                            onCategoryClick = { navController.navigate(AppNavigation.editCategory(it)) }
                         )
                     }
                 }

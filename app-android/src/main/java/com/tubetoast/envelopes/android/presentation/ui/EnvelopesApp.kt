@@ -15,6 +15,7 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeScree
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
+import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 
 @Composable
@@ -80,13 +81,17 @@ object AppNavigation {
     const val argCategoryId = "categoryId"
     const val editEnvelope = "editEnvelope/{$argEnvelopeId}"
     const val addCategory = "addCategory/{$argEnvelopeId}"
-    const val editCategory = "addCategory/{$argCategoryId}"
+    const val editCategory = "editCategory/{$argCategoryId}"
 
     fun editEnvelope(envelope: Envelope) =
         editEnvelope.replace("{$argEnvelopeId}", "${envelope.id.code}")
 
     fun addCategory(envelope: Envelope) =
         addCategory.replace("{$argEnvelopeId}", "${envelope.id.code}")
+
+    fun editCategory(category: Category) =
+        editCategory.replace("{$argCategoryId}", "${category.id.code}")
+
 
     const val start = envelopesList
 }
