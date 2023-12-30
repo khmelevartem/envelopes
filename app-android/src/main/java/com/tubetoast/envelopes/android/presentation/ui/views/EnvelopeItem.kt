@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.tubetoast.envelopes.android.presentation.ui.screens.SnapshotItemModel
+import com.tubetoast.envelopes.android.presentation.ui.screens.ItemModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.asItemModels
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
@@ -27,7 +27,7 @@ import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 
 @Composable
 fun EnvelopeView(
-    itemModel: SnapshotItemModel<EnvelopeSnapshot>,
+    itemModel: ItemModel<EnvelopeSnapshot>,
     onEditClick: (Envelope) -> Unit,
     onDeleteClick: (Envelope) -> Unit,
     onAddClick: (Envelope) -> Unit,
@@ -36,7 +36,7 @@ fun EnvelopeView(
 ) = Surface(color = itemModel.color, modifier = modifier) {
     Column {
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-            itemModel.snapshot.run {
+            itemModel.data.run {
                 Column(modifier = Modifier.padding(8.dp)) {
                     Text(text = envelope.name)
                     Text(text = "limit: ${envelope.limit.units}")
@@ -45,10 +45,10 @@ fun EnvelopeView(
                 }
             }
             Row {
-                IconButton(onClick = { onEditClick(itemModel.snapshot.envelope) }) {
+                IconButton(onClick = { onEditClick(itemModel.data.envelope) }) {
                     Icon(Icons.Rounded.Edit, contentDescription = "edit envelope")
                 }
-                IconButton(onClick = { onDeleteClick(itemModel.snapshot.envelope) }) {
+                IconButton(onClick = { onDeleteClick(itemModel.data.envelope) }) {
                     Icon(Icons.Rounded.Delete, contentDescription = "delete envelope")
                 }
             }
@@ -58,19 +58,19 @@ fun EnvelopeView(
             contentPadding = PaddingValues(4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            items(itemModel.snapshot.categories.asItemModels().toList()) {
+            items(itemModel.data.categories.asItemModels().toList()) {
                 CategoryView(
-                    snapshot = it.snapshot,
+                    snapshot = it.data,
                     color = it.color,
                     onClick = {
                         onCategoryClick(
-                            it.snapshot.category,
-                            itemModel.snapshot.envelope
+                            it.data.category,
+                            itemModel.data.envelope
                         )
                     })
             }
             item {
-                IconButton(onClick = { onAddClick(itemModel.snapshot.envelope) }) {
+                IconButton(onClick = { onAddClick(itemModel.data.envelope) }) {
                     Icon(Icons.Rounded.Add, contentDescription = "add category")
                 }
             }

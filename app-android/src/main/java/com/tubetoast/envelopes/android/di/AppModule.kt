@@ -1,5 +1,6 @@
 package com.tubetoast.envelopes.android.di
 
+import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
@@ -13,6 +14,7 @@ val appModule = module {
     viewModel { EnvelopesListViewModel(get(), get()) }
     viewModel { EditEnvelopeViewModel(get()) }
     viewModel { EditCategoryViewModel(get(), get()) }
+    viewModel { ChooseEnvelopeViewModel(get(), get(), get()) }
 
     single<InputStream>(named("Monefy")) {
         androidContext().assets.open("Monefy.csv")

@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeScreen
+import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeScreen
@@ -24,6 +26,7 @@ fun EnvelopesApp(
     envelopesListViewModel: EnvelopesListViewModel,
     editEnvelopeViewModel: EditEnvelopeViewModel,
     editCategoryViewModel: EditCategoryViewModel,
+    chooseEnvelopeViewModel: ChooseEnvelopeViewModel,
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -68,9 +71,9 @@ fun EnvelopesApp(
             navBackStackEntry?.arguments?.run {
                 val envelopeId = takeInt(AppNavigation.argEnvelopeId)
                 val categoryId = takeInt(AppNavigation.argCategoryId)
-                EditCategoryScreen(
+                ChooseEnvelopeScreen(
                     navController = navController,
-                    viewModel = editCategoryViewModel,
+                    viewModel = chooseEnvelopeViewModel,
                     categoryId = categoryId,
                     envelopeId = envelopeId
                 )
