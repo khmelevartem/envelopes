@@ -12,17 +12,22 @@ class EditEnvelopeViewModel(
     private val envelopeInteractor: EnvelopeInteractor,
 ) : ViewModel() {
 
-    /** for display, draft of changes */
-    private val draftEnvelope = mutableStateOf(Envelope.EMPTY)
+    sealed interface Mode {
+        fun canConfirm(envelope: Envelope?): Boolean
+        fun confirm(envelope: Envelope)
+        fun canDelete(): Boolean
+        fun delete()
+    }
 
-    /** opened for editing */
-    private var editedEnvelope: Envelope = Envelope.EMPTY
+    private var mode: Mode = Create(envelopeInteractor)
+
+    private val draftEnvelope = mutableStateOf(Envelope.EMPTY)
 
     fun envelope(envelopeId: Int?): State<Envelope> {
         envelopeId?.let { id ->
             envelopeInteractor.getExactEnvelope(id.id())?.let {
                 draftEnvelope.value = it
-                editedEnvelope = it
+                mode = Edit(editedEnvelope = it, envelopeInteractor = envelopeInteractor)
             } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
         } ?: reset()
         return draftEnvelope
@@ -42,45 +47,55 @@ class EditEnvelopeViewModel(
         }
     }
 
+    fun canConfirm(): Boolean = mode.canConfirm(draftEnvelope.value)
+
     fun confirm() {
         if (!canConfirm()) throw IllegalStateException("Cannot confirm!")
-        val new = draftEnvelope.value
-        getExistingEnvelope()?.let { old ->
-            envelopeInteractor.editEnvelope(old, new)
-        } ?: envelopeInteractor.addEnvelope(new)
+        mode.confirm(draftEnvelope.value)
         reset()
     }
 
-    fun canConfirm(): Boolean = draftEnvelope.value.run {
-        name.isNotBlank() &&
-                (notSameAsExistingIfEdit(this) || notSameNameAsExistingIfNew(this))
-    }
-
-    private fun notSameNameAsExistingIfNew(draftEnvelope: Envelope) = !isEditMode()
-            && envelopeInteractor.getEnvelopeByName(draftEnvelope.name) == null
-
-    private fun notSameAsExistingIfEdit(draftEnvelope: Envelope) = isEditMode()
-            && editedEnvelope != draftEnvelope
-            && (draftEnvelope.name == editedEnvelope.name || envelopeInteractor.getEnvelopeByName(draftEnvelope.name) == null)
-
-    private fun isEditMode() = editedEnvelope != Envelope.EMPTY
+    fun canDelete(): Boolean = mode.canDelete()
 
     fun delete() {
-        val existingEnvelope = getExistingEnvelope()
-        if (canDelete(existingEnvelope)) envelopeInteractor.deleteEnvelope(existingEnvelope!!)
+        if (!canDelete()) throw IllegalStateException("Cannot delete!")
+        mode.delete()
         reset()
     }
 
-    fun canDelete(envelope: Envelope? = getExistingEnvelope()): Boolean {
-        return envelope != null && isEditMode()
-    }
-
-    private fun getExistingEnvelope(): Envelope? =
-        envelopeInteractor.getEnvelopeByName(editedEnvelope.name)
-            ?: envelopeInteractor.getEnvelopeByName(draftEnvelope.value.name)
-
     private fun reset() {
+        mode = Create(envelopeInteractor)
         draftEnvelope.value = Envelope.EMPTY
-        editedEnvelope = Envelope.EMPTY
     }
+}
+
+
+class Create(
+    private val envelopeInteractor: EnvelopeInteractor,
+) : EditEnvelopeViewModel.Mode {
+    override fun canConfirm(envelope: Envelope?) = envelope?.run {
+        name.isNotBlank() && envelopeInteractor.getEnvelopeByName(name) == null
+    } ?: false
+
+    override fun canDelete() = false
+    override fun delete() = throw IllegalStateException("Cannot delete what is not created")
+    override fun confirm(envelope: Envelope) = envelopeInteractor.addEnvelope(envelope)
+}
+
+class Edit(
+    private val envelopeInteractor: EnvelopeInteractor,
+    private val editedEnvelope: Envelope
+) : EditEnvelopeViewModel.Mode {
+
+    override fun canConfirm(envelope: Envelope?) = envelope?.run {
+        name.isNotBlank() && this != editedEnvelope && notSameNameAsOtherExisting()
+    } ?: false
+
+    private fun Envelope.notSameNameAsOtherExisting() =
+        name == editedEnvelope.name || envelopeInteractor.getEnvelopeByName(name) == null
+
+    override fun canDelete() = true
+    override fun delete() = envelopeInteractor.deleteEnvelope(editedEnvelope)
+    override fun confirm(envelope: Envelope) =
+        envelopeInteractor.editEnvelope(editedEnvelope, envelope)
 }

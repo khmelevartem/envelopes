@@ -17,6 +17,20 @@ class EditEnvelopeViewModelTest {
     }
 
     @Test
+    fun testCreateWithUniqueName() {
+        viewModel.envelope(null)
+        viewModel.setName("new name")
+        Truth.assertThat(viewModel.canConfirm()).isTrue()
+    }
+
+    @Test
+    fun testCreateWithExistingName() {
+        viewModel.envelope(null)
+        viewModel.setName("test")
+        Truth.assertThat(viewModel.canConfirm()).isFalse()
+    }
+
+    @Test
     fun testEditOnlyName() {
         viewModel.envelope(interactor.envelopes.first().id.code)
         viewModel.setName("new name")
@@ -53,5 +67,18 @@ class EditEnvelopeViewModelTest {
         viewModel.envelope(interactor.envelopes.first().id.code)
         viewModel.setLimit("123")
         Truth.assertThat(viewModel.canConfirm()).isTrue()
+    }
+
+    @Test
+    fun testCanDeleteNew() {
+        Truth.assertThat(viewModel.canDelete()).isFalse()
+        viewModel.envelope(null)
+        Truth.assertThat(viewModel.canDelete()).isFalse()
+    }
+
+    @Test
+    fun testCanDeleteExisting() {
+        viewModel.envelope(interactor.envelopes.first().id.code)
+        Truth.assertThat(viewModel.canDelete()).isTrue()
     }
 }
