@@ -31,11 +31,11 @@ fun EnvelopeView(
     onEditClick: (Envelope) -> Unit,
     onDeleteClick: (Envelope) -> Unit,
     onAddClick: (Envelope) -> Unit,
-    onCategoryClick: (Category) -> Unit,
+    onCategoryClick: (Category, Envelope) -> Unit,
     modifier: Modifier = Modifier,
 ) = Surface(color = itemModel.color, modifier = modifier) {
     Column {
-        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
             itemModel.snapshot.run {
                 Column(modifier = Modifier.padding(8.dp)) {
                     Text(text = envelope.name)
@@ -59,7 +59,15 @@ fun EnvelopeView(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             items(itemModel.snapshot.categories.asItemModels().toList()) {
-                CategoryView(snapshot = it.snapshot, color = it.color, onClick = onCategoryClick)
+                CategoryView(
+                    snapshot = it.snapshot,
+                    color = it.color,
+                    onClick = {
+                        onCategoryClick(
+                            it.snapshot.category,
+                            itemModel.snapshot.envelope
+                        )
+                    })
             }
             item {
                 IconButton(onClick = { onAddClick(itemModel.snapshot.envelope) }) {

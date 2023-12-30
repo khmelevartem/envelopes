@@ -4,11 +4,13 @@ import com.tubetoast.envelopes.common.domain.CategoriesRepository
 import com.tubetoast.envelopes.common.domain.EnvelopesRepository
 import com.tubetoast.envelopes.common.domain.SpendingRepository
 import com.tubetoast.envelopes.common.domain.UpdatingRepository
+import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
+import com.tubetoast.envelopes.common.domain.put
 
 open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     UpdatingRepository<M, Key>() {
@@ -56,10 +58,19 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
 }
 
 /** [EnvelopesRepository] */
-open class EnvelopesRepositoryImpl : UpdatingRepositoryInMemoryImpl<Envelope, String>()
+open class EnvelopesRepositoryBase : UpdatingRepositoryInMemoryImpl<Envelope, String>()
 
 /** [CategoriesRepository] */
-open class CategoriesRepositoryImpl : UpdatingRepositoryInMemoryImpl<Category, Envelope>()
+open class CategoriesRepositoryBase : UpdatingRepositoryInMemoryImpl<Category, Envelope>()
 
 /** [SpendingRepository] */
-open class SpendingRepositoryImpl : UpdatingRepositoryInMemoryImpl<Spending, Category>()
+open class SpendingRepositoryBase : UpdatingRepositoryInMemoryImpl<Spending, Category>()
+
+class EnvelopesRepositoryWithUndefinedCategories : EnvelopesRepositoryBase() {
+    init {
+        put(undefinedCategoriesEnvelope)
+    }
+    companion object {
+        val undefinedCategoriesEnvelope = Envelope(name = "Undefined", limit = Amount.ZERO)
+    }
+}

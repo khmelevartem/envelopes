@@ -9,15 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 
 @Composable
-fun CategoryView(snapshot: CategorySnapshot, color: Color, onClick: (Category) ->  Unit) {
+fun CategoryView(snapshot: CategorySnapshot, color: Color, onClick: () ->  Unit) {
     Surface(
         color = color,
         shape = RoundedCornerShape(20.dp),
-        modifier = Modifier.clickable(onClick = { onClick(snapshot.category) })
+        modifier = Modifier.clickable(onClick = onClick)
     ) {
         Text(text = snapshot.category.name, modifier = Modifier.padding(4.dp))
     }

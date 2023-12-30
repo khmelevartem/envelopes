@@ -1,6 +1,5 @@
-package com.tubetoast.envelopes.monefy.data
+package com.tubetoast.envelopes.common.data
 
-import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
@@ -12,11 +11,8 @@ interface KeySource<M: ImmutableModel<M>, K> {
 
 interface CategoryKeySource: KeySource<Category, Envelope>
 
-class CategoryKeySourceImpl : CategoryKeySource {
+class CategoryKeySourceUndefinedImpl : CategoryKeySource {
     override fun getKeyId(value: Category): Id<Envelope> {
-        return when (value.name) {
-            "Такси" -> Envelope("1", Amount.ZERO)
-            else -> Envelope("2", Amount.ZERO)
-        }.id
+        return EnvelopesRepositoryWithUndefinedCategories.undefinedCategoriesEnvelope.id
     }
 }

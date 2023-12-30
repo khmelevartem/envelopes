@@ -1,6 +1,6 @@
 package com.tubetoast.envelopes.common.di
 
-import com.tubetoast.envelopes.common.data.EnvelopesRepositoryImpl
+import com.tubetoast.envelopes.common.data.EnvelopesRepositoryWithUndefinedCategories
 import com.tubetoast.envelopes.common.domain.CategoryInteractor
 import com.tubetoast.envelopes.common.domain.CategoryInteractorImpl
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
@@ -11,7 +11,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val domainModule = module {
-    val envelopesRepository = EnvelopesRepositoryImpl()
+    val envelopesRepository = EnvelopesRepositoryWithUndefinedCategories()
     single<SnapshotsInteractor> {
         SnapshotsInteractorImpl(
             spendingRepository = get(named("spending")),

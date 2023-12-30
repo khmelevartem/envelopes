@@ -58,6 +58,24 @@ fun EnvelopesApp(
                 )
             }
         }
+        composable(
+            route = AppNavigation.chooseEnvelope,
+            arguments = listOf(
+                navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
+                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType },
+            ),
+        ) {
+            navBackStackEntry?.arguments?.run {
+                val envelopeId = takeInt(AppNavigation.argEnvelopeId)
+                val categoryId = takeInt(AppNavigation.argCategoryId)
+                EditCategoryScreen(
+                    navController = navController,
+                    viewModel = editCategoryViewModel,
+                    categoryId = categoryId,
+                    envelopeId = envelopeId
+                )
+            }
+        }
     }
 }
 
@@ -68,11 +86,12 @@ private fun Bundle.takeInt(key: String): Int? {
 }
 
 object AppNavigation {
-    const val envelopesList = "envelopesList"
+    const val envelopesList = "envelopesListScreen"
     const val argEnvelopeId = "envelopeId"
     const val argCategoryId = "categoryId"
     const val envelopeScreen = "envelopeScreen/{$argEnvelopeId}"
     const val categoryScreen = "categoryScreen/{$argCategoryId}/{$argEnvelopeId}"
+    const val chooseEnvelope = "chooseEnvelopeScreen/{$argCategoryId}/{$argEnvelopeId}"
 
     fun addEnvelope() = envelopeScreen.putArg(argEnvelopeId, null)
 
@@ -81,11 +100,14 @@ object AppNavigation {
     fun addCategory(envelope: Envelope) =
         categoryScreen.putArg(argCategoryId, null).putArg(argEnvelopeId, envelope)
 
-    fun editCategory(category: Category, envelope: Envelope? = null) =
+    fun editCategory(category: Category, envelope: Envelope) =
         categoryScreen.putArg(argCategoryId, category).putArg(argEnvelopeId, envelope)
 
     private fun String.putArg(argName: String, argValue: ImmutableModel<*>?) =
         this.replace("{$argName}", "${argValue?.id?.code ?: NO_VALUE}")
+
+    fun chooseEnvelope(category: Category, envelope: Envelope) =
+        chooseEnvelope.putArg(argCategoryId, category).putArg(argEnvelopeId, envelope)
 
     const val start = envelopesList
 }

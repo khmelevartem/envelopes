@@ -1,5 +1,6 @@
 package com.tubetoast.envelopes.android.presentation.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
+import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
 import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
 
 @Composable
@@ -37,7 +39,10 @@ fun EditCategoryScreen(
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             )
-            Row {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Button(
                     onClick = {
                         viewModel.confirm()
@@ -55,6 +60,13 @@ fun EditCategoryScreen(
                     enabled = viewModel.canDelete(),
                 ) {
                     Text(text = "Delete")
+                }
+                Button(onClick = {
+                    navController.navigate(
+                        AppNavigation.chooseEnvelope(category, envelope)
+                    )
+                }) {
+                    Text(text = "Envelope: ${envelope.name}")
                 }
             }
         }

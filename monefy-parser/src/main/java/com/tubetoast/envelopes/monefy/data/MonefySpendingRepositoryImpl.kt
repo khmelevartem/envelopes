@@ -1,9 +1,9 @@
 package com.tubetoast.envelopes.monefy.data
 
-import com.tubetoast.envelopes.common.data.SpendingRepositoryImpl
+import com.tubetoast.envelopes.common.data.SpendingRepositoryBase
 import com.tubetoast.envelopes.common.domain.models.Spending
 
-class MonefySpendingRepositoryImpl(monefySource: MonefySource) : SpendingRepositoryImpl() {
+class MonefySpendingRepositoryImpl(monefySource: MonefySource) : SpendingRepositoryBase() {
     init {
         monefySource.categorySnapshots.forEach { snapshot ->
             val category = snapshot.category
