@@ -1,6 +1,5 @@
 package com.tubetoast.envelopes.android.presentation.ui.screens
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -17,20 +16,23 @@ class EditCategoryViewModel(
 ) : ViewModel() {
 
     private val category = mutableStateOf(Category.EMPTY)
-    private var editedCategory: Category? = null
+    private var editedCategory: Category = Category.EMPTY
     private var envelope = mutableStateOf(Envelope.EMPTY)
 
     fun category(id: Int?): State<Category> {
-        id?.let {
-            categoryInteractor.getCategory(id.id())?.let {
-                category.value = it
-                editedCategory = it
-            } ?: throw IllegalStateException("Trying to set category id $id that doesn't exit")
+        getCategoryOrEmpty(id).let {
+            category.value = it
+            editedCategory = it
         }
         return category
     }
 
-    fun envelope(id: Int?): MutableState<Envelope> {
+    private fun getCategoryOrEmpty(id: Int?) = id?.let {
+        categoryInteractor.getCategory(id.id())
+            ?: throw IllegalStateException("Trying to set category id $id that doesn't exit")
+    } ?: Category.EMPTY
+
+    fun envelope(id: Int?): State<Envelope> {
         id?.let {
             envelopeInteractor.getExactEnvelope(id.id())?.let {
                 envelope.value = it
@@ -64,18 +66,13 @@ class EditCategoryViewModel(
 
     fun canConfirm(): Boolean {
         return category.value.run {
-            name.isNotBlank() &&
-                    notSameAsOld &&
-                    (notSameNameAsExistingIfNew || notSameAsExistingIfEdit) &&
-                    envelope != null
+            name.isNotBlank() && (notSameNameAsExistingIfNew || notSameAsExistingIfEdit)
         }
     }
 
     private val Category.notSameAsExistingIfEdit get() = isEditMode() && getExistingCategory() != this
 
     private val Category.notSameNameAsExistingIfNew get() = !isEditMode() && getExistingCategory()?.name != this.name
-
-    private val Category.notSameAsOld get() = editedCategory != this
 
     fun delete() {
         val existingCategory = getExistingCategory()
@@ -87,15 +84,18 @@ class EditCategoryViewModel(
         return category != null && isEditMode()
     }
 
-    private fun isEditMode() = editedCategory != null
+    fun canChooseEnvelope(): Boolean {
+        return isEditMode()
+    }
+
+    private fun isEditMode() = editedCategory != Category.EMPTY
 
     private fun getExistingCategory(): Category? =
-        editedCategory?.name?.let {
-            categoryInteractor.getCategoryByName(it)
-        } ?: categoryInteractor.getCategoryByName(category.value.name)
+        categoryInteractor.getCategoryByName(editedCategory.name)
+            ?: categoryInteractor.getCategoryByName(category.value.name)
 
     private fun reset() {
         category.value = Category.EMPTY
-        editedCategory = null
+        editedCategory = Category.EMPTY
     }
 }

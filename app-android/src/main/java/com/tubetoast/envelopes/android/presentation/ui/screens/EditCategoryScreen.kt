@@ -61,11 +61,14 @@ fun EditCategoryScreen(
                 ) {
                     Text(text = "Delete")
                 }
-                Button(onClick = {
-                    navController.navigate(
-                        AppNavigation.chooseEnvelope(category, envelope)
-                    )
-                }) {
+                Button(
+                    onClick = {
+                        navController.navigate(
+                            AppNavigation.chooseEnvelope(category, envelope)
+                        )
+                    },
+                    enabled = viewModel.canChooseEnvelope()
+                ) {
                     Text(text = "Envelope: ${envelope.name}")
                 }
             }

@@ -9,7 +9,6 @@ import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.id
-import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -19,10 +18,17 @@ class ChooseEnvelopeViewModel(
     private val snapshotsInteractor: SnapshotsInteractor
 ) : ViewModel() {
     private val category = mutableStateOf(Category.EMPTY)
-    private var envelope = Envelope.EMPTY
+    private var chosenEnvelope = mutableStateOf(Envelope.EMPTY)
 
-    fun envelopes(): Flow<List<Envelope>> = snapshotsInteractor.envelopeSnapshotFlow
-        .map { it.map(EnvelopeSnapshot::envelope) }
+    fun envelopes(chosenEnvelopeId: Int?): Flow<List<Envelope>> =
+        snapshotsInteractor.envelopeSnapshotFlow
+            .map {
+                it.map { snapshot ->
+                    snapshot.envelope.also { envelope ->
+                        if (envelope.id.code == chosenEnvelopeId) chosenEnvelope.value = envelope
+                    }
+                }
+            }
 
     fun category(id: Int?): State<Category> {
         id?.let {
@@ -33,17 +39,11 @@ class ChooseEnvelopeViewModel(
         return category
     }
 
-    fun setChosenEnvelope(id: Int?) {
-        id?.let {
-            envelopeInteractor.getExactEnvelope(id.id())?.let {
-                envelope = it
-            } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
-        }
-    }
-
     fun isChosen(envelope: Envelope): Boolean {
-        return this.envelope == envelope
+        return chosenEnvelope.value == envelope
     }
 
-
+    fun setNewChosenEnvelope(data: Envelope) {
+        chosenEnvelope.value = data // TODO implement, this is stub
+    }
 }

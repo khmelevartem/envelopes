@@ -24,8 +24,8 @@ fun ChooseEnvelopeScreen(
     EnvelopesTheme {
         Column {
             val category by remember { viewModel.category(categoryId) }
-            viewModel.setChosenEnvelope(envelopeId)
-            val envelopesState = viewModel.envelopes().collectAsState(initial = emptyList())
+            val envelopesState =
+                viewModel.envelopes(envelopeId).collectAsState(initial = emptyList())
             val envelopes by remember { envelopesState }
             Text(
                 text = category.name,
@@ -34,7 +34,8 @@ fun ChooseEnvelopeScreen(
             LazyColumn {
                 items(envelopes.asItemModels()) {
                     EnvelopeLabelView(itemModel = it, chosen = viewModel.isChosen(it.data)) {
-//                        navController.popBackStack()
+                        viewModel.setNewChosenEnvelope(it.data)
+                        navController.popBackStack()
                     }
                 }
             }
