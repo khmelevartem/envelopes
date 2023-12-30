@@ -16,7 +16,7 @@ class EditEnvelopeViewModel(
     private val draftEnvelope = mutableStateOf(Envelope.EMPTY)
 
     /** opened for editing */
-    private var editedEnvelope: Envelope? = null
+    private var editedEnvelope: Envelope = Envelope.EMPTY
 
     fun envelope(envelopeId: Int?): State<Envelope> {
         envelopeId?.let { id ->
@@ -56,11 +56,14 @@ class EditEnvelopeViewModel(
                 (notSameAsExistingIfEdit(this) || notSameNameAsExistingIfNew(this))
     }
 
-    private fun notSameNameAsExistingIfNew(draftEnvelope: Envelope) = editedEnvelope == null
+    private fun notSameNameAsExistingIfNew(draftEnvelope: Envelope) = !isEditMode()
             && envelopeInteractor.getEnvelopeByName(draftEnvelope.name) == null
 
-    private fun notSameAsExistingIfEdit(draftEnvelope: Envelope) = editedEnvelope != null
+    private fun notSameAsExistingIfEdit(draftEnvelope: Envelope) = isEditMode()
             && editedEnvelope != draftEnvelope
+            && (draftEnvelope.name == editedEnvelope.name || envelopeInteractor.getEnvelopeByName(draftEnvelope.name) == null)
+
+    private fun isEditMode() = editedEnvelope != Envelope.EMPTY
 
     fun delete() {
         val existingEnvelope = getExistingEnvelope()
@@ -69,15 +72,15 @@ class EditEnvelopeViewModel(
     }
 
     fun canDelete(envelope: Envelope? = getExistingEnvelope()): Boolean {
-        return envelope != null && editedEnvelope != null
+        return envelope != null && isEditMode()
     }
 
     private fun getExistingEnvelope(): Envelope? =
-        editedEnvelope?.name?.let { envelopeInteractor.getEnvelopeByName(it) }
+        envelopeInteractor.getEnvelopeByName(editedEnvelope.name)
             ?: envelopeInteractor.getEnvelopeByName(draftEnvelope.value.name)
 
     private fun reset() {
         draftEnvelope.value = Envelope.EMPTY
-        editedEnvelope = null
+        editedEnvelope = Envelope.EMPTY
     }
 }
