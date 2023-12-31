@@ -13,8 +13,8 @@ import java.io.InputStream
 val appModule = module {
     viewModel { EnvelopesListViewModel(get(), get()) }
     viewModel { EditEnvelopeViewModel(get()) }
-    viewModel { EditCategoryViewModel(get(), get()) }
-    viewModel { ChooseEnvelopeViewModel(get(), get(), get()) }
+    viewModel { EditCategoryViewModel(get(), get(), get()) }
+    viewModel { ChooseEnvelopeViewModel(get(), get()) }
 
     single<InputStream>(named("Monefy")) {
         androidContext().assets.open("Monefy.csv")

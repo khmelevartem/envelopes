@@ -19,7 +19,7 @@ class EditEnvelopeViewModel(
         fun delete()
     }
 
-    private var mode: Mode = Create(envelopeInteractor)
+    private var mode: Mode = CreateEnvelopeMode(envelopeInteractor)
 
     private val draftEnvelope = mutableStateOf(Envelope.EMPTY)
 
@@ -27,7 +27,7 @@ class EditEnvelopeViewModel(
         envelopeId?.let { id ->
             envelopeInteractor.getExactEnvelope(id.id())?.let {
                 draftEnvelope.value = it
-                mode = Edit(editedEnvelope = it, envelopeInteractor = envelopeInteractor)
+                mode = EditEnvelopeMode(editedEnvelope = it, envelopeInteractor = envelopeInteractor)
             } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
         } ?: reset()
         return draftEnvelope
@@ -64,13 +64,13 @@ class EditEnvelopeViewModel(
     }
 
     private fun reset() {
-        mode = Create(envelopeInteractor)
+        mode = CreateEnvelopeMode(envelopeInteractor)
         draftEnvelope.value = Envelope.EMPTY
     }
 }
 
 
-class Create(
+class CreateEnvelopeMode(
     private val envelopeInteractor: EnvelopeInteractor,
 ) : EditEnvelopeViewModel.Mode {
     override fun canConfirm(envelope: Envelope?) = envelope?.run {
@@ -82,7 +82,7 @@ class Create(
     override fun confirm(envelope: Envelope) = envelopeInteractor.addEnvelope(envelope)
 }
 
-class Edit(
+class EditEnvelopeMode(
     private val envelopeInteractor: EnvelopeInteractor,
     private val editedEnvelope: Envelope
 ) : EditEnvelopeViewModel.Mode {

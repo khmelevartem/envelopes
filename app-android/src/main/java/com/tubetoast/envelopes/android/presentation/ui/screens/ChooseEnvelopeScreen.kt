@@ -11,8 +11,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
 import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
 import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeLabelView
+import com.tubetoast.envelopes.android.presentation.ui.views.PlusView
 
 @Composable
 fun ChooseEnvelopeScreen(
@@ -38,6 +40,9 @@ fun ChooseEnvelopeScreen(
                         navController.popBackStack()
                     }
                 }
+            }
+            PlusView {
+                navController.navigate(AppNavigation.addEnvelope())
             }
         }
     }

@@ -1,15 +1,18 @@
 package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import com.google.common.truth.Truth
+import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import io.mockk.mockk
 import org.junit.Test
 
 class EditCategoryViewModelTest {
     private val envelopeInteractorStub = EnvelopeInteractorStub()
     private val categoryInteractorStub = CategoryInteractorStub()
-    private val viewModel = EditCategoryViewModel(categoryInteractorStub, envelopeInteractorStub)
+    private val snapshotsInteractor = mockk<SnapshotsInteractor>()
+    private val viewModel = EditCategoryViewModel(categoryInteractorStub, envelopeInteractorStub, snapshotsInteractor)
 
     @Test
     fun testInitial() {

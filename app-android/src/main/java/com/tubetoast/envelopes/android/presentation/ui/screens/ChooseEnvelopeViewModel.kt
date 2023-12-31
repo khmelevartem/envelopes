@@ -4,7 +4,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.tubetoast.envelopes.common.domain.CategoryInteractor
-import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.map
 
 class ChooseEnvelopeViewModel(
     private val categoryInteractor: CategoryInteractor,
-    private val envelopeInteractor: EnvelopeInteractor,
     private val snapshotsInteractor: SnapshotsInteractor
 ) : ViewModel() {
     private val category = mutableStateOf(Category.EMPTY)
@@ -43,7 +41,8 @@ class ChooseEnvelopeViewModel(
         return chosenEnvelope.value == envelope
     }
 
-    fun setNewChosenEnvelope(data: Envelope) {
-        chosenEnvelope.value = data // TODO implement, this is stub
+    fun setNewChosenEnvelope(envelope: Envelope) {
+        categoryInteractor.moveCategory(category.value, envelope.id)
+        chosenEnvelope.value = envelope // crutch
     }
 }

@@ -3,16 +3,22 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.common.domain.CategoryInteractor
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
+import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.id
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class EditCategoryViewModel(
     private val categoryInteractor: CategoryInteractor,
     private val envelopeInteractor: EnvelopeInteractor,
+    private val snapshotsInteractor: SnapshotsInteractor
 ) : ViewModel() {
 
     sealed interface Mode {
@@ -20,11 +26,11 @@ class EditCategoryViewModel(
         fun confirm(category: Category, envelope: Envelope)
         fun canDelete(): Boolean
         fun delete()
-
+        fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit)
         fun canChooseEnvelope(): Boolean
     }
 
-    private var mode: Mode = CreateCategory(categoryInteractor)
+    private var mode: Mode = CreateCategoryMode(categoryInteractor, envelopeInteractor)
 
     private val draftCategory = mutableStateOf(Category.EMPTY)
     private var envelope = mutableStateOf(Envelope.EMPTY)
@@ -33,17 +39,20 @@ class EditCategoryViewModel(
         id?.let {
             categoryInteractor.getCategory(id.id())?.let {
                 draftCategory.value = it
-                mode = EditCategory(categoryInteractor, it)
-            } ?: throw IllegalStateException("Trying to set category id $id that doesn't exit")
+                mode = EditCategoryMode(
+                    categoryInteractor = categoryInteractor,
+                    snapshotsInteractor = snapshotsInteractor,
+                    scope = viewModelScope,
+                    editedCategory = it
+                )
+            }
         } ?: reset()
         return draftCategory
     }
 
     fun envelope(id: Int?): State<Envelope> {
-        id?.let {
-            envelopeInteractor.getExactEnvelope(id.id())?.let {
-                envelope.value = it
-            } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
+        mode.envelope(id?.id()) {
+            envelope.value = it
         }
         return envelope
     }
@@ -82,12 +91,13 @@ class EditCategoryViewModel(
 
     private fun reset() {
         draftCategory.value = Category.EMPTY
-        mode = CreateCategory(categoryInteractor)
+        mode = CreateCategoryMode(categoryInteractor, envelopeInteractor)
     }
 }
 
-class CreateCategory(
+class CreateCategoryMode(
     private val categoryInteractor: CategoryInteractor,
+    private val envelopeInteractor: EnvelopeInteractor
 ) : EditCategoryViewModel.Mode {
     override fun canConfirm(category: Category?): Boolean {
         return category?.run {
@@ -100,12 +110,20 @@ class CreateCategory(
 
     override fun canDelete(): Boolean = false
     override fun delete() = throw IllegalStateException("Cannot delete")
+    override fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit) {
+        id?.let {
+            envelopeInteractor.getExactEnvelope(id)?.let { change(it) }
+                ?: throw IllegalStateException("Trying to set category id $id that doesn't exit")
+        }
+    }
+
     override fun canChooseEnvelope() = false //TODO implement
 }
 
-
-class EditCategory(
+class EditCategoryMode(
     private val categoryInteractor: CategoryInteractor,
+    private val snapshotsInteractor: SnapshotsInteractor,
+    private val scope: CoroutineScope,
     private val editedCategory: Category
 ) : EditCategoryViewModel.Mode {
     override fun canConfirm(category: Category?): Boolean {
@@ -122,6 +140,18 @@ class EditCategory(
 
     override fun canDelete(): Boolean = true
     override fun delete() = categoryInteractor.deleteCategory(editedCategory)
+    override fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit) {
+        scope.launch {
+            snapshotsInteractor.envelopeSnapshotFlow.collect { set ->
+                change(
+                    set.find { snapshot ->
+                        snapshot.categories.find { it.category == editedCategory } != null
+                    }?.envelope ?: Envelope.EMPTY
+                )
+            }
+        }
+    }
+
     override fun canChooseEnvelope() = true
 
 }
