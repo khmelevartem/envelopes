@@ -28,8 +28,7 @@ class CategoryInteractorImpl(
     }
 
     override fun moveCategory(category: Category, newEnvelopeId: Id<Envelope>) {
-        repository.delete(category)
-        repository.add(newEnvelopeId, category)
+        repository.move(category, newEnvelopeId)
     }
 
     override fun deleteCategory(category: Category) {

@@ -32,8 +32,8 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     override fun deleteImpl(value: M): Boolean {
         return keys[value.id]?.let {
             keys.remove(value.id)
-            getCollection(it)
-        }?.remove(value) ?: false
+            getCollection(it).remove(value)
+        } ?: false
     }
 
     override fun editImpl(oldValue: M, newValue: M): Boolean =

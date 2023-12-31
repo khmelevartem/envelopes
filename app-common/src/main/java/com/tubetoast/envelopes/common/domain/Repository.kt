@@ -11,6 +11,7 @@ interface Repository<M : ImmutableModel<M>, Key> {
     fun get(valueId: Id<M>): M?
     fun add(keyId: Id<Key>, value: M)
     fun delete(value: M)
+    fun move(value: M, newKey: Id<Key>)
     fun edit(oldValue: M, newValue: M)
     fun getCollection(keyId: Id<Key>): Set<M>
 }
@@ -29,6 +30,12 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Ke
     override fun delete(value: M) {
         if (deleteImpl(value)) {
             deleteListener?.invoke(value.id)
+            update?.invoke()
+        }
+    }
+
+    override fun move(value: M, newKey: Id<Key>) {
+        if (deleteImpl(value) && addImpl(value, newKey)) {
             update?.invoke()
         }
     }

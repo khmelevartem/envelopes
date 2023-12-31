@@ -1,7 +1,7 @@
 package com.tubetoast.envelopes.common.domain.models
 
 abstract class ImmutableModel<T : ImmutableModel<T>> {
-    val id: Id<T> by lazy { Id(hashCode()) }
+    open val id: Id<T> by lazy { Id(hashCode()) }
 }
 
 @JvmInline
