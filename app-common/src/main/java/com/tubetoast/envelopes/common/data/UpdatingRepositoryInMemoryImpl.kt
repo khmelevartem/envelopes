@@ -4,13 +4,11 @@ import com.tubetoast.envelopes.common.domain.CategoriesRepository
 import com.tubetoast.envelopes.common.domain.EnvelopesRepository
 import com.tubetoast.envelopes.common.domain.SpendingRepository
 import com.tubetoast.envelopes.common.domain.UpdatingRepository
-import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
-import com.tubetoast.envelopes.common.domain.put
 
 open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     UpdatingRepository<M, Key>() {
@@ -21,6 +19,13 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     override fun get(valueId: Id<M>): M? {
         val key = keys[valueId]
         return sets[key]?.find { it.id == valueId }
+    }
+
+    override fun getCollection(keyId: Id<Key>) = if (keyId == Id.any) {
+        sets.flatMapTo(mutableSetOf()) { it.value }
+        // No modification can be made!
+    } else {
+        sets.getOrPut(keyId) { mutableSetOf() }
     }
 
     override fun addImpl(value: M, keyId: Id<Key>): Boolean {
@@ -45,32 +50,16 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
             }
         } ?: throw IllegalArgumentException("There was no old value $oldValue found")
 
-    override fun getCollection(keyId: Id<Key>) = if (keyId == Id.any) {
-        sets.flatMapTo(mutableSetOf()) { it.value }
-        // No modification can be made!
-    } else {
-        sets.getOrPut(keyId) { mutableSetOf() }
-    }
-
     override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {
         return sets.remove(keyId)?.mapTo(mutableSetOf()) { it.id }.orEmpty()
     }
 }
 
 /** [EnvelopesRepository] */
-open class EnvelopesRepositoryBase : UpdatingRepositoryInMemoryImpl<Envelope, String>()
+open class EnvelopesRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Envelope, String>()
 
 /** [CategoriesRepository] */
-open class CategoriesRepositoryBase : UpdatingRepositoryInMemoryImpl<Category, Envelope>()
+open class CategoriesRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Category, Envelope>()
 
 /** [SpendingRepository] */
-open class SpendingRepositoryBase : UpdatingRepositoryInMemoryImpl<Spending, Category>()
-
-class EnvelopesRepositoryWithUndefinedCategories : EnvelopesRepositoryBase() {
-    init {
-        put(undefinedCategoriesEnvelope)
-    }
-    companion object {
-        val undefinedCategoriesEnvelope = Envelope(name = "Undefined", limit = Amount.ZERO)
-    }
-}
+open class SpendingRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Spending, Category>()

@@ -1,13 +1,13 @@
 package com.tubetoast.envelopes.monefy.data
 
-import com.tubetoast.envelopes.common.data.CategoriesRepositoryBase
+import com.tubetoast.envelopes.common.data.CategoriesRepositoryInMemoryBase
 import com.tubetoast.envelopes.common.data.CategoryKeySource
 import com.tubetoast.envelopes.common.data.CategoryKeySourceUndefinedImpl
 
 class MonefyCategoryRepositoryImpl(
     monefySource: MonefySource,
     categoryKeySource: CategoryKeySource = CategoryKeySourceUndefinedImpl()
-) : CategoriesRepositoryBase() {
+) : CategoriesRepositoryInMemoryBase() {
     init {
         if (anythingChanged(monefySource, categoryKeySource)) update?.invoke()
 
