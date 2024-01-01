@@ -9,7 +9,7 @@ import com.tubetoast.envelopes.monefy.data.MonefyDataParser.Companion.DECIMAL_DE
 import kotlin.math.abs
 
 class MonefyTransactionParser {
-    fun parse(string: String, date: Date, comment: String?): Transaction {
+    fun parse(string: String, date: Date, comment: String?): Transaction<*> {
         val number = string.replace(" ", "")
             .split(DECIMAL_DELIMITER)
             .map { it.toIntOrNull() ?: throwNFE("amount $string") }

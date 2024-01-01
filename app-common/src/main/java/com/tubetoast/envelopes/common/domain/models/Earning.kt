@@ -4,4 +4,4 @@ data class Earning(
     override val amount: Amount,
     override val date: Date,
     override val comment: String? = null
-) : ImmutableModel<Earning>(), Transaction
+) : Transaction<Earning>()

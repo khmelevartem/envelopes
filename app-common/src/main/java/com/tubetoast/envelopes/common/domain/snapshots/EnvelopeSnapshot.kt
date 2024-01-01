@@ -12,7 +12,7 @@ data class EnvelopeSnapshot(
 
     val transactions: List<Amount>
         get() = categories.flatMap {
-            it.transactions.map(Transaction::amount)
+            it.transactions.map(Transaction<*>::amount)
         }
 
     val sum: Amount

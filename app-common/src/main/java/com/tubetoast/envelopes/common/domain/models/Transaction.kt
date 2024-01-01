@@ -1,7 +1,7 @@
 package com.tubetoast.envelopes.common.domain.models
 
-interface Transaction {
-    val amount: Amount
-    val date: Date
-    val comment: String?
+abstract class Transaction<T: Transaction<T>>: ImmutableModel<T>() {
+    abstract val amount: Amount
+    abstract val date: Date
+    abstract val comment: String?
 }

@@ -11,7 +11,7 @@ class MonefyDataParser(
 ) {
 
     fun parse(lines: List<String>): List<CategorySnapshot> {
-        val snapshots: MutableMap<String, MutableSet<Transaction>> = mutableMapOf()
+        val snapshots: MutableMap<String, MutableSet<Transaction<*>>> = mutableMapOf()
 
         val columns = MonefyDataColumns.parse(lines.first())
         lines.subList(1, lines.size).forEach { line ->
@@ -31,7 +31,7 @@ class MonefyDataParser(
 
     private fun String.process(
         columns: MonefyDataColumns,
-        snapshots: MutableMap<String, MutableSet<Transaction>>,
+        snapshots: MutableMap<String, MutableSet<Transaction<*>>>,
     ) {
         val values = split(DELIMITER).takeIf { it.size == columns.size }
             ?: throw IllegalArgumentException("wtf? $this")
