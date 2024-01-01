@@ -16,3 +16,4 @@ rootProject.name = "Envelopes"
 include ':app-android'
 include ':app-common'
 include ':monefy-parser'
+include ':database'
