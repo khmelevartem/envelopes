@@ -1,0 +1,46 @@
+[versions]
+
+composeVersion = "1.5.4"
+composeCompilerVersion = "1.5.7"
+junitJupiterVersion = "5.9.3"
+junitPlatformLauncherVersion = "1.9.3"
+koinVersion = "3.5.0"
+kotlinVersion = "1.9.21"
+kspVersion = "1.9.21-1.0.16"
+kotlinxCoroutinesVersion = "1.7.0-Beta"
+kotlinxCoroutinesTestVersion = "1.6.4"
+androidVersion = "8.2.0"
+roomVersion = "2.6.1"
+
+[plugins]
+
+android-application = { id = "com.android.application", version.ref = "androidVersion" }
+android-library = { id = "com.android.library", version.ref = "androidVersion" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
+
+[libraries]
+
+androidx-activity-compose = "androidx.activity:activity-compose:1.8.2"
+androidx-core-ktx = "androidx.core:core-ktx:1.12.0"
+androidx-lifecycle-runtime-ktx = "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
+compose-navigation = "androidx.navigation:navigation-compose:2.7.6"
+compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "composeVersion" }
+compose-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "composeVersion" }
+compose-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "composeVersion" }
+compose-material = { module = "androidx.compose.material:material", version.ref = "composeVersion" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "composeVersion" }
+
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
+
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTestVersion" }
+
+test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiterVersion" }
+test-junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitPlatformLauncherVersion" }
+test-mockk =  "io.mockk:mockk:1.13.8"
+test-truth = "com.google.truth:truth:1.1.3"
