@@ -4,12 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.tubetoast.envelopes.common.domain.models.Category
-import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.ImmutableModel
-import com.tubetoast.envelopes.common.domain.models.Spending
 
-interface StandardDao<M : ImmutableModel<M>, DE: DatabaseEntity<M>> {
+interface StandardDao<DE : DatabaseEntity> {
 
     fun getAll(): List<DE>
 
@@ -27,7 +23,7 @@ interface StandardDao<M : ImmutableModel<M>, DE: DatabaseEntity<M>> {
 }
 
 @Dao
-abstract class EnvelopeDao : StandardDao<Envelope, EnvelopeEntity> {
+abstract class EnvelopeDao : StandardDao<EnvelopeEntity> {
 
     @Query("SELECT * from envelopeentity")
     abstract override fun getAll(): List<EnvelopeEntity>
@@ -53,7 +49,7 @@ abstract class EnvelopeDao : StandardDao<Envelope, EnvelopeEntity> {
 }
 
 @Dao
-abstract class CategoryDao : StandardDao<Category, CategoryEntity> {
+abstract class CategoryDao : StandardDao<CategoryEntity> {
 
     @Query("SELECT * from categoryentity")
     abstract override fun getAll(): List<CategoryEntity>
@@ -78,7 +74,7 @@ abstract class CategoryDao : StandardDao<Category, CategoryEntity> {
 }
 
 @Dao
-abstract class SpendingDao : StandardDao<Spending, SpendingEntity> {
+abstract class SpendingDao : StandardDao<SpendingEntity> {
 
     @Query("SELECT * from spendingentity")
     abstract override fun getAll(): List<SpendingEntity>

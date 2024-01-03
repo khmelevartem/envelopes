@@ -11,7 +11,7 @@ import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
 
 abstract class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key>(
-    private val dataSource: DataSource<M, Key>
+    private val dataSource: DataSource<M, Key, *>
 ) : UpdatingRepository<M, Key>() {
 
     override fun get(valueId: Id<M>): M? {
