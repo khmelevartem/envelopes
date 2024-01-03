@@ -9,8 +9,6 @@ class MonefyDateParser {
             it.toIntOrNull() ?: throwNFE("date component $it")
         }
         return Date(
-            minute = 0,
-            hour = 0,
             day = day,
             month = month,
             year = year,

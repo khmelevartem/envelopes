@@ -3,23 +3,34 @@ package com.tubetoast.envelopes.database.data
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
+import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
 
-abstract class DatabaseEntity<T : ImmutableModel<T>> {
+abstract class DatabaseEntity<T : ImmutableModel<T>>() {
     abstract val primaryKey: Int
     abstract val foreignKey: Int
-    abstract val model: T
+    abstract fun toDomainModel(): T
 }
 
 @Entity
 data class EnvelopeEntity(
     @PrimaryKey override val primaryKey: Int,
     override val foreignKey: Int = -1,
-    override val model: Envelope
-) : DatabaseEntity<Envelope>()
+    val name: String,
+    val limit: Int
+) : DatabaseEntity<Envelope>() {
+    constructor(envelope: Envelope) : this(
+        primaryKey = envelope.id.code,
+        name = envelope.name,
+        limit = envelope.limit.units
+    )
+
+    override fun toDomainModel() = Envelope(name = name, limit = Amount(units = limit))
+}
 
 
 @Entity(
@@ -33,8 +44,20 @@ data class EnvelopeEntity(
 data class CategoryEntity(
     @PrimaryKey override val primaryKey: Int,
     override val foreignKey: Int,
-    override val model: Category
-) : DatabaseEntity<Category>()
+    val name: String,
+    val limit: Int?
+) : DatabaseEntity<Category>() {
+
+    constructor(category: Category, envelopeKey: Int) : this(
+        primaryKey = category.id.code,
+        foreignKey = envelopeKey,
+        name = category.name,
+        limit = category.limit?.units
+    )
+
+    override fun toDomainModel(): Category =
+        Category(name = name, limit = limit?.let { Amount(units = it) })
+}
 
 
 @Entity(
@@ -48,5 +71,28 @@ data class CategoryEntity(
 data class SpendingEntity(
     @PrimaryKey override val primaryKey: Int,
     override val foreignKey: Int,
-    override val model: Spending
-) : DatabaseEntity<Spending>()
+    val amount: Int,
+    val date: String,
+    val comment: String?
+) : DatabaseEntity<Spending>() {
+
+    constructor(spending: Spending, envelopeKey: Int) : this(
+        primaryKey = spending.id.code,
+        foreignKey = envelopeKey,
+        amount = spending.amount.units,
+        date = spending.date.fromDate(),
+        comment = spending.comment
+    )
+
+    override fun toDomainModel(): Spending = Spending(
+        amount = Amount(units = amount), date = date.toDate(), comment = comment
+    )
+
+    companion object DateConverter {
+        private const val DELIMITER = "/"
+        fun String.toDate() = split(DELIMITER).map { it.toInt() }
+            .let { (d, m, y) -> Date(day = d, month = m, year = y) }
+
+        fun Date.fromDate() = "$day$DELIMITER$month$DELIMITER$year"
+    }
+}
