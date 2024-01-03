@@ -7,10 +7,11 @@ import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
 
-abstract class DatabaseEntity<T : ImmutableModel<T>>() {
+abstract class DatabaseEntity<out T : ImmutableModel<out T>>() {
     abstract val primaryKey: Int
     abstract val foreignKey: Int
     abstract fun toDomainModel(): T
@@ -48,9 +49,9 @@ data class CategoryEntity(
     val limit: Int?
 ) : DatabaseEntity<Category>() {
 
-    constructor(category: Category, envelopeKey: Int) : this(
+    constructor(category: Category, envelopeKey: Id<Envelope>) : this(
         primaryKey = category.id.code,
-        foreignKey = envelopeKey,
+        foreignKey = envelopeKey.code,
         name = category.name,
         limit = category.limit?.units
     )
@@ -76,9 +77,9 @@ data class SpendingEntity(
     val comment: String?
 ) : DatabaseEntity<Spending>() {
 
-    constructor(spending: Spending, envelopeKey: Int) : this(
+    constructor(spending: Spending, categoryKey: Id<Category>) : this(
         primaryKey = spending.id.code,
-        foreignKey = envelopeKey,
+        foreignKey = categoryKey.code,
         amount = spending.amount.units,
         date = spending.date.fromDate(),
         comment = spending.comment

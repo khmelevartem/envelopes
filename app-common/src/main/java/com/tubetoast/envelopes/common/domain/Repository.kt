@@ -69,6 +69,6 @@ fun <M, Key> Repository<M, Key>.put(value: M) where M : ImmutableModel<M> {
 fun <M, Key> Repository<M, Key>.getAll(): Collection<M> where M : ImmutableModel<M> =
     getCollection(Id.any)
 
-typealias SpendingUpdatingRepository = UpdatingRepository<Spending, Category>
-typealias CategoriesUpdatingRepository = UpdatingRepository<Category, Envelope>
-typealias EnvelopesUpdatingRepository = UpdatingRepository<Envelope, String>
+typealias UpdatingSpendingRepository = UpdatingRepository<Spending, Category>
+typealias UpdatingCategoriesRepository = UpdatingRepository<Category, Envelope>
+typealias UpdatingEnvelopesRepository = UpdatingRepository<Envelope, String>

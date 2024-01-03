@@ -2,58 +2,102 @@ package com.tubetoast.envelopes.database.data
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.tubetoast.envelopes.common.domain.models.Category
+import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.ImmutableModel
+import com.tubetoast.envelopes.common.domain.models.Spending
+
+interface StandardDao<M : ImmutableModel<M>, DE: DatabaseEntity<M>> {
+
+    fun getAll(): List<DE>
+
+    fun getCollection(parentKey: Int): List<DE>
+
+    fun get(valueId: Int): DE?
+
+    fun write(databaseEntity: DE)
+
+    fun delete(valueId: Int): Int
+
+    fun deleteCollection(parentKey: Int): Int
+
+//    fun update(oldValueId: Int, value: M): Boolean
+}
 
 @Dao
-abstract class EnvelopeDao {
+abstract class EnvelopeDao : StandardDao<Envelope, EnvelopeEntity> {
 
     @Query("SELECT * from envelopeentity")
-    abstract fun getAll(): List<EnvelopeEntity>
+    abstract override fun getAll(): List<EnvelopeEntity>
 
-    @Query("SELECT * from envelopeentity WHERE primaryKey LIKE :key")
-    abstract fun get(key: Int): EnvelopeEntity?
+    override fun getCollection(parentKey: Int): List<EnvelopeEntity> =
+        throw UnsupportedOperationException("cannot get collection in this implementation")
 
-    @Insert
-    abstract fun write(databaseEntity: EnvelopeEntity)
+    @Query("SELECT * from envelopeentity WHERE primaryKey LIKE :valueId")
+    abstract override fun get(valueId: Int): EnvelopeEntity?
 
-    @Query("DELETE from envelopeentity WHERE primaryKey Like :key")
-    abstract fun delete(key: Int)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract override fun write(databaseEntity: EnvelopeEntity)
+
+    @Query("DELETE from envelopeentity WHERE primaryKey Like :valueId")
+    abstract override fun delete(valueId: Int): Int
+
+    @Query("DELETE from envelopeentity WHERE foreignKey LIKE :parentKey")
+    abstract override fun deleteCollection(parentKey: Int): Int
+//
+
+//    @Query("UPDATE envelopeentity SET value = :value WHERE primaryKey LIKE :oldValueId")
+//    abstract override fun update(oldValueId: Int, value: Envelope): Boolean
 }
 
 @Dao
-abstract class CategoryDao {
+abstract class CategoryDao : StandardDao<Category, CategoryEntity> {
 
     @Query("SELECT * from categoryentity")
-    abstract fun getAll(): List<CategoryEntity>
+    abstract override fun getAll(): List<CategoryEntity>
 
     @Query("SELECT * from categoryentity WHERE foreignKey LIKE :parentKey")
-    abstract fun getCollection(parentKey: Int): List<CategoryEntity>
+    abstract override fun getCollection(parentKey: Int): List<CategoryEntity>
 
-    @Query("SELECT * from categoryentity WHERE primaryKey LIKE :key")
-    abstract fun get(key: Int): CategoryEntity?
+    @Query("SELECT * from categoryentity WHERE primaryKey LIKE :valueId")
+    abstract override fun get(valueId: Int): CategoryEntity?
 
-    @Insert
-    abstract fun write(databaseEntity: CategoryEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract override fun write(databaseEntity: CategoryEntity)
 
-    @Query("DELETE from categoryentity WHERE primaryKey Like :key")
-    abstract fun delete(key: Int)
+    @Query("DELETE from categoryentity WHERE primaryKey Like :valueId")
+    abstract override fun delete(valueId: Int): Int
+
+    @Query("DELETE from categoryentity WHERE foreignKey LIKE :parentKey")
+    abstract override fun deleteCollection(parentKey: Int): Int
+//
+//    @Query("UPDATE categoryentity SET value = :value WHERE primaryKey LIKE :oldValueId")
+//    abstract override fun update(oldValueId: Int, value: Category): Boolean
 }
 
 @Dao
-abstract class SpendingDao {
+abstract class SpendingDao : StandardDao<Spending, SpendingEntity> {
 
     @Query("SELECT * from spendingentity")
-    abstract fun getAll(): List<SpendingEntity>
+    abstract override fun getAll(): List<SpendingEntity>
 
     @Query("SELECT * from spendingentity WHERE foreignKey LIKE :parentKey")
-    abstract fun getCollection(parentKey: Int): List<SpendingEntity>
+    abstract override fun getCollection(parentKey: Int): List<SpendingEntity>
 
-    @Query("SELECT * from spendingentity WHERE primaryKey LIKE :key")
-    abstract fun get(key: Int): SpendingEntity?
+    @Query("SELECT * from spendingentity WHERE primaryKey LIKE :valueId")
+    abstract override fun get(valueId: Int): SpendingEntity?
 
-    @Insert
-    abstract fun write(databaseEntity: SpendingEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract override fun write(databaseEntity: SpendingEntity)
 
-    @Query("DELETE from spendingentity WHERE primaryKey Like :key")
-    abstract fun delete(key: Int)
+    @Query("DELETE from spendingentity WHERE primaryKey Like :valueId")
+    abstract override fun delete(valueId: Int): Int
+
+    @Query("DELETE from spendingentity WHERE foreignKey LIKE :parentKey")
+    abstract override fun deleteCollection(parentKey: Int): Int
+//
+//    @Query("UPDATE spendingentity SET value = :value WHERE primaryKey LIKE :oldValueId")
+//    abstract override fun update(oldValueId: Int, value: Spending): Boolean
 }

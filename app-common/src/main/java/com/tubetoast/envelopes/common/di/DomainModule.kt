@@ -14,11 +14,15 @@ val domainModule = module {
     val envelopesRepository = EnvelopesRepositoryWithUndefinedCategories()
     single<SnapshotsInteractor> {
         SnapshotsInteractorImpl(
-            spendingRepository = get(named("spending")),
-            categoriesRepository = get(named("category")),
+            spendingRepository = get(named(SPENDING_REPO)),
+            categoriesRepository = get(named(CATEGORIES_REPO)),
             envelopesRepository = envelopesRepository,
         )
     }
     single<EnvelopeInteractor> { EnvelopeInteractorImpl(repository = envelopesRepository) }
-    single<CategoryInteractor> { CategoryInteractorImpl(repository = get(named("category"))) }
+    single<CategoryInteractor> { CategoryInteractorImpl(repository = get(named(CATEGORIES_REPO))) }
 }
+
+const val SPENDING_REPO = "spending repo"
+const val CATEGORIES_REPO = "categories repo"
+const val ENVELOPES_REPO = "envelopes repo"

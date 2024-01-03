@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class SnapshotsInteractorImpl(
-    private val spendingRepository: SpendingUpdatingRepository,
-    private val categoriesRepository: CategoriesUpdatingRepository,
-    private val envelopesRepository: EnvelopesUpdatingRepository,
+    private val spendingRepository: UpdatingSpendingRepository,
+    private val categoriesRepository: UpdatingCategoriesRepository,
+    private val envelopesRepository: UpdatingEnvelopesRepository,
 ) : SnapshotsInteractor {
 
     private val flow = MutableStateFlow(envelopeSnapshot)

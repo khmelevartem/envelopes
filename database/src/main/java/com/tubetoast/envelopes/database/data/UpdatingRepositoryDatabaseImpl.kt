@@ -10,39 +10,49 @@ import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
 
-open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key> :
-    UpdatingRepository<M, Key>() {
+abstract class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key>(
+    private val dataSource: DataSource<M, Key>
+) : UpdatingRepository<M, Key>() {
 
     override fun get(valueId: Id<M>): M? {
-        TODO()
+        return dataSource.get(valueId)
     }
 
     override fun getCollection(keyId: Id<Key>): Set<M> {
-        TODO()
+        return dataSource.getCollection(keyId).toSet()
     }
 
     override fun addImpl(value: M, keyId: Id<Key>): Boolean {
-        TODO()
+        dataSource.write(value, keyId)
+        return true // fix it with custom insert
     }
 
     override fun deleteImpl(value: M): Boolean {
-        TODO()
+        return dataSource.delete(value.id)
     }
 
     override fun editImpl(oldValue: M, newValue: M): Boolean {
-        TODO()
+        TODO("need to be implemented")
+//        return dataSource.update(oldValue.id, newValue)
     }
 
     override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {
-        TODO()
+        dataSource.deleteCollection(keyId)
+        return emptySet() // deleting recursive with foreign key
     }
 }
 
 /** [EnvelopesRepository] */
-open class EnvelopesRepositoryDatabaseBase : UpdatingRepositoryDatabaseImpl<Envelope, String>()
+open class EnvelopesRepositoryDatabaseBase(
+    dataSource: EnvelopeDataSource
+) : UpdatingRepositoryDatabaseImpl<Envelope, String>(dataSource)
 
 /** [CategoriesRepository] */
-open class CategoriesRepositoryDatabaseBase : UpdatingRepositoryDatabaseImpl<Category, Envelope>()
+open class CategoriesRepositoryDatabaseBase(
+    dataSource: CategoryDataSource
+) : UpdatingRepositoryDatabaseImpl<Category, Envelope>(dataSource)
 
 /** [SpendingRepository] */
-open class SpendingRepositoryDatabaseBase : UpdatingRepositoryDatabaseImpl<Spending, Category>()
+open class SpendingRepositoryDatabaseBase(
+    dataSource: SpendingDataSource
+) : UpdatingRepositoryDatabaseImpl<Spending, Category>(dataSource)
