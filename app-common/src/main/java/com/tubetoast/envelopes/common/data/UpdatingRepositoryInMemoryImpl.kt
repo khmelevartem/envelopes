@@ -1,9 +1,9 @@
 package com.tubetoast.envelopes.common.data
 
-import com.tubetoast.envelopes.common.domain.CategoriesRepository
-import com.tubetoast.envelopes.common.domain.EnvelopesRepository
-import com.tubetoast.envelopes.common.domain.SpendingRepository
+import com.tubetoast.envelopes.common.domain.UpdatingCategoriesRepository
+import com.tubetoast.envelopes.common.domain.UpdatingEnvelopesRepository
 import com.tubetoast.envelopes.common.domain.UpdatingRepository
+import com.tubetoast.envelopes.common.domain.UpdatingSpendingRepository
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
@@ -55,11 +55,11 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     }
 }
 
-/** [EnvelopesRepository] */
+/** [UpdatingEnvelopesRepository] */
 open class EnvelopesRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Envelope, String>()
 
-/** [CategoriesRepository] */
+/** [UpdatingCategoriesRepository] */
 open class CategoriesRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Category, Envelope>()
 
-/** [SpendingRepository] */
+/** [UpdatingSpendingRepository] */
 open class SpendingRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Spending, Category>()

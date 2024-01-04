@@ -29,7 +29,7 @@ abstract class EnvelopeDao : StandardDao<EnvelopeEntity> {
     abstract override fun getAll(): List<EnvelopeEntity>
 
     override fun getCollection(parentKey: Int): List<EnvelopeEntity> =
-        throw UnsupportedOperationException("cannot get collection in this implementation")
+        emptyList()
 
     @Query("SELECT * from envelopeentity WHERE primaryKey LIKE :valueId")
     abstract override fun get(valueId: Int): EnvelopeEntity?

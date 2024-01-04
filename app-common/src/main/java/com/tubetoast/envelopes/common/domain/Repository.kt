@@ -16,10 +16,6 @@ interface Repository<M : ImmutableModel<M>, Key> {
     fun edit(oldValue: M, newValue: M)
 }
 
-typealias SpendingRepository = Repository<Spending, Category>
-typealias CategoriesRepository = Repository<Category, Envelope>
-typealias EnvelopesRepository = Repository<Envelope, String>
-
 abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Key> {
     var update: (() -> Unit)? = null
     var deleteListener: ((Id<M>) -> Unit)? = null

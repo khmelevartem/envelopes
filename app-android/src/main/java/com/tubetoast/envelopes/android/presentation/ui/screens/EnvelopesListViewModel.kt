@@ -16,6 +16,7 @@ class EnvelopesListViewModel(
         envelopeInteractor.deleteEnvelope(envelope)
     }
 
-    val itemModels: Flow<List<EnvelopeSnapshot>> = snapshotsInteractor.envelopeSnapshotFlow
-        .map { it.toList() }
+    val itemModels: Flow<List<EnvelopeSnapshot>> by lazy {
+        snapshotsInteractor.envelopeSnapshotFlow.map { it.toList() }
+    }
 }

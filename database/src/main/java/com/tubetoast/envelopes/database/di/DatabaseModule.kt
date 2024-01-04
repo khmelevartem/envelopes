@@ -1,9 +1,6 @@
 package com.tubetoast.envelopes.database.di
 
 import android.content.Context
-import com.tubetoast.envelopes.common.domain.UpdatingCategoriesRepository
-import com.tubetoast.envelopes.common.domain.UpdatingEnvelopesRepository
-import com.tubetoast.envelopes.common.domain.UpdatingSpendingRepository
 import com.tubetoast.envelopes.database.data.CategoriesRepositoryDatabaseBase
 import com.tubetoast.envelopes.database.data.CategoryConverter
 import com.tubetoast.envelopes.database.data.CategoryDataSource
@@ -18,13 +15,13 @@ import org.koin.dsl.module
 
 fun databaseModule(context: Context) = module {
     val db = StandardDatabase.create(context)
-    single<UpdatingEnvelopesRepository>() {
+    single {
         EnvelopesRepositoryDatabaseBase(EnvelopeDataSource(db.envelopeDao(), EnvelopeConverter()))
     }
-    single<UpdatingCategoriesRepository>() {
+    single {
         CategoriesRepositoryDatabaseBase(CategoryDataSource(db.categoryDao(), CategoryConverter()))
     }
-    single<UpdatingSpendingRepository>() {
+    single {
         SpendingRepositoryDatabaseBase(SpendingDataSource(db.spendingDao(), SpendingConverter()))
     }
 }

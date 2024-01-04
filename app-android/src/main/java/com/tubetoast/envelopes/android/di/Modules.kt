@@ -7,7 +7,8 @@ import com.tubetoast.envelopes.monefy.di.monefyParserModule
 
 fun applicationModules(context: Context) = arrayOf(
     appModule,
-    domainModule,
     monefyParserModule,
-    databaseModule(context)
+    databaseModule(context),
+    repositoriesModule,
+    domainModule
 )

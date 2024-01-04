@@ -4,7 +4,7 @@ import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 
 class EnvelopeInteractorImpl(
-    private val repository: EnvelopesRepository,
+    private val repository: UpdatingEnvelopesRepository,
 ) : EnvelopeInteractor {
     override fun getEnvelopeByName(name: String): Envelope? {
         return repository.getAll().singleOrNull { it.name == name }

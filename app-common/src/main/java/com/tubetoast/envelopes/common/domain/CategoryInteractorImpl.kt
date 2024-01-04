@@ -5,7 +5,7 @@ import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 
 class CategoryInteractorImpl(
-    private val repository: CategoriesRepository,
+    private val repository: UpdatingCategoriesRepository,
 ) : CategoryInteractor {
     override fun getCategoryByName(name: String): Category? {
         return repository
