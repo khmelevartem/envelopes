@@ -2,27 +2,31 @@ package com.tubetoast.envelopes.common.domain
 
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class EnvelopeInteractorImpl(
     private val repository: UpdatingEnvelopesRepository,
 ) : EnvelopeInteractor {
-    override fun getEnvelopeByName(name: String): Envelope? {
-        return repository.getAll().singleOrNull { it.name == name }
+
+    private val dispatcher = Dispatchers.IO
+
+    override suspend fun getEnvelopeByName(name: String) =
+        withContext(dispatcher) { repository.getAll().singleOrNull { it.name == name } }
+
+    override suspend fun getExactEnvelope(id: Id<Envelope>): Envelope? = withContext(dispatcher) {
+        repository.get(id)
     }
 
-    override fun getExactEnvelope(id: Id<Envelope>): Envelope? {
-        return repository.get(id)
-    }
-
-    override fun addEnvelope(envelope: Envelope) {
+    override suspend fun addEnvelope(envelope: Envelope) = withContext(dispatcher) {
         repository.put(envelope)
     }
 
-    override fun deleteEnvelope(envelope: Envelope) {
+    override suspend fun deleteEnvelope(envelope: Envelope) = withContext(dispatcher) {
         repository.delete(envelope)
     }
 
-    override fun editEnvelope(old: Envelope, new: Envelope) {
+    override suspend fun editEnvelope(old: Envelope, new: Envelope) = withContext(dispatcher) {
         repository.edit(old, new)
     }
 }

@@ -22,7 +22,7 @@ class EditCategoryViewModel(
 ) : ViewModel() {
 
     sealed interface Mode {
-        fun canConfirm(category: Category?): Boolean
+        suspend fun canConfirm(category: Category?): Boolean
         fun confirm(category: Category, envelope: Envelope)
         fun canDelete(): Boolean
         fun delete()
@@ -30,24 +30,37 @@ class EditCategoryViewModel(
         fun canChooseEnvelope(): Boolean
     }
 
-    private var mode: Mode = CreateCategoryMode(categoryInteractor, envelopeInteractor)
+    data class UIState(
+        val draftCategory: Category,
+        val canConfirm: Boolean,
+        val canDelete: Boolean
+    ) {
+        companion object {
+            val EMPTY = UIState(Category.EMPTY, canConfirm = false, canDelete = false)
+        }
+    }
 
-    private val draftCategory = mutableStateOf(Category.EMPTY)
+    private var mode: Mode =
+        CreateCategoryMode(categoryInteractor, envelopeInteractor, viewModelScope)
+
+    private val uiState = mutableStateOf(UIState.EMPTY)
     private var envelope = mutableStateOf(Envelope.EMPTY)
 
-    fun category(id: Int?): State<Category> {
+    fun uiState(id: Int?): State<UIState> {
         id?.let {
-            categoryInteractor.getCategory(id.id())?.let {
-                draftCategory.value = it
-                mode = EditCategoryMode(
-                    categoryInteractor = categoryInteractor,
-                    snapshotsInteractor = snapshotsInteractor,
-                    scope = viewModelScope,
-                    editedCategory = it
-                )
+            viewModelScope.launch {
+                categoryInteractor.getCategory(id.id())?.let {
+                    updateUIState(it)
+                    mode = EditCategoryMode(
+                        categoryInteractor = categoryInteractor,
+                        snapshotsInteractor = snapshotsInteractor,
+                        scope = viewModelScope,
+                        editedCategory = it
+                    )
+                }
             }
         } ?: reset()
-        return draftCategory
+        return uiState
     }
 
     fun envelope(id: Int?): State<Envelope> {
@@ -58,62 +71,71 @@ class EditCategoryViewModel(
     }
 
     fun setName(input: String) {
-        draftCategory.value = draftCategory.value.copy(name = input)
+        updateUIState(uiState.value.draftCategory.copy(name = input))
     }
 
     fun setLimit(input: String) {
         if (input.isBlank()) {
-            draftCategory.value = draftCategory.value.copy(limit = Amount.ZERO)
+            updateUIState(uiState.value.draftCategory.copy(limit = Amount.ZERO))
         } else {
             input.toIntOrNull()?.let {
-                draftCategory.value = draftCategory.value.copy(limit = Amount(it))
+                updateUIState(uiState.value.draftCategory.copy(limit = Amount(it)))
             }
         }
     }
 
     fun confirm() {
-        if (!canConfirm()) throw IllegalStateException("Cannot confirm!")
-        mode.confirm(draftCategory.value, envelope.value)
+        viewModelScope.launch {
+            mode.confirm(uiState.value.draftCategory, envelope.value)
+        }
         reset()
     }
 
-    fun canConfirm(): Boolean = mode.canConfirm(draftCategory.value)
-
     fun delete() {
-        if (!canDelete()) throw IllegalStateException("Cannot delete!")
         mode.delete()
         reset()
     }
 
-    fun canDelete(): Boolean = mode.canDelete()
-
     fun canChooseEnvelope(): Boolean = mode.canChooseEnvelope()
 
+    private fun updateUIState(category: Category = uiState.value.draftCategory) {
+        viewModelScope.launch {
+            uiState.value = UIState(category, canConfirm = mode.canConfirm(category), canDelete = mode.canDelete())
+        }
+    }
+
     private fun reset() {
-        draftCategory.value = Category.EMPTY
-        mode = CreateCategoryMode(categoryInteractor, envelopeInteractor)
+        uiState.value = UIState.EMPTY
+        envelope.value = Envelope.EMPTY
+        mode = CreateCategoryMode(categoryInteractor, envelopeInteractor, viewModelScope)
     }
 }
 
 class CreateCategoryMode(
     private val categoryInteractor: CategoryInteractor,
-    private val envelopeInteractor: EnvelopeInteractor
+    private val envelopeInteractor: EnvelopeInteractor,
+    private val scope: CoroutineScope
 ) : EditCategoryViewModel.Mode {
-    override fun canConfirm(category: Category?): Boolean {
+    override suspend fun canConfirm(category: Category?): Boolean {
         return category?.run {
             name.isNotBlank() && categoryInteractor.getCategoryByName(name) == null
         } ?: false
     }
 
-    override fun confirm(category: Category, envelope: Envelope) =
-        categoryInteractor.addCategory(category, envelope.id)
+    override fun confirm(category: Category, envelope: Envelope) {
+        scope.launch {
+            categoryInteractor.addCategory(category, envelope.id)
+        }
+    }
 
     override fun canDelete(): Boolean = false
     override fun delete() = throw IllegalStateException("Cannot delete")
     override fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit) {
         id?.let {
-            envelopeInteractor.getExactEnvelope(id)?.let { change(it) }
-                ?: throw IllegalStateException("Trying to set category id $id that doesn't exit")
+            scope.launch {
+                envelopeInteractor.getExactEnvelope(id)?.let { change(it) }
+                    ?: throw IllegalStateException("Trying to set category id $id that doesn't exit")
+            }
         }
     }
 
@@ -126,20 +148,28 @@ class EditCategoryMode(
     private val scope: CoroutineScope,
     private val editedCategory: Category
 ) : EditCategoryViewModel.Mode {
-    override fun canConfirm(category: Category?): Boolean {
+    override suspend fun canConfirm(category: Category?): Boolean {
         return category?.run {
             name.isNotBlank() && this != editedCategory && notSameNameAsOtherExisting()
         } ?: false
     }
 
-    private fun Category.notSameNameAsOtherExisting() =
+    private suspend fun Category.notSameNameAsOtherExisting() =
         name == editedCategory.name || categoryInteractor.getCategoryByName(name) == null
 
-    override fun confirm(category: Category, envelope: Envelope) =
-        categoryInteractor.editCategory(editedCategory, category)
+    override fun confirm(category: Category, envelope: Envelope) {
+        scope.launch {
+            categoryInteractor.editCategory(editedCategory, category)
+        }
+    }
 
     override fun canDelete(): Boolean = true
-    override fun delete() = categoryInteractor.deleteCategory(editedCategory)
+    override fun delete() {
+        scope.launch {
+            categoryInteractor.deleteCategory(editedCategory)
+        }
+    }
+
     override fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit) {
         scope.launch {
             snapshotsInteractor.envelopeSnapshotFlow.collect { set ->

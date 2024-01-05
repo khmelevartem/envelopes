@@ -12,30 +12,30 @@ class CategoryInteractorStub(
     )
 ) : CategoryInteractor {
 
-    override fun getCategoryByName(name: String): Category? {
+    override suspend fun getCategoryByName(name: String): Category? {
         return categories.find { it.name == name }
     }
 
-    override fun getCategory(id: Id<Category>): Category? {
+    override suspend fun getCategory(id: Id<Category>): Category? {
         return categories.find { it.id == id }
     }
 
-    override fun addCategory(category: Category, envelopeId: Id<Envelope>) {
+    override suspend fun addCategory(category: Category, envelopeId: Id<Envelope>) {
         categories.add(category)
     }
 
-    override fun editCategory(old: Category, new: Category) {
+    override suspend fun editCategory(old: Category, new: Category) {
         categories.run {
             remove(old)
             add(new)
         }
     }
 
-    override fun moveCategory(category: Category, newEnvelopeId: Id<Envelope>) {
+    override suspend fun moveCategory(category: Category, newEnvelopeId: Id<Envelope>) {
         TODO("Not yet implemented")
     }
 
-    override fun deleteCategory(category: Category) {
+    override suspend fun deleteCategory(category: Category) {
         categories.remove(category)
     }
 

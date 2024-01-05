@@ -30,6 +30,12 @@ open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key>(
         return emptySet()
     }
 
+    override fun getAll(): Set<M> {
+       return repositories.fold(mutableSetOf()) { set, repo ->
+            set.apply { addAll(repo.getAll()) }
+        }
+    }
+
     override fun addImpl(value: M, keyId: Id<Key>): Boolean {
         return repositories.map { repo ->
             repo.addImpl(value, keyId)

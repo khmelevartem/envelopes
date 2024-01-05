@@ -22,14 +22,16 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     }
 
     override fun getCollection(keyId: Id<Key>) = if (keyId == Id.any) {
-        sets.flatMapTo(mutableSetOf()) { it.value }
-        // No modification can be made!
+        throw UnsupportedOperationException("need to delete this call")
     } else {
         sets.getOrPut(keyId) { mutableSetOf() }
     }
 
+    override fun getAll(): Set<M> =
+        sets.flatMapTo(mutableSetOf()) { it.value }
+
     override fun addImpl(value: M, keyId: Id<Key>): Boolean {
-        if (keyId == Id.any) throw IllegalArgumentException("Can not add with uncertain key")
+//        if (keyId == Id.any) throw IllegalArgumentException("Can not add with uncertain key")
         keys[value.id] = keyId
         return getCollection(keyId).add(value)
     }

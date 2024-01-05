@@ -23,14 +23,14 @@ class EditCategoryViewModelTest {
 
     @Test
     fun testCreateWithUniqueName() {
-        viewModel.category(null)
+        viewModel.uiState(null)
         viewModel.setName("new name")
         Truth.assertThat(viewModel.canConfirm()).isTrue()
     }
 
     @Test
     fun testCreateWithExistingName() {
-        viewModel.category(null)
+        viewModel.uiState(null)
         viewModel.setName("test")
         Truth.assertThat(viewModel.canConfirm()).isFalse()
     }
@@ -88,6 +88,6 @@ class EditCategoryViewModelTest {
     }
 
     private fun setEditMode() {
-        viewModel.category(categoryInteractorStub.categories.first().id.code)
+        viewModel.uiState(categoryInteractorStub.categories.first().id.code)
     }
 }

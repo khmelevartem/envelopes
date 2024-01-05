@@ -23,14 +23,14 @@ fun EditEnvelopeScreen(
 ) {
     EnvelopesTheme {
         Column {
-            val envelope by remember { editEnvelopeViewModel.envelope(envelopeId) }
+            val uiState by remember { editEnvelopeViewModel.uiState(envelopeId) }
             TextField(
-                value = envelope.name,
+                value = uiState.draftEnvelope.name,
                 onValueChange = { editEnvelopeViewModel.setName(it) },
                 modifier = Modifier.fillMaxWidth(),
             )
             TextField(
-                value = envelope.limit.units.takeIf { it > 0 }?.toString().orEmpty(),
+                value = uiState.draftEnvelope.limit.units.takeIf { it > 0 }?.toString().orEmpty(),
                 onValueChange = { editEnvelopeViewModel.setLimit(it) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -41,7 +41,7 @@ fun EditEnvelopeScreen(
                         editEnvelopeViewModel.confirm()
                         navController.popBackStack()
                     },
-                    enabled = editEnvelopeViewModel.canConfirm(),
+                    enabled = uiState.canConfirm,
                 ) {
                     Text(text = "Confirm")
                 }
@@ -50,7 +50,7 @@ fun EditEnvelopeScreen(
                         editEnvelopeViewModel.delete()
                         navController.popBackStack()
                     },
-                    enabled = editEnvelopeViewModel.canDelete(),
+                    enabled = uiState.canDelete,
                 ) {
                     Text(text = "Delete")
                 }

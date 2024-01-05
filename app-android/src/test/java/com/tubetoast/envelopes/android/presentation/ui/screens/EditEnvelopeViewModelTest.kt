@@ -18,14 +18,14 @@ class EditEnvelopeViewModelTest {
 
     @Test
     fun testCreateWithUniqueName() {
-        viewModel.envelope(null)
+        viewModel.uiState(null)
         viewModel.setName("new name")
         Truth.assertThat(viewModel.canConfirm()).isTrue()
     }
 
     @Test
     fun testCreateWithExistingName() {
-        viewModel.envelope(null)
+        viewModel.uiState(null)
         viewModel.setName("test")
         Truth.assertThat(viewModel.canConfirm()).isFalse()
     }
@@ -72,7 +72,7 @@ class EditEnvelopeViewModelTest {
     @Test
     fun testCanDeleteNew() {
         Truth.assertThat(viewModel.canDelete()).isFalse()
-        viewModel.envelope(null)
+        viewModel.uiState(null)
         Truth.assertThat(viewModel.canDelete()).isFalse()
     }
 
@@ -83,6 +83,6 @@ class EditEnvelopeViewModelTest {
     }
 
     private fun setEditMode() {
-        viewModel.envelope(interactor.envelopes.first().id.code)
+        viewModel.uiState(interactor.envelopes.first().id.code)
     }
 }

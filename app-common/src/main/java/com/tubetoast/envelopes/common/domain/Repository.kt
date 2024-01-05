@@ -10,6 +10,7 @@ import com.tubetoast.envelopes.common.domain.models.id
 interface Repository<M : ImmutableModel<M>, Key> {
     fun get(valueId: Id<M>): M?
     fun getCollection(keyId: Id<Key>): Set<M>
+    fun getAll(): Set<M>
     fun add(keyId: Id<Key>, value: M)
     fun delete(value: M)
     fun move(value: M, newKey: Id<Key>)
@@ -61,9 +62,6 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Ke
 fun <M, Key> Repository<M, Key>.put(value: M) where M : ImmutableModel<M> {
     add(value.id(), value)
 }
-
-fun <M, Key> Repository<M, Key>.getAll(): Collection<M> where M : ImmutableModel<M> =
-    getCollection(Id.any)
 
 typealias UpdatingSpendingRepository = UpdatingRepository<Spending, Category>
 typealias UpdatingCategoriesRepository = UpdatingRepository<Category, Envelope>

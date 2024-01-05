@@ -26,15 +26,15 @@ fun EditCategoryScreen(
 ) {
     EnvelopesTheme {
         Column {
-            val category by remember { viewModel.category(categoryId) }
+            val uiState by remember { viewModel.uiState(categoryId) }
             val envelope by remember { viewModel.envelope(envelopeId) }
             TextField(
-                value = category.name,
+                value = uiState.draftCategory.name,
                 onValueChange = { viewModel.setName(it) },
                 modifier = Modifier.fillMaxWidth(),
             )
             TextField(
-                value = category.limit?.units?.takeIf { it > 0 }?.toString().orEmpty(),
+                value = uiState.draftCategory.limit?.units?.takeIf { it > 0 }?.toString().orEmpty(),
                 onValueChange = { viewModel.setLimit(it) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -48,7 +48,7 @@ fun EditCategoryScreen(
                         viewModel.confirm()
                         navController.popBackStack()
                     },
-                    enabled = viewModel.canConfirm(),
+                    enabled = uiState.canConfirm,
                 ) {
                     Text(text = "Confirm")
                 }
@@ -57,14 +57,14 @@ fun EditCategoryScreen(
                         viewModel.delete()
                         navController.popBackStack()
                     },
-                    enabled = viewModel.canDelete(),
+                    enabled = uiState.canDelete,
                 ) {
                     Text(text = "Delete")
                 }
                 Button(
                     onClick = {
                         navController.navigate(
-                            AppNavigation.chooseEnvelope(category, envelope)
+                            AppNavigation.chooseEnvelope(uiState.draftCategory, envelope)
                         )
                     },
                     enabled = viewModel.canChooseEnvelope()

@@ -3,69 +3,86 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.id
+import kotlinx.coroutines.launch
 
 class EditEnvelopeViewModel(
     private val envelopeInteractor: EnvelopeInteractor,
 ) : ViewModel() {
 
     sealed interface Mode {
-        fun canConfirm(envelope: Envelope?): Boolean
-        fun confirm(envelope: Envelope)
-        fun canDelete(): Boolean
-        fun delete()
+        suspend fun canConfirm(envelope: Envelope?): Boolean
+        suspend fun confirm(envelope: Envelope)
+        suspend fun canDelete(): Boolean
+        suspend fun delete()
+    }
+
+    data class UIState(
+        val draftEnvelope: Envelope,
+        val canConfirm: Boolean,
+        val canDelete: Boolean
+    ) {
+        companion object {
+            val EMPTY = UIState(Envelope.EMPTY, canConfirm = false, canDelete = false)
+        }
     }
 
     private var mode: Mode = CreateEnvelopeMode(envelopeInteractor)
 
-    private val draftEnvelope = mutableStateOf(Envelope.EMPTY)
+    private val uiState = mutableStateOf(UIState.EMPTY)
 
-    fun envelope(envelopeId: Int?): State<Envelope> {
+    fun uiState(envelopeId: Int?): State<UIState> {
         envelopeId?.let { id ->
-            envelopeInteractor.getExactEnvelope(id.id())?.let {
-                draftEnvelope.value = it
-                mode = EditEnvelopeMode(editedEnvelope = it, envelopeInteractor = envelopeInteractor)
-            } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
+            viewModelScope.launch {
+                envelopeInteractor.getExactEnvelope(id.id())?.let {
+                    updateUIState(it)
+                    mode = EditEnvelopeMode(
+                        editedEnvelope = it,
+                        envelopeInteractor = envelopeInteractor
+                    )
+                } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
+            }
         } ?: reset()
-        return draftEnvelope
+        return uiState
+    }
+
+    private fun updateUIState(envelope: Envelope = uiState.value.draftEnvelope) {
+        viewModelScope.launch {
+            uiState.value = UIState(envelope, mode.canConfirm(envelope), mode.canDelete())
+        }
     }
 
     fun setName(input: String) {
-        draftEnvelope.value = draftEnvelope.value.copy(name = input)
+        updateUIState(uiState.value.draftEnvelope.copy(name = input))
     }
 
     fun setLimit(input: String) {
         if (input.isBlank()) {
-            draftEnvelope.value = draftEnvelope.value.copy(limit = Amount.ZERO)
+            updateUIState(uiState.value.draftEnvelope.copy(limit = Amount.ZERO))
         } else {
             input.toIntOrNull()?.let {
-                draftEnvelope.value = draftEnvelope.value.copy(limit = Amount(it))
+                updateUIState(uiState.value.draftEnvelope.copy(limit = Amount(it)))
             }
         }
     }
 
-    fun canConfirm(): Boolean = mode.canConfirm(draftEnvelope.value)
-
     fun confirm() {
-        if (!canConfirm()) throw IllegalStateException("Cannot confirm!")
-        mode.confirm(draftEnvelope.value)
+        viewModelScope.launch { mode.confirm(uiState.value.draftEnvelope) }
         reset()
     }
 
-    fun canDelete(): Boolean = mode.canDelete()
-
     fun delete() {
-        if (!canDelete()) throw IllegalStateException("Cannot delete!")
-        mode.delete()
+        viewModelScope.launch { mode.delete() }
         reset()
     }
 
     private fun reset() {
         mode = CreateEnvelopeMode(envelopeInteractor)
-        draftEnvelope.value = Envelope.EMPTY
+        uiState.value = UIState.EMPTY
     }
 }
 
@@ -73,13 +90,13 @@ class EditEnvelopeViewModel(
 class CreateEnvelopeMode(
     private val envelopeInteractor: EnvelopeInteractor,
 ) : EditEnvelopeViewModel.Mode {
-    override fun canConfirm(envelope: Envelope?) = envelope?.run {
+    override suspend fun canConfirm(envelope: Envelope?) = envelope?.run {
         name.isNotBlank() && envelopeInteractor.getEnvelopeByName(name) == null
     } ?: false
 
-    override fun canDelete() = false
-    override fun delete() = throw IllegalStateException("Cannot delete what is not created")
-    override fun confirm(envelope: Envelope) = envelopeInteractor.addEnvelope(envelope)
+    override suspend fun canDelete() = false
+    override suspend fun delete() = throw IllegalStateException("Cannot delete what is not created")
+    override suspend fun confirm(envelope: Envelope) = envelopeInteractor.addEnvelope(envelope)
 }
 
 class EditEnvelopeMode(
@@ -87,15 +104,15 @@ class EditEnvelopeMode(
     private val editedEnvelope: Envelope
 ) : EditEnvelopeViewModel.Mode {
 
-    override fun canConfirm(envelope: Envelope?) = envelope?.run {
+    override suspend fun canConfirm(envelope: Envelope?) = envelope?.run {
         name.isNotBlank() && this != editedEnvelope && notSameNameAsOtherExisting()
     } ?: false
 
-    private fun Envelope.notSameNameAsOtherExisting() =
+    private suspend fun Envelope.notSameNameAsOtherExisting() =
         name == editedEnvelope.name || envelopeInteractor.getEnvelopeByName(name) == null
 
-    override fun canDelete() = true
-    override fun delete() = envelopeInteractor.deleteEnvelope(editedEnvelope)
-    override fun confirm(envelope: Envelope) =
+    override suspend fun canDelete() = true
+    override suspend fun delete() = envelopeInteractor.deleteEnvelope(editedEnvelope)
+    override suspend fun confirm(envelope: Envelope) =
         envelopeInteractor.editEnvelope(editedEnvelope, envelope)
 }
