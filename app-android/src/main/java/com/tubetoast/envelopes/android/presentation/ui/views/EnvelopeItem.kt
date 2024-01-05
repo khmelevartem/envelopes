@@ -41,7 +41,7 @@ fun EnvelopeView(
                     Text(text = envelope.name)
                     Text(text = "limit: ${envelope.limit.units}")
                     Text(text = "sum: ${sum.units}")
-                    Text(text = "used on $percentage%")
+                    Text(text = "used on ${(percentage * 100).toInt()}%")
                 }
             }
             Row {
