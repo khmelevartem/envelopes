@@ -23,7 +23,14 @@ abstract class DataSource<M : ImmutableModel<M>, Key, in DE : DatabaseEntity>(
 
     fun deleteCollection(keyId: Id<Key>) = dao.deleteCollection(keyId.code) != 0
 
-//    fun update(oldValueId: Id<M>, value: M) = dao.update(oldValueId.code, value)
+    fun update(oldValueId: Id<M>, value: M): Boolean {
+         return dao.get(oldValueId.code)?.foreignKey?.let { parentId ->
+            dao.delete(oldValueId.code)
+            dao.write(converter.toDatabaseEntity(value, parentId))
+             true
+        } ?: false
+//        return dao.update(oldValueId.code, value)
+    }
 }
 
 class EnvelopeDataSource(dao: EnvelopeDao, converter: Converter<Envelope, EnvelopeEntity>) :

@@ -19,7 +19,7 @@ interface StandardDao<DE : DatabaseEntity> {
 
     fun deleteCollection(parentKey: Int): Int
 
-//    fun update(oldValueId: Int, value: M): Boolean
+//    fun update(oldValueId: Int, value: DE): Boolean
 }
 
 @Dao
@@ -94,6 +94,6 @@ abstract class SpendingDao : StandardDao<SpendingEntity> {
     @Query("DELETE from spendingentity WHERE foreignKey LIKE :parentKey")
     abstract override fun deleteCollection(parentKey: Int): Int
 //
-//    @Query("UPDATE spendingentity SET value = :value WHERE primaryKey LIKE :oldValueId")
-//    abstract override fun update(oldValueId: Int, value: Spending): Boolean
+//    @Query("UPDATE spendingentity WHERE primaryKey LIKE :oldValueId")
+//    abstract override fun update(oldValueId: Int, value: SpendingEntity): Boolean
 }

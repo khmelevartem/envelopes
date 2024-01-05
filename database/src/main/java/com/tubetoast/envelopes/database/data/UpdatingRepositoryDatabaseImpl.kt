@@ -36,8 +36,7 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key>(
     }
 
     override fun editImpl(oldValue: M, newValue: M): Boolean {
-        TODO("need to be implemented")
-//        return dataSource.update(oldValue.id, newValue)
+        return dataSource.update(oldValue.id, newValue)
     }
 
     override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {

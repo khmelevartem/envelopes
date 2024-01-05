@@ -31,7 +31,7 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
         sets.flatMapTo(mutableSetOf()) { it.value }
 
     override fun addImpl(value: M, keyId: Id<Key>): Boolean {
-//        if (keyId == Id.any) throw IllegalArgumentException("Can not add with uncertain key")
+        if (keyId == Id.any) throw IllegalArgumentException("Can not add with uncertain key")
         keys[value.id] = keyId
         return getCollection(keyId).add(value)
     }
@@ -50,7 +50,7 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
             getCollection(key).run {
                 remove(oldValue) && add(newValue)
             }
-        } ?: throw IllegalArgumentException("There was no old value $oldValue found")
+        } ?: false
 
     override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {
         return sets.remove(keyId)?.mapTo(mutableSetOf()) { it.id }.orEmpty()
