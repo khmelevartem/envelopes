@@ -38,5 +38,4 @@ class CategoryInteractorStub(
     override suspend fun deleteCategory(category: Category) {
         categories.remove(category)
     }
-
 }

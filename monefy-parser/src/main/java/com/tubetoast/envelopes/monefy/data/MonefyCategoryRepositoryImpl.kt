@@ -10,7 +10,6 @@ class MonefyCategoryRepositoryImpl(
 ) : CategoriesRepositoryInMemoryBase() {
     init {
         if (anythingChanged(monefySource, categoryKeySource)) update?.invoke()
-
     }
 
     private fun anythingChanged(

@@ -20,14 +20,14 @@ import com.tubetoast.envelopes.android.presentation.ui.views.PlusView
 @Composable
 fun EnvelopesListScreen(
     navController: NavHostController,
-    envelopesListViewModel: EnvelopesListViewModel,
+    envelopesListViewModel: EnvelopesListViewModel
 ) {
     val itemModelsState = envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
     val itemModels by remember { itemModelsState }
     EnvelopesTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background,
+            color = MaterialTheme.colors.background
         ) {
             LazyColumn {
                 items(itemModels.asItemModels()) { itemModel ->

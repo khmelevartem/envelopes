@@ -24,10 +24,10 @@ abstract class DataSource<M : ImmutableModel<M>, Key, in DE : DatabaseEntity>(
     fun deleteCollection(keyId: Id<Key>) = dao.deleteCollection(keyId.code) != 0
 
     fun update(oldValueId: Id<M>, value: M): Boolean {
-         return dao.get(oldValueId.code)?.foreignKey?.let { parentId ->
+        return dao.get(oldValueId.code)?.foreignKey?.let { parentId ->
             dao.delete(oldValueId.code)
             dao.write(converter.toDatabaseEntity(value, parentId))
-             true
+            true
         } ?: false
 //        return dao.update(oldValueId.code, value)
     }
@@ -39,7 +39,5 @@ class EnvelopeDataSource(dao: EnvelopeDao, converter: Converter<Envelope, Envelo
 class CategoryDataSource(dao: CategoryDao, converter: Converter<Category, CategoryEntity>) :
     DataSource<Category, Envelope, CategoryEntity>(dao, converter)
 
-
 class SpendingDataSource(dao: SpendingDao, converter: Converter<Spending, SpendingEntity>) :
     DataSource<Spending, Category, SpendingEntity>(dao, converter)
-

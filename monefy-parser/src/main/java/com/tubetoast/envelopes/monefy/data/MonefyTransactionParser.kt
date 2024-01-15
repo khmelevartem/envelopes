@@ -18,13 +18,13 @@ class MonefyTransactionParser {
             Earning(
                 amount = amount,
                 date = date,
-                comment = comment,
+                comment = comment
             )
         } else {
             Spending(
                 amount = amount,
                 date = date,
-                comment = comment,
+                comment = comment
             )
         }
     }

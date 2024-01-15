@@ -4,7 +4,6 @@ import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.put
 
-
 class EnvelopesRepositoryWithUndefinedCategories : EnvelopesRepositoryInMemoryBase() {
     init {
         put(undefinedCategoriesEnvelope)

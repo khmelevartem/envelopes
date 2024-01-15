@@ -25,7 +25,7 @@ object EColor {
         Yellow,
         Peach,
         Pink,
-        Vanilla,
+        Vanilla
     )
 
     val GrayDarker = Color(0xff74747f)

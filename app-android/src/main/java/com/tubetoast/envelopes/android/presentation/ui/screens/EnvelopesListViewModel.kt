@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class EnvelopesListViewModel(
     snapshotsInteractor: SnapshotsInteractor,
-    private val envelopeInteractor: EnvelopeInteractor,
+    private val envelopeInteractor: EnvelopeInteractor
 ) : ViewModel() {
     fun delete(envelope: Envelope) {
         viewModelScope.launch {

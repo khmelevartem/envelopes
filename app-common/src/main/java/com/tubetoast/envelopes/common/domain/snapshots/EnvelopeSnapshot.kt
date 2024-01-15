@@ -7,7 +7,7 @@ import com.tubetoast.envelopes.common.domain.models.sum
 
 data class EnvelopeSnapshot(
     val envelope: Envelope,
-    val categories: Set<CategorySnapshot>,
+    val categories: Set<CategorySnapshot>
 ) {
 
     val transactions: List<Amount>

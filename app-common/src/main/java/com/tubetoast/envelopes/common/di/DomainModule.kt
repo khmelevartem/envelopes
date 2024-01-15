@@ -14,7 +14,7 @@ val domainModule = module {
         SnapshotsInteractorImpl(
             spendingRepository = get(named(SPENDING_REPO)),
             categoriesRepository = get(named(CATEGORIES_REPO)),
-            envelopesRepository = get(named(ENVELOPES_REPO)),
+            envelopesRepository = get(named(ENVELOPES_REPO))
         )
     }
     single<EnvelopeInteractor> { EnvelopeInteractorImpl(repository = get(named(ENVELOPES_REPO))) }

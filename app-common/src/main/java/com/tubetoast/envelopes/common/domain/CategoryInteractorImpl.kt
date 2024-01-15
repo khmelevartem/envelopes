@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class CategoryInteractorImpl(
-    private val repository: UpdatingCategoriesRepository,
+    private val repository: UpdatingCategoriesRepository
 ) : CategoryInteractor {
     private val dispatcher = Dispatchers.IO
     override suspend fun getCategoryByName(name: String): Category? {

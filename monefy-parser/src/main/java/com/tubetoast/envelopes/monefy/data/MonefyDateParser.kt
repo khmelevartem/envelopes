@@ -11,7 +11,7 @@ class MonefyDateParser {
         return Date(
             day = day,
             month = month,
-            year = year,
+            year = year
 
         )
     }

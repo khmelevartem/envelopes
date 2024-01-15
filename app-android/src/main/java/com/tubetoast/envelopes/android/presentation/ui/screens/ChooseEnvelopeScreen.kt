@@ -21,7 +21,7 @@ fun ChooseEnvelopeScreen(
     navController: NavController,
     viewModel: ChooseEnvelopeViewModel,
     categoryId: Int? = null,
-    envelopeId: Int? = null,
+    envelopeId: Int? = null
 ) {
     EnvelopesTheme {
         Column {
@@ -31,7 +31,7 @@ fun ChooseEnvelopeScreen(
             val envelopes by remember { envelopesState }
             Text(
                 text = category.name,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
             LazyColumn {
                 items(envelopes.asItemModels()) {

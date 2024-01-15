@@ -43,9 +43,10 @@ class CategoryConverter : Converter<Category, CategoryEntity> {
 class SpendingConverter : Converter<Spending, SpendingEntity> {
     override fun toDomainModel(databaseEntity: SpendingEntity): Spending = databaseEntity.run {
         Spending(
-            amount = Amount(units = amount), date = date.toDate(), comment = comment
+            amount = Amount(units = amount),
+            date = date.toDate(),
+            comment = comment
         )
-
     }
 
     override fun toDatabaseEntity(domainModel: Spending, parentId: Int): SpendingEntity =
@@ -56,7 +57,6 @@ class SpendingConverter : Converter<Spending, SpendingEntity> {
             date = domainModel.date.fromDate(),
             comment = domainModel.comment
         )
-
 
     companion object DateConverter {
         private const val DELIMITER = "/"

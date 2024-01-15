@@ -5,7 +5,7 @@ data class MonefyDataColumns(
     val category: Int,
     val amount: Int,
     val description: Int,
-    val size: Int,
+    val size: Int
 ) {
     companion object Parser {
         private const val KEY_DATE = "date"
@@ -19,7 +19,7 @@ data class MonefyDataColumns(
                     category = titles.getColumnNumber(KEY_CATEGORY),
                     amount = titles.getColumnNumber(KEY_AMOUNT),
                     description = titles.getColumnNumber(KEY_DESCRIPTION),
-                    size = titles.size,
+                    size = titles.size
                 )
             }
         }

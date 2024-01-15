@@ -14,7 +14,7 @@ class MonefyDateParserTest {
             hour = 0,
             day = 1,
             month = 1,
-            year = 2019,
+            year = 2019
         )
         Assertions.assertEquals(expected, actual)
     }

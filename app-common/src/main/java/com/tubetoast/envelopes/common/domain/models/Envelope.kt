@@ -2,7 +2,7 @@ package com.tubetoast.envelopes.common.domain.models
 
 data class Envelope(
     val name: String,
-    val limit: Amount,
+    val limit: Amount
 ) : ImmutableModel<Envelope>() {
 
     override val id: Id<Envelope> = name.id()

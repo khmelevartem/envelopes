@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 class SnapshotsInteractorImpl(
     private val spendingRepository: UpdatingSpendingRepository,
     private val categoriesRepository: UpdatingCategoriesRepository,
-    private val envelopesRepository: UpdatingEnvelopesRepository,
+    private val envelopesRepository: UpdatingEnvelopesRepository
 ) : SnapshotsInteractor {
 
     private val flow = MutableStateFlow<Set<EnvelopeSnapshot>>(emptySet())
@@ -35,9 +35,9 @@ class SnapshotsInteractorImpl(
                     .mapTo(mutableSetOf()) { category ->
                         CategorySnapshot(
                             category,
-                            spendingRepository.getCollection(category.id),
+                            spendingRepository.getCollection(category.id)
                         )
-                    },
+                    }
             )
         }
 

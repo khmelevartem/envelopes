@@ -3,7 +3,7 @@ package com.tubetoast.envelopes.common.domain.models
 data class Amount(
     val units: Int,
     val shares: Int = 0,
-    val currency: Currency = Currency.Ruble,
+    val currency: Currency = Currency.Ruble
 ) : ImmutableModel<Amount>() {
     init {
         check(units >= 0 && shares >= 0) {
@@ -16,7 +16,7 @@ data class Amount(
         return Amount(
             units = this.units + another.units,
             shares = this.shares + another.shares,
-            currency = this.currency,
+            currency = this.currency
         )
     }
 

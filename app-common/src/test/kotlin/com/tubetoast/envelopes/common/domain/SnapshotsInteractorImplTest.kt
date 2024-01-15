@@ -16,7 +16,7 @@ class SnapshotsInteractorImplTest {
     private val interactor: SnapshotsInteractorImpl = SnapshotsInteractorImpl(
         spendingRepositoryImpl,
         categoriesRepositoryImpl,
-        envelopesRepositoryImpl,
+        envelopesRepositoryImpl
     )
 
     @Test

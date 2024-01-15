@@ -22,7 +22,7 @@ fun EditCategoryScreen(
     navController: NavController,
     viewModel: EditCategoryViewModel,
     categoryId: Int? = null,
-    envelopeId: Int? = null,
+    envelopeId: Int? = null
 ) {
     EnvelopesTheme {
         Column {
@@ -31,13 +31,13 @@ fun EditCategoryScreen(
             TextField(
                 value = uiState.draftCategory.name,
                 onValueChange = { viewModel.setName(it) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 value = uiState.draftCategory.limit?.units?.takeIf { it > 0 }?.toString().orEmpty(),
                 onValueChange = { viewModel.setLimit(it) },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -48,7 +48,7 @@ fun EditCategoryScreen(
                         viewModel.confirm()
                         navController.popBackStack()
                     },
-                    enabled = uiState.canConfirm,
+                    enabled = uiState.canConfirm
                 ) {
                     Text(text = "Confirm")
                 }
@@ -57,7 +57,7 @@ fun EditCategoryScreen(
                         viewModel.delete()
                         navController.popBackStack()
                     },
-                    enabled = uiState.canDelete,
+                    enabled = uiState.canDelete
                 ) {
                     Text(text = "Delete")
                 }

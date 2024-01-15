@@ -27,13 +27,13 @@ fun EditEnvelopeScreen(
             TextField(
                 value = uiState.draftEnvelope.name,
                 onValueChange = { editEnvelopeViewModel.setName(it) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
             TextField(
                 value = uiState.draftEnvelope.limit.units.takeIf { it > 0 }?.toString().orEmpty(),
                 onValueChange = { editEnvelopeViewModel.setLimit(it) },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             Row {
                 Button(
@@ -41,7 +41,7 @@ fun EditEnvelopeScreen(
                         editEnvelopeViewModel.confirm()
                         navController.popBackStack()
                     },
-                    enabled = uiState.canConfirm,
+                    enabled = uiState.canConfirm
                 ) {
                     Text(text = "Confirm")
                 }
@@ -50,7 +50,7 @@ fun EditEnvelopeScreen(
                         editEnvelopeViewModel.delete()
                         navController.popBackStack()
                     },
-                    enabled = uiState.canDelete,
+                    enabled = uiState.canDelete
                 ) {
                     Text(text = "Delete")
                 }

@@ -32,7 +32,7 @@ fun EnvelopeView(
     onDeleteClick: (Envelope) -> Unit,
     onAddClick: (Envelope) -> Unit,
     onCategoryClick: (Category, Envelope) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) = Surface(color = itemModel.color, modifier = modifier) {
     Column {
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -56,7 +56,7 @@ fun EnvelopeView(
         LazyRow(
             modifier = modifier.padding(4.dp),
             contentPadding = PaddingValues(4.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             items(itemModel.data.categories.asItemModels().toList()) {
                 CategoryView(
@@ -67,7 +67,8 @@ fun EnvelopeView(
                             it.data.category,
                             itemModel.data.envelope
                         )
-                    })
+                    }
+                )
             }
             item {
                 IconButton(onClick = { onAddClick(itemModel.data.envelope) }) {

@@ -6,7 +6,7 @@ import com.tubetoast.envelopes.android.presentation.ui.theme.next
 
 data class ItemModel<T>(
     val data: T,
-    var color: Color,
+    var color: Color
 )
 
 fun <T> Collection<T>.asItemModels() =

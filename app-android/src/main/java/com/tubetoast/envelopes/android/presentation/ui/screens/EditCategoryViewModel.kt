@@ -139,7 +139,7 @@ class CreateCategoryMode(
         }
     }
 
-    override fun canChooseEnvelope() = false //TODO implement
+    override fun canChooseEnvelope() = false // TODO implement
 }
 
 class EditCategoryMode(
@@ -183,5 +183,4 @@ class EditCategoryMode(
     }
 
     override fun canChooseEnvelope() = true
-
 }

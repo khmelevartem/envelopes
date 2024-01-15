@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 
 @Composable
-fun CategoryView(snapshot: CategorySnapshot, color: Color, onClick: () ->  Unit) {
+fun CategoryView(snapshot: CategorySnapshot, color: Color, onClick: () -> Unit) {
     Surface(
         color = color,
         shape = RoundedCornerShape(20.dp),

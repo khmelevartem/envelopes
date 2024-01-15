@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class EnvelopeInteractorImpl(
-    private val repository: UpdatingEnvelopesRepository,
+    private val repository: UpdatingEnvelopesRepository
 ) : EnvelopeInteractor {
 
     private val dispatcher = Dispatchers.IO

@@ -31,7 +31,7 @@ open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key>(
     }
 
     override fun getAll(): Set<M> {
-       return repositories.fold(mutableSetOf()) { set, repo ->
+        return repositories.fold(mutableSetOf()) { set, repo ->
             set.apply { addAll(repo.getAll()) }
         }
     }
@@ -60,7 +60,6 @@ open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key>(
         }
     }
 }
-
 
 /** [UpdatingEnvelopesRepository] */
 open class CompositeEnvelopesRepositoryBase(

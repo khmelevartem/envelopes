@@ -7,7 +7,7 @@ import java.io.File
 
 class MonefyDataParser(
     private val dateParser: MonefyDateParser = MonefyDateParser(),
-    private val operationParser: MonefyTransactionParser = MonefyTransactionParser(),
+    private val operationParser: MonefyTransactionParser = MonefyTransactionParser()
 ) {
 
     fun parse(lines: List<String>): List<CategorySnapshot> {
@@ -31,7 +31,7 @@ class MonefyDataParser(
 
     private fun String.process(
         columns: MonefyDataColumns,
-        snapshots: MutableMap<String, MutableSet<Transaction<*>>>,
+        snapshots: MutableMap<String, MutableSet<Transaction<*>>>
     ) {
         val values = split(DELIMITER).takeIf { it.size == columns.size }
             ?: throw IllegalArgumentException("wtf? $this")
@@ -40,8 +40,8 @@ class MonefyDataParser(
             operationParser.parse(
                 string = values[columns.amount],
                 date = dateParser.parseDate(values[columns.date]),
-                comment = values[columns.description].trim(),
-            ),
+                comment = values[columns.description].trim()
+            )
         )
     }
 

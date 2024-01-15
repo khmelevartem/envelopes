@@ -17,14 +17,15 @@ data class EnvelopeEntity(
     val limit: Int
 ) : DatabaseEntity()
 
-
 @Entity(
-    foreignKeys = [ForeignKey(
-        entity = EnvelopeEntity::class,
-        parentColumns = arrayOf("primaryKey"),
-        childColumns = arrayOf("foreignKey"),
-        onDelete = ForeignKey.CASCADE
-    )]
+    foreignKeys = [
+        ForeignKey(
+            entity = EnvelopeEntity::class,
+            parentColumns = arrayOf("primaryKey"),
+            childColumns = arrayOf("foreignKey"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class CategoryEntity(
     @PrimaryKey override val primaryKey: Int,
@@ -33,14 +34,15 @@ data class CategoryEntity(
     val limit: Int?
 ) : DatabaseEntity()
 
-
 @Entity(
-    foreignKeys = [ForeignKey(
-        entity = CategoryEntity::class,
-        parentColumns = arrayOf("primaryKey"),
-        childColumns = arrayOf("foreignKey"),
-        onDelete = ForeignKey.CASCADE
-    )]
+    foreignKeys = [
+        ForeignKey(
+            entity = CategoryEntity::class,
+            parentColumns = arrayOf("primaryKey"),
+            childColumns = arrayOf("foreignKey"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class SpendingEntity(
     @PrimaryKey override val primaryKey: Int,

@@ -26,7 +26,7 @@ fun EnvelopesApp(
     envelopesListViewModel: EnvelopesListViewModel,
     editEnvelopeViewModel: EditEnvelopeViewModel,
     editCategoryViewModel: EditCategoryViewModel,
-    chooseEnvelopeViewModel: ChooseEnvelopeViewModel,
+    chooseEnvelopeViewModel: ChooseEnvelopeViewModel
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -37,8 +37,8 @@ fun EnvelopesApp(
         composable(
             route = AppNavigation.envelopeScreen,
             arguments = listOf(
-                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType },
-            ),
+                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
+            )
         ) {
             val envelopeId = navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)
             EditEnvelopeScreen(navController, editEnvelopeViewModel, envelopeId)
@@ -47,8 +47,8 @@ fun EnvelopesApp(
             route = AppNavigation.categoryScreen,
             arguments = listOf(
                 navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
-                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType },
-            ),
+                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
+            )
         ) {
             navBackStackEntry?.arguments?.run {
                 val envelopeId = takeInt(AppNavigation.argEnvelopeId)
@@ -65,8 +65,8 @@ fun EnvelopesApp(
             route = AppNavigation.chooseEnvelope,
             arguments = listOf(
                 navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
-                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType },
-            ),
+                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
+            )
         ) {
             navBackStackEntry?.arguments?.run {
                 val envelopeId = takeInt(AppNavigation.argEnvelopeId)

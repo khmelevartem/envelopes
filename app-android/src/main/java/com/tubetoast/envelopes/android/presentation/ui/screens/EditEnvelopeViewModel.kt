@@ -11,7 +11,7 @@ import com.tubetoast.envelopes.common.domain.models.id
 import kotlinx.coroutines.launch
 
 class EditEnvelopeViewModel(
-    private val envelopeInteractor: EnvelopeInteractor,
+    private val envelopeInteractor: EnvelopeInteractor
 ) : ViewModel() {
 
     sealed interface Mode {
@@ -86,9 +86,8 @@ class EditEnvelopeViewModel(
     }
 }
 
-
 class CreateEnvelopeMode(
-    private val envelopeInteractor: EnvelopeInteractor,
+    private val envelopeInteractor: EnvelopeInteractor
 ) : EditEnvelopeViewModel.Mode {
     override suspend fun canConfirm(envelope: Envelope?) = envelope?.run {
         name.isNotBlank() && envelopeInteractor.getEnvelopeByName(name) == null

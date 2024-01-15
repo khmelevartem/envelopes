@@ -18,12 +18,12 @@ class MonefyTransactionParserTest {
         val actual = parser.parse(
             realString,
             date,
-            comment,
+            comment
         )
         val expected = Spending(
             amount = Amount(2500),
             date = date,
-            comment = comment,
+            comment = comment
         )
         Assertions.assertEquals(expected, actual)
     }
@@ -36,12 +36,12 @@ class MonefyTransactionParserTest {
         val actual = parser.parse(
             realString,
             date,
-            comment,
+            comment
         )
         val expected = Earning(
             amount = Amount(units = 2500, shares = 2),
             date = date,
-            comment = comment,
+            comment = comment
         )
         Assertions.assertEquals(expected, actual)
     }

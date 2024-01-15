@@ -32,5 +32,4 @@ class EnvelopeInteractorStub(
             add(new)
         }
     }
-
 }

@@ -21,4 +21,3 @@ val appModule = module {
         androidContext().assets.open("Monefy.csv")
     }
 }
-

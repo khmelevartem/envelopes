@@ -18,13 +18,13 @@ class EnvelopeSnapshotTest {
                 transactions = setOf(
                     Spending(
                         amount = Amount(units = 10),
-                        date = randomDate(),
+                        date = randomDate()
                     ),
                     Spending(
                         amount = Amount(units = 30),
-                        date = randomDate(),
-                    ),
-                ),
+                        date = randomDate()
+                    )
+                )
 
             ),
             CategorySnapshot(
@@ -32,15 +32,15 @@ class EnvelopeSnapshotTest {
                 transactions = setOf(
                     Spending(
                         amount = Amount(units = 50),
-                        date = randomDate(),
+                        date = randomDate()
                     ),
                     Spending(
                         amount = Amount(units = 30),
-                        date = randomDate(),
-                    ),
-                ),
-            ),
-        ),
+                        date = randomDate()
+                    )
+                )
+            )
+        )
     )
 
     @ParameterizedTest
