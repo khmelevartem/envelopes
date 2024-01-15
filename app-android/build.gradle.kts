@@ -31,7 +31,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompilerVersion.get()
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/**"
             excludes += "DebugProbesKt.bin"

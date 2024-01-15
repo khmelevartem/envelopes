@@ -7,9 +7,9 @@ junitPlatformLauncherVersion = "1.9.3"
 koinVersion = "3.5.0"
 kotlinVersion = "1.9.21"
 kspVersion = "1.9.21-1.0.16"
-kotlinxCoroutinesVersion = "1.7.0-Beta"
-kotlinxCoroutinesTestVersion = "1.6.4"
-androidVersion = "8.2.0"
+kotlinxCoroutinesVersion = "1.7.3"
+kotlinxCoroutinesTestVersion = "1.7.3"
+androidVersion = "8.2.1"
 roomVersion = "2.6.1"
 
 [plugins]
@@ -19,6 +19,7 @@ android-library = { id = "com.android.library", version.ref = "androidVersion" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "11.4.0" }
 
 [libraries]
 
