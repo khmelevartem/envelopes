@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.id
+
 import kotlinx.coroutines.launch
 
 class EditEnvelopeViewModel(
@@ -35,16 +35,16 @@ class EditEnvelopeViewModel(
 
     private val uiState = mutableStateOf(UIState.EMPTY)
 
-    fun uiState(envelopeId: Int?): State<UIState> {
+    fun uiState(envelopeId: String?): State<UIState> {
         envelopeId?.let { id ->
             viewModelScope.launch {
-                envelopeInteractor.getExactEnvelope(id.id())?.let {
+                envelopeInteractor.getExactEnvelope(id)?.let {
                     updateUIState(it)
                     mode = EditEnvelopeMode(
                         editedEnvelope = it,
                         envelopeInteractor = envelopeInteractor
                     )
-                } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
+                } ?: Envelope.EMPTY
             }
         } ?: reset()
         return uiState

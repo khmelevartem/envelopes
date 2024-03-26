@@ -1,7 +1,6 @@
 package com.tubetoast.envelopes.common.domain
 
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Id
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -14,7 +13,7 @@ class EnvelopeInteractorImpl(
     override suspend fun getEnvelopeByName(name: String) =
         withContext(dispatcher) { repository.getAll().singleOrNull { it.name == name } }
 
-    override suspend fun getExactEnvelope(id: Id<Envelope>): Envelope? = withContext(dispatcher) {
+    override suspend fun getExactEnvelope(id: String): Envelope? = withContext(dispatcher) {
         repository.get(id)
     }
 

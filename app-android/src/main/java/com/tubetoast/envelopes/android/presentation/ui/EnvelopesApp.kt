@@ -37,22 +37,22 @@ fun EnvelopesApp(
         composable(
             route = AppNavigation.envelopeScreen,
             arguments = listOf(
-                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
+                stringNavArgument(AppNavigation.argEnvelopeId)
             )
         ) {
-            val envelopeId = navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)
+            val envelopeId = navBackStackEntry?.arguments?.takeString(AppNavigation.argEnvelopeId)
             EditEnvelopeScreen(navController, editEnvelopeViewModel, envelopeId)
         }
         composable(
             route = AppNavigation.categoryScreen,
             arguments = listOf(
-                navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
-                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
+                stringNavArgument(AppNavigation.argCategoryId),
+                stringNavArgument(AppNavigation.argEnvelopeId)
             )
         ) {
             navBackStackEntry?.arguments?.run {
-                val envelopeId = takeInt(AppNavigation.argEnvelopeId)
-                val categoryId = takeInt(AppNavigation.argCategoryId)
+                val envelopeId = takeString(AppNavigation.argEnvelopeId)
+                val categoryId = takeString(AppNavigation.argCategoryId)
                 EditCategoryScreen(
                     navController = navController,
                     viewModel = editCategoryViewModel,
@@ -64,13 +64,13 @@ fun EnvelopesApp(
         composable(
             route = AppNavigation.chooseEnvelope,
             arguments = listOf(
-                navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
-                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
+                stringNavArgument(AppNavigation.argCategoryId),
+                stringNavArgument(AppNavigation.argEnvelopeId)
             )
         ) {
             navBackStackEntry?.arguments?.run {
-                val envelopeId = takeInt(AppNavigation.argEnvelopeId)
-                val categoryId = takeInt(AppNavigation.argCategoryId)
+                val envelopeId = takeString(AppNavigation.argEnvelopeId)
+                val categoryId = takeString(AppNavigation.argCategoryId)
                 ChooseEnvelopeScreen(
                     navController = navController,
                     viewModel = chooseEnvelopeViewModel,
@@ -82,10 +82,10 @@ fun EnvelopesApp(
     }
 }
 
-private const val NO_VALUE = -1
+private fun stringNavArgument(argCategoryId: String) = navArgument(argCategoryId) { type = NavType.StringType }
 
-private fun Bundle.takeInt(key: String): Int? {
-    return getInt(key, NO_VALUE).takeUnless { it == NO_VALUE }
+private fun Bundle.takeString(key: String): String? {
+    return getString(key, null)
 }
 
 object AppNavigation {
@@ -106,8 +106,8 @@ object AppNavigation {
     fun editCategory(category: Category, envelope: Envelope) =
         categoryScreen.putArg(argCategoryId, category).putArg(argEnvelopeId, envelope)
 
-    private fun String.putArg(argName: String, argValue: ImmutableModel<*>?) =
-        this.replace("{$argName}", "${argValue?.id?.code ?: NO_VALUE}")
+    private fun String.putArg(argName: String, argValue: ImmutableModel?) =
+        this.replace("{$argName}", argValue?.id ?: "#unknown")
 
     fun chooseEnvelope(category: Category, envelope: Envelope) =
         chooseEnvelope.putArg(argCategoryId, category).putArg(argEnvelopeId, envelope)

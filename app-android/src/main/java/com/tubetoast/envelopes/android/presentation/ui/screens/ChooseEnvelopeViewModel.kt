@@ -8,7 +8,7 @@ import com.tubetoast.envelopes.common.domain.CategoryInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.id
+
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -20,20 +20,20 @@ class ChooseEnvelopeViewModel(
     private val category = mutableStateOf(Category.EMPTY)
     private var chosenEnvelope = mutableStateOf(Envelope.EMPTY)
 
-    fun envelopes(chosenEnvelopeId: Int?): Flow<List<Envelope>> =
+    fun envelopes(chosenEnvelopeId: String?): Flow<List<Envelope>> =
         snapshotsInteractor.envelopeSnapshotFlow
             .map {
                 it.map { snapshot ->
                     snapshot.envelope.also { envelope ->
-                        if (envelope.id.code == chosenEnvelopeId) chosenEnvelope.value = envelope
+                        if (envelope.id == chosenEnvelopeId) chosenEnvelope.value = envelope
                     }
                 }
             }
 
-    fun category(id: Int?): State<Category> {
+    fun category(id: String?): State<Category> {
         id?.let {
             viewModelScope.launch {
-                categoryInteractor.getCategory(id.id())?.let {
+                categoryInteractor.getCategory(id)?.let {
                     category.value = it
                 } ?: throw IllegalStateException("Trying to set category id $id that doesn't exit")
             }

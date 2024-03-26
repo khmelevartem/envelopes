@@ -6,22 +6,22 @@ import com.tubetoast.envelopes.common.domain.UpdatingRepository
 import com.tubetoast.envelopes.common.domain.UpdatingSpendingRepository
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Id
+
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
 
-open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
+open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel, Key> :
     UpdatingRepository<M, Key>() {
 
-    protected val sets = mutableMapOf<Id<Key>, MutableSet<M>>()
-    protected val keys = mutableMapOf<Id<M>, Id<Key>>()
+    protected val sets = mutableMapOf<String, MutableSet<M>>()
+    protected val keys = mutableMapOf<String, String>()
 
-    override fun get(valueId: Id<M>): M? {
+    override fun get(valueId: String): M? {
         val key = keys[valueId]
         return sets[key]?.find { it.id == valueId }
     }
 
-    override fun getCollection(keyId: Id<Key>) = if (keyId == Id.any) {
+    override fun getCollection(keyId: String) = if (keyId.isEmpty()) {
         throw UnsupportedOperationException("need to delete this call")
     } else {
         sets.getOrPut(keyId) { mutableSetOf() }
@@ -30,8 +30,8 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
     override fun getAll(): Set<M> =
         sets.flatMapTo(mutableSetOf()) { it.value }
 
-    override fun addImpl(value: M, keyId: Id<Key>): Boolean {
-        if (keyId == Id.any) throw IllegalArgumentException("Can not add with uncertain key")
+    override fun addImpl(value: M, keyId: String): Boolean {
+        if (keyId.isEmpty()) throw IllegalArgumentException("Can not add with uncertain key")
         keys[value.id] = keyId
         return getCollection(keyId).add(value)
     }
@@ -52,7 +52,7 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
             }
         } ?: false
 
-    override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {
+    override fun deleteCollectionImpl(keyId: String): Set<String> {
         return sets.remove(keyId)?.mapTo(mutableSetOf()) { it.id }.orEmpty()
     }
 }

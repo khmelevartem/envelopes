@@ -19,7 +19,7 @@ import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
 fun EditEnvelopeScreen(
     navController: NavHostController,
     editEnvelopeViewModel: EditEnvelopeViewModel,
-    envelopeId: Int? = null
+    envelopeId: String? = null
 ) {
     EnvelopesTheme {
         Column {

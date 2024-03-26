@@ -2,29 +2,27 @@ package com.tubetoast.envelopes.common.domain
 
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
-import com.tubetoast.envelopes.common.domain.models.id
 
-interface Repository<M : ImmutableModel<M>, Key> {
-    fun get(valueId: Id<M>): M?
-    fun getCollection(keyId: Id<Key>): Set<M>
+interface Repository<M : ImmutableModel, Key> {
+    fun get(valueId: String): M?
+    fun getCollection(keyId: String): Set<M>
     fun getAll(): Set<M>
-    fun add(keyId: Id<Key>, value: M)
+    fun add(keyId: String, value: M)
     fun delete(value: M)
-    fun move(value: M, newKey: Id<Key>)
+    fun move(value: M, newKey: String)
     fun edit(oldValue: M, newValue: M)
 }
 
-abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Key> {
+abstract class UpdatingRepository<M : ImmutableModel, Key> : Repository<M, Key> {
     var update: (() -> Unit)? = null
-    var deleteListener: ((Id<M>) -> Unit)? = null
-    val deleteListenerImpl: ((Id<Key>) -> Unit) = {
+    var deleteListener: ((String) -> Unit)? = null
+    val deleteListenerImpl: ((String) -> Unit) = {
         deleteCollection(it)
     }
 
-    final override fun add(keyId: Id<Key>, value: M) {
+    final override fun add(keyId: String, value: M) {
         if (addImpl(value, keyId)) update?.invoke()
     }
 
@@ -35,7 +33,7 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Ke
         }
     }
 
-    final override fun move(value: M, newKey: Id<Key>) {
+    final override fun move(value: M, newKey: String) {
         if (deleteImpl(value) && addImpl(value, newKey)) {
             update?.invoke()
         }
@@ -45,22 +43,22 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Ke
         if (editImpl(oldValue, newValue)) update?.invoke()
     }
 
-    private fun deleteCollection(keyId: Id<Key>) {
+    private fun deleteCollection(keyId: String) {
         deleteCollectionImpl(keyId).forEach {
             deleteListener?.invoke(it)
         }
     }
 
-    abstract fun addImpl(value: M, keyId: Id<Key>): Boolean
+    abstract fun addImpl(value: M, keyId: String): Boolean
     abstract fun deleteImpl(value: M): Boolean
     abstract fun editImpl(oldValue: M, newValue: M): Boolean
 
     /** Returns deleted */
-    abstract fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>>
+    abstract fun deleteCollectionImpl(keyId: String): Set<String>
 }
 
-fun <M, Key> Repository<M, Key>.put(value: M) where M : ImmutableModel<M> {
-    add(value.id(), value)
+fun <M, Key> Repository<M, Key>.put(value: M) where M : ImmutableModel {
+    add(value.id, value)
 }
 
 typealias UpdatingSpendingRepository = UpdatingRepository<Spending, Category>

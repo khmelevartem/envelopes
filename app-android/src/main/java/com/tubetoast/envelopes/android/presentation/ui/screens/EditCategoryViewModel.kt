@@ -10,8 +10,7 @@ import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Id
-import com.tubetoast.envelopes.common.domain.models.id
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
@@ -28,7 +27,7 @@ class EditCategoryViewModel(
         abstract fun confirm(category: Category, envelope: Envelope)
         abstract fun canDelete(): Boolean
         abstract fun delete()
-        abstract fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit)
+        abstract fun envelope(id: String?, change: (Envelope) -> Unit)
         abstract fun canChooseEnvelope(): Boolean
         fun destroy() = scope.coroutineContext.cancelChildren()
     }
@@ -58,7 +57,7 @@ class EditCategoryViewModel(
 
     private val uiState = mutableStateOf(UIState.EMPTY)
 
-    fun uiState(id: Int?, envelopeId: Int?): State<UIState> {
+    fun uiState(id: String?, envelopeId: String?): State<UIState> {
         viewModelScope.launch {
             id?.let {
                 categoryInteractor.getCategory(id.id())?.let { editedCategory ->
@@ -145,7 +144,7 @@ class CreateCategoryMode(
 
     override fun canDelete(): Boolean = false
     override fun delete() = throw IllegalStateException("Cannot delete")
-    override fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit) {
+    override fun envelope(id: String?, change: (Envelope) -> Unit) {
         id?.let {
             scope.launch {
                 envelopeInteractor.getExactEnvelope(id)?.let { change(it) }
@@ -185,7 +184,7 @@ class EditCategoryMode(
         }
     }
 
-    override fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit) {
+    override fun envelope(id: String?, change: (Envelope) -> Unit) {
         scope.launch {
             snapshotsInteractor.envelopeSnapshotFlow.collect { set ->
                 change(

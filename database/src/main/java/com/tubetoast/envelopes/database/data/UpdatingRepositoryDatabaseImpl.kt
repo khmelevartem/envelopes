@@ -6,19 +6,18 @@ import com.tubetoast.envelopes.common.domain.UpdatingRepository
 import com.tubetoast.envelopes.common.domain.UpdatingSpendingRepository
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
 
-open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key>(
+open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel, Key>(
     private val dataSource: DataSource<M, Key, *>
 ) : UpdatingRepository<M, Key>() {
 
-    override fun get(valueId: Id<M>): M? {
+    override fun get(valueId: String): M? {
         return dataSource.get(valueId)
     }
 
-    override fun getCollection(keyId: Id<Key>): Set<M> {
+    override fun getCollection(keyId: String): Set<M> {
         return dataSource.getCollection(keyId).toSet()
     }
 
@@ -26,7 +25,7 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key>(
         return dataSource.getAll().toSet()
     }
 
-    override fun addImpl(value: M, keyId: Id<Key>): Boolean {
+    override fun addImpl(value: M, keyId: String): Boolean {
         dataSource.write(value, keyId)
         return true // fix it with custom insert
     }
@@ -39,7 +38,7 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key>(
         return dataSource.update(oldValue.id, newValue)
     }
 
-    override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {
+    override fun deleteCollectionImpl(keyId: String): Set<String> {
         dataSource.deleteCollection(keyId)
         return emptySet() // deleting recursive with foreign key
     }

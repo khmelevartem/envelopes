@@ -7,9 +7,9 @@ import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
 
-interface Converter<M : ImmutableModel<M>, DE : DatabaseEntity> {
+interface Converter<M : ImmutableModel, DE : DatabaseEntity> {
     fun toDomainModel(databaseEntity: DE): M
-    fun toDatabaseEntity(domainModel: M, parentId: Int): DE
+    fun toDatabaseEntity(domainModel: M, parentId: String): DE
 }
 
 class EnvelopeConverter : Converter<Envelope, EnvelopeEntity> {
@@ -17,9 +17,9 @@ class EnvelopeConverter : Converter<Envelope, EnvelopeEntity> {
         Envelope(name = name, limit = Amount(units = limit))
     }
 
-    override fun toDatabaseEntity(domainModel: Envelope, parentId: Int) =
+    override fun toDatabaseEntity(domainModel: Envelope, parentId: String) =
         EnvelopeEntity(
-            primaryKey = domainModel.id.code,
+            primaryKey = domainModel.id,
             foreignKey = parentId,
             name = domainModel.name,
             limit = domainModel.limit.units
@@ -31,9 +31,9 @@ class CategoryConverter : Converter<Category, CategoryEntity> {
         Category(name = name, limit = limit?.let { Amount(units = it) })
     }
 
-    override fun toDatabaseEntity(domainModel: Category, parentId: Int): CategoryEntity =
+    override fun toDatabaseEntity(domainModel: Category, parentId: String): CategoryEntity =
         CategoryEntity(
-            primaryKey = domainModel.id.code,
+            primaryKey = domainModel.id,
             foreignKey = parentId,
             name = domainModel.name,
             limit = domainModel.limit?.units
@@ -49,9 +49,9 @@ class SpendingConverter : Converter<Spending, SpendingEntity> {
         )
     }
 
-    override fun toDatabaseEntity(domainModel: Spending, parentId: Int): SpendingEntity =
+    override fun toDatabaseEntity(domainModel: Spending, parentId: String): SpendingEntity =
         SpendingEntity(
-            primaryKey = domainModel.id.code,
+            primaryKey = domainModel.id,
             foreignKey = parentId,
             amount = domainModel.amount.units,
             date = domainModel.date.fromDate(),

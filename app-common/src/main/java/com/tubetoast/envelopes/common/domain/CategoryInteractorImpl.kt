@@ -1,8 +1,6 @@
 package com.tubetoast.envelopes.common.domain
 
 import com.tubetoast.envelopes.common.domain.models.Category
-import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Id
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -20,11 +18,11 @@ class CategoryInteractorImpl(
         }
     }
 
-    override suspend fun getCategory(id: Id<Category>): Category? {
+    override suspend fun getCategory(id: String): Category? {
         return withContext(dispatcher) { repository.get(id) }
     }
 
-    override suspend fun addCategory(category: Category, envelopeId: Id<Envelope>) {
+    override suspend fun addCategory(category: Category, envelopeId: String) {
         withContext(dispatcher) { repository.add(envelopeId, category) }
     }
 
@@ -34,7 +32,7 @@ class CategoryInteractorImpl(
         }
     }
 
-    override suspend fun moveCategory(category: Category, newEnvelopeId: Id<Envelope>) {
+    override suspend fun moveCategory(category: Category, newEnvelopeId: String) {
         withContext(dispatcher) {
             repository.move(category, newEnvelopeId)
         }

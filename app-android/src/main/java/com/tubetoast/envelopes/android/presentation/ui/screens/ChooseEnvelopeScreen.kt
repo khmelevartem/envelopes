@@ -20,8 +20,8 @@ import com.tubetoast.envelopes.android.presentation.ui.views.PlusView
 fun ChooseEnvelopeScreen(
     navController: NavController,
     viewModel: ChooseEnvelopeViewModel,
-    categoryId: Int? = null,
-    envelopeId: Int? = null
+    categoryId: String? = null,
+    envelopeId: String? = null
 ) {
     EnvelopesTheme {
         Column {

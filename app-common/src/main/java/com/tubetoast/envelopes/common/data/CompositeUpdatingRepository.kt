@@ -6,24 +6,23 @@ import com.tubetoast.envelopes.common.domain.UpdatingRepository
 import com.tubetoast.envelopes.common.domain.UpdatingSpendingRepository
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
 
 /**
  * Order of [repositories] matters
  */
-open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key>(
+open class CompositeUpdatingRepository<M : ImmutableModel, Key>(
     private vararg val repositories: UpdatingRepository<M, Key>
 ) : UpdatingRepository<M, Key>() {
-    override fun get(valueId: Id<M>): M? {
+    override fun get(valueId: String): M? {
         repositories.forEach { repo ->
             repo.get(valueId)?.let { result -> return result }
         }
         return null
     }
 
-    override fun getCollection(keyId: Id<Key>): Set<M> {
+    override fun getCollection(keyId: String): Set<M> {
         repositories.forEach { repo ->
             repo.getCollection(keyId).takeIf { it.isNotEmpty() }?.let { return it }
         }
@@ -36,7 +35,7 @@ open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key>(
         }
     }
 
-    override fun addImpl(value: M, keyId: Id<Key>): Boolean {
+    override fun addImpl(value: M, keyId: String): Boolean {
         return repositories.map { repo ->
             repo.addImpl(value, keyId)
         }.any()
@@ -54,7 +53,7 @@ open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key>(
         }.any()
     }
 
-    override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {
+    override fun deleteCollectionImpl(keyId: String): Set<String> {
         return repositories.fold(mutableSetOf()) { set, repo ->
             set.apply { addAll(repo.deleteCollectionImpl(keyId)) }
         }
