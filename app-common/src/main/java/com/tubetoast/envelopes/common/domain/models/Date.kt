@@ -6,7 +6,9 @@ data class Date(
     val day: Int,
     val month: Int,
     val year: Int
-) : ImmutableModel<Date>()
+) : ImmutableModel {
+    override val id: String = "$className:$day:$month:$year"
+}
 
 fun randomDate() = Random(System.currentTimeMillis()).run {
     Date(day = nextInt(), month = nextInt(), year = nextInt())

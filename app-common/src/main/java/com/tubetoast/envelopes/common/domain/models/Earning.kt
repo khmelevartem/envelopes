@@ -4,4 +4,6 @@ data class Earning(
     override val amount: Amount,
     override val date: Date,
     override val comment: String? = null
-) : Transaction<Earning>()
+) : Transaction() {
+    override val id: String = "$className:$amount:$date:$comment"
+}
