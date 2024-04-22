@@ -8,6 +8,7 @@ class EnvelopesRepositoryWithUndefinedCategories : EnvelopesRepositoryInMemoryBa
     init {
         put(undefinedCategoriesEnvelope)
     }
+
     companion object {
         val undefinedCategoriesEnvelope = Envelope(name = "Undefined", limit = Amount.ZERO)
     }

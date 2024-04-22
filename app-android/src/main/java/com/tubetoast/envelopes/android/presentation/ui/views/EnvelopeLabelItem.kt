@@ -23,7 +23,9 @@ fun EnvelopeLabelView(
     onClick: () -> Unit
 ) = Surface(
     color = itemModel.color,
-    modifier = modifier.clickable(onClick = onClick).fillMaxWidth(),
+    modifier = modifier
+        .clickable(onClick = onClick)
+        .fillMaxWidth(),
     border = BorderStroke(if (chosen) 4.dp else 0.dp, EColor.Gray)
 ) {
     Text(
