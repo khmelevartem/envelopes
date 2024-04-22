@@ -106,6 +106,11 @@ class EditCategoryViewModel(
 
     fun canChooseEnvelope(): Boolean = mode.canChooseEnvelope()
 
+    override fun onCleared() {
+        super.onCleared()
+        mode.destroy()
+    }
+
     private fun updateUIState(category: Category = uiState.value.draftCategory) {
         viewModelScope.launch {
             uiState.value = uiState.value.copy(
@@ -188,12 +193,10 @@ class EditCategoryMode(
     override fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit) {
         scope.launch {
             snapshotsInteractor.envelopeSnapshotFlow.collect { set ->
-                change(
-                    set.find { snapshot ->
-                        snapshot.categories.find { it.category == editedCategory } != null
-                    }?.envelope
-                        ?: throw IllegalStateException("Category ${editedCategory.name} must have an envelope attached")
-                )
+                val envelope = set.find { snapshot ->
+                    snapshot.categories.find { it.category == editedCategory } != null
+                }?.envelope
+                envelope?.let(change) ?: destroy()
             }
         }
     }
