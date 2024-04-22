@@ -10,7 +10,7 @@ class EnvelopesApplication : Application() {
         super.onCreate()
         startKoin {
             androidContext(applicationContext)
-            modules(*applicationModules(applicationContext))
+            modules(*applicationModules)
         }
     }
 }
