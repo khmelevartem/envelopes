@@ -13,6 +13,7 @@ import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.id
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 
 class EditCategoryViewModel(
@@ -21,53 +22,60 @@ class EditCategoryViewModel(
     private val snapshotsInteractor: SnapshotsInteractor
 ) : ViewModel() {
 
-    sealed interface Mode {
-        suspend fun canConfirm(category: Category?): Boolean
-        fun confirm(category: Category, envelope: Envelope)
-        fun canDelete(): Boolean
-        fun delete()
-        fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit)
-        fun canChooseEnvelope(): Boolean
+    abstract class Mode(parentScope: CoroutineScope) {
+        protected val scope = CoroutineScope(parentScope.coroutineContext)
+        abstract suspend fun canConfirm(category: Category?): Boolean
+        abstract fun confirm(category: Category, envelope: Envelope)
+        abstract fun canDelete(): Boolean
+        abstract fun delete()
+        abstract fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit)
+        abstract fun canChooseEnvelope(): Boolean
+        fun destroy() = scope.coroutineContext.cancelChildren()
     }
 
     data class UIState(
         val draftCategory: Category,
         val canConfirm: Boolean,
-        val canDelete: Boolean
+        val canDelete: Boolean,
+        val envelope: Envelope
     ) {
         companion object {
-            val EMPTY = UIState(Category.EMPTY, canConfirm = false, canDelete = false)
+            val EMPTY = UIState(
+                Category.EMPTY,
+                canConfirm = false,
+                canDelete = false,
+                envelope = Envelope.EMPTY
+            )
         }
     }
 
     private var mode: Mode =
         CreateCategoryMode(categoryInteractor, envelopeInteractor, viewModelScope)
+        set(value) {
+            field.destroy()
+            field = value
+        }
 
     private val uiState = mutableStateOf(UIState.EMPTY)
-    private var envelope = mutableStateOf(Envelope.EMPTY)
 
-    fun uiState(id: Int?): State<UIState> {
-        id?.let {
-            viewModelScope.launch {
-                categoryInteractor.getCategory(id.id())?.let {
-                    updateUIState(it)
+    fun uiState(id: Int?, envelopeId: Int?): State<UIState> {
+        viewModelScope.launch {
+            id?.let {
+                categoryInteractor.getCategory(id.id())?.let { editedCategory ->
                     mode = EditCategoryMode(
                         categoryInteractor = categoryInteractor,
                         snapshotsInteractor = snapshotsInteractor,
-                        scope = viewModelScope,
-                        editedCategory = it
+                        editedCategory = editedCategory,
+                        scope = viewModelScope
                     )
+                    updateUIState(editedCategory)
                 }
+            } ?: reset()
+            mode.envelope(envelopeId?.id()) { env ->
+                updateEnvelope(envelope = env)
             }
-        } ?: reset()
-        return uiState
-    }
-
-    fun envelope(id: Int?): State<Envelope> {
-        mode.envelope(id?.id()) {
-            envelope.value = it
         }
-        return envelope
+        return uiState
     }
 
     fun setName(input: String) {
@@ -86,7 +94,7 @@ class EditCategoryViewModel(
 
     fun confirm() {
         viewModelScope.launch {
-            mode.confirm(uiState.value.draftCategory, envelope.value)
+            mode.confirm(uiState.value.draftCategory, uiState.value.envelope)
         }
         reset()
     }
@@ -100,13 +108,20 @@ class EditCategoryViewModel(
 
     private fun updateUIState(category: Category = uiState.value.draftCategory) {
         viewModelScope.launch {
-            uiState.value = UIState(category, canConfirm = mode.canConfirm(category), canDelete = mode.canDelete())
+            uiState.value = uiState.value.copy(
+                draftCategory = category,
+                canConfirm = mode.canConfirm(category),
+                canDelete = mode.canDelete(),
+            )
         }
+    }
+
+    private fun updateEnvelope(envelope: Envelope) {
+        uiState.value = uiState.value.copy(envelope = envelope)
     }
 
     private fun reset() {
         uiState.value = UIState.EMPTY
-        envelope.value = Envelope.EMPTY
         mode = CreateCategoryMode(categoryInteractor, envelopeInteractor, viewModelScope)
     }
 }
@@ -114,8 +129,8 @@ class EditCategoryViewModel(
 class CreateCategoryMode(
     private val categoryInteractor: CategoryInteractor,
     private val envelopeInteractor: EnvelopeInteractor,
-    private val scope: CoroutineScope
-) : EditCategoryViewModel.Mode {
+    scope: CoroutineScope
+) : EditCategoryViewModel.Mode(scope) {
     override suspend fun canConfirm(category: Category?): Boolean {
         return category?.run {
             name.isNotBlank() && categoryInteractor.getCategoryByName(name) == null
@@ -145,9 +160,9 @@ class CreateCategoryMode(
 class EditCategoryMode(
     private val categoryInteractor: CategoryInteractor,
     private val snapshotsInteractor: SnapshotsInteractor,
-    private val scope: CoroutineScope,
-    private val editedCategory: Category
-) : EditCategoryViewModel.Mode {
+    private val editedCategory: Category,
+    scope: CoroutineScope
+) : EditCategoryViewModel.Mode(scope) {
     override suspend fun canConfirm(category: Category?): Boolean {
         return category?.run {
             name.isNotBlank() && this != editedCategory && notSameNameAsOtherExisting()
@@ -176,7 +191,8 @@ class EditCategoryMode(
                 change(
                     set.find { snapshot ->
                         snapshot.categories.find { it.category == editedCategory } != null
-                    }?.envelope ?: Envelope.EMPTY
+                    }?.envelope
+                        ?: throw IllegalStateException("Category ${editedCategory.name} must have an envelope attached")
                 )
             }
         }

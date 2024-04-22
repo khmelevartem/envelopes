@@ -26,8 +26,7 @@ fun EditCategoryScreen(
 ) {
     EnvelopesTheme {
         Column {
-            val uiState by remember { viewModel.uiState(categoryId) }
-            val envelope by remember { viewModel.envelope(envelopeId) }
+            val uiState by remember { viewModel.uiState(categoryId, envelopeId) }
             TextField(
                 value = uiState.draftCategory.name,
                 onValueChange = { viewModel.setName(it) },
@@ -64,12 +63,12 @@ fun EditCategoryScreen(
                 Button(
                     onClick = {
                         navController.navigate(
-                            AppNavigation.chooseEnvelope(uiState.draftCategory, envelope)
+                            AppNavigation.chooseEnvelope(uiState.draftCategory, uiState.envelope)
                         )
                     },
                     enabled = viewModel.canChooseEnvelope()
                 ) {
-                    Text(text = "Envelope: ${envelope.name}")
+                    Text(text = "Envelope: ${uiState.envelope.name}")
                 }
             }
         }
