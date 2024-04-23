@@ -9,6 +9,8 @@ import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 /**
  * Order of [repositories] matters
@@ -16,56 +18,65 @@ import com.tubetoast.envelopes.common.domain.models.Spending
 open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key>(
     private vararg val repositories: UpdatingRepository<M, Key>
 ) : UpdatingRepository<M, Key>() {
+
+    private val lock = ReentrantLock()
+
     override fun get(valueId: Id<M>): M? {
-        repositories.forEach { repo ->
-            repo.get(valueId)?.let { result -> return result }
+        lock.withLock {
+            repositories.forEach { repo ->
+                repo.get(valueId)?.let { result -> return result }
+            }
         }
         return null
     }
 
-    override fun getCollection(keyId: Id<Key>): Set<M> {
-        repositories.forEach { repo ->
-            repo.getCollection(keyId).takeIf { it.isNotEmpty() }?.let { return it }
+    override fun getCollection(keyId: Id<Key>): Set<M> = lock.withLock {
+        repositories.fold(mutableSetOf()) { set, repo ->
+            set.apply { addAll(repo.getCollection(keyId)) }
         }
-        return emptySet()
     }
 
-    override fun getAll(): Set<M> {
-        return repositories.fold(mutableSetOf()) { set, repo ->
+    override fun getAll(): Set<M> = lock.withLock {
+        repositories.fold(mutableSetOf()) { set, repo ->
             set.apply { addAll(repo.getAll()) }
         }
     }
 
     override fun getKey(valueId: Id<M>): Id<Key>? {
-        repositories.forEach { repo ->
-            repo.getKey(valueId)?.let { return it }
+        lock.withLock {
+            repositories.forEach { repo ->
+                repo.getKey(valueId)?.let { return it }
+            }
         }
         return null
     }
 
-    override fun addImpl(value: M, keyId: Id<Key>): Boolean {
-        return repositories.asSequence().filter { repo ->
+    override fun addImpl(value: M, keyId: Id<Key>): Boolean = lock.withLock {
+        repositories.asSequence().filter { repo ->
             repo.addImpl(value, keyId)
         }.any()
     }
 
-    override fun deleteImpl(value: M): Boolean {
-        return repositories.map { repo ->
-            repo.deleteImpl(value)
-        }.any()
-    }
-
-    override fun editImpl(oldValue: M, newValue: M): Boolean {
-        return repositories.map { repo ->
-            repo.editImpl(oldValue, newValue)
-        }.any()
-    }
-
-    override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {
-        return repositories.fold(mutableSetOf()) { set, repo ->
-            set.apply { addAll(repo.deleteCollectionImpl(keyId)) }
+    override fun deleteImpl(value: M): Boolean =
+        lock.withLock {
+            repositories.map { repo ->
+                repo.deleteImpl(value)
+            }.any()
         }
-    }
+
+    override fun editImpl(oldValue: M, newValue: M): Boolean =
+        lock.withLock {
+            repositories.map { repo ->
+                repo.editImpl(oldValue, newValue)
+            }.any()
+        }
+
+    override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> =
+        lock.withLock {
+            repositories.fold(mutableSetOf()) { set, repo ->
+                set.apply { addAll(repo.deleteCollectionImpl(keyId)) }
+            }
+        }
 }
 
 /** [UpdatingEnvelopesRepository] */

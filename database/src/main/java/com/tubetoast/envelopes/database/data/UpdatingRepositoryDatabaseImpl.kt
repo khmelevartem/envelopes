@@ -31,8 +31,7 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key>(
     }
 
     override fun addImpl(value: M, keyId: Id<Key>): Boolean {
-        dataSource.write(value, keyId)
-        return true // fix it with custom insert
+        return dataSource.write(value, keyId)
     }
 
     override fun deleteImpl(value: M): Boolean {

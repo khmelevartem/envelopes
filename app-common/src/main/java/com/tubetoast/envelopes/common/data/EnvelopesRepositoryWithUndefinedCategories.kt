@@ -35,6 +35,7 @@ class EnvelopesRepositoryWithUndefinedCategories : EnvelopesRepositoryInMemoryBa
     }
 
     companion object {
-        val undefinedCategoriesEnvelope = Envelope(name = "Undefined", limit = Amount.ZERO)
+        val undefinedCategoriesEnvelope =
+            Envelope(name = "Undefined", limit = Amount(Integer.MAX_VALUE))
     }
 }

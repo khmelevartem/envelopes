@@ -70,7 +70,7 @@ fun <M : ImmutableModel<M>, Key> Repository<M, Key>.put(
     value: M,
     keyProvider: ((Id<M>) -> Id<Key>)? = null
 ) {
-    add(keyProvider?.invoke(value.id) ?: getKey(value.id) ?: Id.any, value)
+    add(getKey(value.id) ?: keyProvider?.invoke(value.id) ?: Id.any, value)
 }
 
 typealias UpdatingSpendingRepository = UpdatingRepository<Spending, Category>

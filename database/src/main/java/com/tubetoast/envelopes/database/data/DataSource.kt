@@ -1,5 +1,7 @@
 package com.tubetoast.envelopes.database.data
 
+import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
@@ -20,7 +22,13 @@ abstract class DataSource<M : ImmutableModel<M>, Key, in DE : DatabaseEntity>(
 
     fun getKey(valueId: Id<M>): Id<Key>? = dao.get(valueId.code)?.foreignKey?.id()
 
-    fun write(value: M, keyId: Id<Key>) = dao.write(converter.toDatabaseEntity(value, keyId.code))
+    fun write(value: M, keyId: Id<Key>) = try {
+        dao.write(converter.toDatabaseEntity(value, keyId.code))
+        true // fix it with custom insert
+    } catch (e : SQLiteConstraintException) {
+        Log.e("Envelopes", "insert failed", e)
+        false
+    }
 
     fun delete(valueId: Id<M>) = dao.delete(valueId.code) != 0
 
