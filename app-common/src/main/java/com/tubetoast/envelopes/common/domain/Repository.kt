@@ -5,12 +5,12 @@ import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
-import com.tubetoast.envelopes.common.domain.models.id
 
 interface Repository<M : ImmutableModel<M>, Key> {
     fun get(valueId: Id<M>): M?
     fun getCollection(keyId: Id<Key>): Set<M>
     fun getAll(): Set<M>
+    fun getKey(valueId: Id<M>): Id<Key>?
     fun add(keyId: Id<Key>, value: M)
     fun delete(value: M)
     fun move(value: M, newKey: Id<Key>)
@@ -59,8 +59,11 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Ke
     abstract fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>>
 }
 
-fun <M, Key> Repository<M, Key>.put(value: M) where M : ImmutableModel<M> {
-    add(value.id(), value)
+fun <M : ImmutableModel<M>, Key> Repository<M, Key>.put(
+    value: M,
+    keyProvider: ((Id<M>) -> Id<Key>)? = null
+) {
+    add(keyProvider?.invoke(value.id) ?: getKey(value.id) ?: Id.any, value)
 }
 
 typealias UpdatingSpendingRepository = UpdatingRepository<Spending, Category>

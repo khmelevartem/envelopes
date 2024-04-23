@@ -36,8 +36,15 @@ open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key>(
         }
     }
 
+    override fun getKey(valueId: Id<M>): Id<Key>? {
+        repositories.forEach { repo ->
+            repo.getKey(valueId)?.let { return it }
+        }
+        return null
+    }
+
     override fun addImpl(value: M, keyId: Id<Key>): Boolean {
-        return repositories.map { repo ->
+        return repositories.asSequence().filter { repo ->
             repo.addImpl(value, keyId)
         }.any()
     }

@@ -1,15 +1,23 @@
 package com.tubetoast.envelopes.monefy.di
 
-import com.tubetoast.envelopes.monefy.data.MonefyCategoryRepositoryImpl
-import com.tubetoast.envelopes.monefy.data.MonefySource
-import com.tubetoast.envelopes.monefy.data.MonefySpendingRepositoryImpl
+import com.tubetoast.envelopes.common.di.CATEGORIES_REPO
+import com.tubetoast.envelopes.common.di.SPENDING_REPO
+import com.tubetoast.envelopes.monefy.data.MonefyDataParser
+import com.tubetoast.envelopes.monefy.data.MonefyDateParser
+import com.tubetoast.envelopes.monefy.data.MonefyInteractor
+import com.tubetoast.envelopes.monefy.data.MonefyTransactionParser
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val monefyParserModule = module {
-    single { MonefySource(get(named(MONEFY_INPUT))) }
-    single { MonefySpendingRepositoryImpl(get()) }
-    single { MonefyCategoryRepositoryImpl(get()) }
+    single {
+        MonefyInteractor(
+            monefyDataParser = MonefyDataParser(
+                dateParser = MonefyDateParser(),
+                operationParser = MonefyTransactionParser()
+            ),
+            categoriesRepository = get(named(CATEGORIES_REPO)),
+            spendingRepository = get(named(SPENDING_REPO)),
+        )
+    }
 }
-
-const val MONEFY_INPUT = "monefy input"

@@ -5,6 +5,7 @@ import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
+import com.tubetoast.envelopes.common.domain.models.id
 
 abstract class DataSource<M : ImmutableModel<M>, Key, in DE : DatabaseEntity>(
     private val dao: StandardDao<DE>,
@@ -16,6 +17,8 @@ abstract class DataSource<M : ImmutableModel<M>, Key, in DE : DatabaseEntity>(
         dao.getCollection(parentKey.code).map { converter.toDomainModel(it) }
 
     fun get(valueId: Id<M>): M? = dao.get(valueId.code)?.let { converter.toDomainModel(it) }
+
+    fun getKey(valueId: Id<M>): Id<Key>? = dao.get(valueId.code)?.foreignKey?.id()
 
     fun write(value: M, keyId: Id<Key>) = dao.write(converter.toDatabaseEntity(value, keyId.code))
 
