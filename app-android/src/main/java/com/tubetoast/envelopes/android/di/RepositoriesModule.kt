@@ -12,7 +12,6 @@ import com.tubetoast.envelopes.common.domain.UpdatingCategoriesRepository
 import com.tubetoast.envelopes.common.domain.UpdatingEnvelopesRepository
 import com.tubetoast.envelopes.common.domain.UpdatingSpendingRepository
 import com.tubetoast.envelopes.database.di.DatabaseApi
-import com.tubetoast.envelopes.monefy.di.MonefyParserApi
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -27,14 +26,12 @@ val repositoriesModule = module {
     single<UpdatingCategoriesRepository>(named(CATEGORIES_REPO)) {
         CompositeCategoriesRepositoryBase(
             api<DatabaseApi>().categoriesRepository,
-            api<MonefyParserApi>().categoriesRepository
         )
     }
 
     single<UpdatingSpendingRepository>(named(SPENDING_REPO)) {
         CompositeSpendingRepositoryBase(
             api<DatabaseApi>().spendingRepository,
-            api<MonefyParserApi>().spendingRepository
         )
     }
 }

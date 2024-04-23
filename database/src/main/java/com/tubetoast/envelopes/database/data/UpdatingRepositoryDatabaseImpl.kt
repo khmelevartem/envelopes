@@ -26,6 +26,10 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key>(
         return dataSource.getAll().toSet()
     }
 
+    override fun getKey(valueId: Id<M>): Id<Key>? {
+        return dataSource.getKey(valueId)
+    }
+
     override fun addImpl(value: M, keyId: Id<Key>): Boolean {
         dataSource.write(value, keyId)
         return true // fix it with custom insert
