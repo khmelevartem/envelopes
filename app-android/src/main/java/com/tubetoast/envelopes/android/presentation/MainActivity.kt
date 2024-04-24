@@ -2,6 +2,7 @@ package com.tubetoast.envelopes.android.presentation
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,8 +27,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        importFile(intent.data)
-
+        readIntent(intent)
         setContent {
             EnvelopesApp(
                 envelopesListViewModel,
@@ -40,12 +40,18 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        importFile(intent?.data)
+        readIntent(intent)
     }
 
-    private fun importFile(uri: Uri?) = uri?.let {
+    private fun readIntent(intent: Intent?) = intent?.run {
+        val uri: Uri = data ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            extras?.getParcelable(Intent.EXTRA_STREAM, Uri::class.java)
+        } else {
+            @Suppress("DEPRECATION") extras?.get(Intent.EXTRA_STREAM) as Uri?
+        } ?: return@run
+
         lifecycleScope.launch(Dispatchers.IO) {
-            contentResolver.openInputStream(it)?.use { inputStream ->
+            contentResolver.openInputStream(uri)?.use { inputStream ->
                 api<MonefyParserApi>().monefyInteractor.import(inputStream)
             }
         }

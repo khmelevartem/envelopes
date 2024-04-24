@@ -16,6 +16,7 @@
         <activity
             android:name=".android.presentation.MainActivity"
             android:exported="true"
+            android:launchMode="singleInstance"
             android:theme="@style/Theme.Envelopes">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
