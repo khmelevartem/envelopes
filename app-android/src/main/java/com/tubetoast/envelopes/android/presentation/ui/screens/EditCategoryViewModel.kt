@@ -25,9 +25,9 @@ class EditCategoryViewModel(
     abstract class Mode(parentScope: CoroutineScope) {
         protected val scope = CoroutineScope(parentScope.coroutineContext)
         abstract suspend fun canConfirm(category: Category?): Boolean
-        abstract fun confirm(category: Category, envelope: Envelope)
+        abstract suspend fun confirm(category: Category, envelope: Envelope)
         abstract fun canDelete(): Boolean
-        abstract fun delete()
+        abstract suspend fun delete()
         abstract fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit)
         abstract fun canChooseEnvelope(): Boolean
         fun destroy() = scope.coroutineContext.cancelChildren()
@@ -95,13 +95,15 @@ class EditCategoryViewModel(
     fun confirm() {
         viewModelScope.launch {
             mode.confirm(uiState.value.draftCategory, uiState.value.envelope)
+            reset()
         }
-        reset()
     }
 
     fun delete() {
-        mode.delete()
-        reset()
+        viewModelScope.launch {
+            mode.delete()
+            reset()
+        }
     }
 
     fun canChooseEnvelope(): Boolean = mode.canChooseEnvelope()
@@ -142,14 +144,12 @@ class CreateCategoryMode(
         } ?: false
     }
 
-    override fun confirm(category: Category, envelope: Envelope) {
-        scope.launch {
-            categoryInteractor.addCategory(category, envelope.id)
-        }
+    override suspend fun confirm(category: Category, envelope: Envelope) {
+        categoryInteractor.addCategory(category, envelope.id)
     }
 
     override fun canDelete(): Boolean = false
-    override fun delete() = throw IllegalStateException("Cannot delete")
+    override suspend fun delete() = throw IllegalStateException("Cannot delete")
     override fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit) {
         id?.let {
             scope.launch {
@@ -177,17 +177,13 @@ class EditCategoryMode(
     private suspend fun Category.notSameNameAsOtherExisting() =
         name == editedCategory.name || categoryInteractor.getCategoryByName(name) == null
 
-    override fun confirm(category: Category, envelope: Envelope) {
-        scope.launch {
-            categoryInteractor.editCategory(editedCategory, category)
-        }
+    override suspend fun confirm(category: Category, envelope: Envelope) {
+        categoryInteractor.editCategory(editedCategory, category)
     }
 
     override fun canDelete(): Boolean = true
-    override fun delete() {
-        scope.launch {
-            categoryInteractor.deleteCategory(editedCategory)
-        }
+    override suspend fun delete() {
+        categoryInteractor.deleteCategory(editedCategory)
     }
 
     override fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit) {
