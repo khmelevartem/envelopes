@@ -10,8 +10,6 @@ class MonefyDateParserTest {
         val realString = "01/01/2019"
         val actual = MonefyDateParser().parseDate(realString)
         val expected = Date(
-            minute = 0,
-            hour = 0,
             day = 1,
             month = 1,
             year = 2019

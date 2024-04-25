@@ -39,10 +39,10 @@ abstract class DataSource<M, K, MDE, KDE>(
         dao.write(converter.toDatabaseEntity(value, foreignKey))
         true // fix it with custom insert
     } catch (e: SQLiteConstraintException) {
-        Log.e("Envelopes", "insert failed", e)
+        Log.w("Envelopes", "insert failed", e)
         false
     } catch (e: IllegalArgumentException) {
-        Log.e("Envelopes", "insert failed", e)
+        Log.w("Envelopes", "insert failed", e)
         false
     }
 
@@ -69,11 +69,11 @@ class CategoryDataSource(
     parentDao: StandardDao<EnvelopeEntity>,
     parentConverter: Converter<Envelope, EnvelopeEntity>
 ) : DataSource<Category, Envelope, CategoryEntity, EnvelopeEntity>(
-        dao,
-        converter,
-        parentDao,
-        parentConverter
-    )
+    dao,
+    converter,
+    parentDao,
+    parentConverter
+)
 
 class SpendingDataSource(
     dao: SpendingDao,
@@ -81,8 +81,8 @@ class SpendingDataSource(
     parentDao: StandardDao<CategoryEntity>,
     parentConverter: Converter<Category, CategoryEntity>
 ) : DataSource<Spending, Category, SpendingEntity, CategoryEntity>(
-        dao,
-        converter,
-        parentDao,
-        parentConverter
-    )
+    dao,
+    converter,
+    parentDao,
+    parentConverter
+)

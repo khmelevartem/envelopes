@@ -21,6 +21,18 @@ class EnvelopesListViewModel(
     }
 
     val itemModels: Flow<List<EnvelopeSnapshot>> by lazy {
-        snapshotsInteractor.envelopeSnapshotFlow.map { it.toList() }
+        snapshotsInteractor.envelopeSnapshotFlow
+            .map { it.filterEmptyCategories() }
     }
+
+    private fun Set<EnvelopeSnapshot>.filterEmptyCategories() = map { snapshot ->
+            val nonEmptyCategories = snapshot.categories.filter { category ->
+                category.isNotEmpty()
+            }
+            if (nonEmptyCategories.size != snapshot.categories.size) {
+                snapshot.copy(categories = nonEmptyCategories)
+            } else {
+                snapshot
+            }
+        }
 }

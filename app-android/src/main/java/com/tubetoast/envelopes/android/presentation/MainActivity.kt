@@ -13,6 +13,7 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewM
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
 import com.tubetoast.envelopes.common.di.api
+import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.monefy.di.MonefyParserApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,7 +53,7 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             contentResolver.openInputStream(uri)?.use { inputStream ->
-                api<MonefyParserApi>().monefyInteractor.import(inputStream)
+                api<MonefyParserApi>().monefyInteractor.import(inputStream, Date.currentMonth())
             }
         }
     }

@@ -32,10 +32,10 @@ class SnapshotsInteractorImpl(
             EnvelopeSnapshot(
                 envelope,
                 categoriesRepository.getCollection(envelope.id)
-                    .mapTo(mutableSetOf()) { category ->
+                    .map { category ->
                         CategorySnapshot(
                             category,
-                            spendingRepository.getCollection(category.id)
+                            spendingRepository.getCollection(category.id).toList()
                         )
                     }
             )
