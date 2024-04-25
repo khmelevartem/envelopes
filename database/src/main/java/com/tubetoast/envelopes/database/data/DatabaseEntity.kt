@@ -6,15 +6,17 @@ import androidx.room.PrimaryKey
 
 abstract class DatabaseEntity {
     abstract val primaryKey: Int
-    abstract val foreignKey: Int
+    abstract val foreignKey: Int?
+    abstract val valueId: Int
 }
 
 @Entity
 data class EnvelopeEntity(
-    @PrimaryKey override val primaryKey: Int,
-    override val foreignKey: Int = -1,
+    @PrimaryKey(autoGenerate = true) override var primaryKey: Int = 0,
+    override val foreignKey: Int? = null,
+    override val valueId: Int,
     val name: String,
-    val limit: Int
+    val limit: Int,
 ) : DatabaseEntity()
 
 @Entity(
@@ -28,8 +30,9 @@ data class EnvelopeEntity(
     ]
 )
 data class CategoryEntity(
-    @PrimaryKey override val primaryKey: Int,
+    @PrimaryKey(autoGenerate = true) override var primaryKey: Int = 0,
     override val foreignKey: Int,
+    override val valueId: Int,
     val name: String,
     val limit: Int?
 ) : DatabaseEntity()
@@ -45,8 +48,9 @@ data class CategoryEntity(
     ]
 )
 data class SpendingEntity(
-    @PrimaryKey override val primaryKey: Int,
+    @PrimaryKey(autoGenerate = true) override var primaryKey: Int = 0,
     override val foreignKey: Int,
+    override val valueId: Int,
     val amount: Int,
     val date: String,
     val comment: String?

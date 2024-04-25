@@ -11,7 +11,7 @@ import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Root
 import com.tubetoast.envelopes.common.domain.models.Spending
 
-open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key: ImmutableModel<Key>> :
+open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key : ImmutableModel<Key>> :
     UpdatingRepository<M, Key>() {
 
     protected val sets = mutableMapOf<Id<Key>, MutableSet<M>>()
