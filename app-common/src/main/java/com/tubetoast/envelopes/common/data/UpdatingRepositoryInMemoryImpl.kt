@@ -8,9 +8,10 @@ import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
+import com.tubetoast.envelopes.common.domain.models.Root
 import com.tubetoast.envelopes.common.domain.models.Spending
 
-open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
+open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key: ImmutableModel<Key>> :
     UpdatingRepository<M, Key>() {
 
     protected val sets = mutableMapOf<Id<Key>, MutableSet<M>>()
@@ -58,7 +59,7 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key> :
 }
 
 /** [UpdatingEnvelopesRepository] */
-open class EnvelopesRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Envelope, String>()
+open class EnvelopesRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Envelope, Root>()
 
 /** [UpdatingCategoriesRepository] */
 open class CategoriesRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Category, Envelope>()

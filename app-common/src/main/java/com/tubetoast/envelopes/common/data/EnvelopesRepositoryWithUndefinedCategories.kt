@@ -3,6 +3,7 @@ package com.tubetoast.envelopes.common.data
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
+import com.tubetoast.envelopes.common.domain.models.Root
 
 class EnvelopesRepositoryWithUndefinedCategories : EnvelopesRepositoryInMemoryBase() {
 
@@ -14,7 +15,7 @@ class EnvelopesRepositoryWithUndefinedCategories : EnvelopesRepositoryInMemoryBa
         return setOf(undefinedCategoriesEnvelope)
     }
 
-    override fun getCollection(keyId: Id<String>): MutableSet<Envelope> {
+    override fun getCollection(keyId: Id<Root>): MutableSet<Envelope> {
         return mutableSetOf(undefinedCategoriesEnvelope)
     }
 
@@ -22,11 +23,11 @@ class EnvelopesRepositoryWithUndefinedCategories : EnvelopesRepositoryInMemoryBa
         return false
     }
 
-    override fun deleteCollectionImpl(keyId: Id<String>): Set<Id<Envelope>> {
+    override fun deleteCollectionImpl(keyId: Id<Root>): Set<Id<Envelope>> {
         return emptySet()
     }
 
-    override fun addImpl(value: Envelope, keyId: Id<String>): Boolean {
+    override fun addImpl(value: Envelope, keyId: Id<Root>): Boolean {
         return false
     }
 

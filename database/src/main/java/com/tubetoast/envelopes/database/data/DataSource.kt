@@ -6,6 +6,7 @@ import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
+import com.tubetoast.envelopes.common.domain.models.Root
 import com.tubetoast.envelopes.common.domain.models.Spending
 import com.tubetoast.envelopes.common.domain.models.id
 
@@ -45,7 +46,7 @@ abstract class DataSource<M : ImmutableModel<M>, Key, in DE : DatabaseEntity>(
 }
 
 class EnvelopeDataSource(dao: EnvelopeDao, converter: Converter<Envelope, EnvelopeEntity>) :
-    DataSource<Envelope, String, EnvelopeEntity>(dao, converter)
+    DataSource<Envelope, Root, EnvelopeEntity>(dao, converter)
 
 class CategoryDataSource(dao: CategoryDao, converter: Converter<Category, CategoryEntity>) :
     DataSource<Category, Envelope, CategoryEntity>(dao, converter)

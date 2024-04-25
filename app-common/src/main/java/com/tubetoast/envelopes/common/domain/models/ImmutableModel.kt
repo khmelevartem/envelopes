@@ -5,7 +5,7 @@ abstract class ImmutableModel<T : ImmutableModel<T>> {
 }
 
 @JvmInline
-value class Id<out T> constructor(val code: Int) {
+value class Id<out T>(val code: Int) {
     companion object {
         val any = Id<Nothing>(-1)
         fun <K> any(): Id<K> = any
@@ -14,3 +14,8 @@ value class Id<out T> constructor(val code: Int) {
 
 fun <T> Any.id() = Id<T>(hashCode())
 fun <T> Int.id() = Id<T>(this)
+
+object Root: ImmutableModel<Root>() {
+    override val id: Id<Root>
+        get() = Id.any
+}

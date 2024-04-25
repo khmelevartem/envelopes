@@ -8,6 +8,7 @@ import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
+import com.tubetoast.envelopes.common.domain.models.Root
 import com.tubetoast.envelopes.common.domain.models.Spending
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -15,7 +16,7 @@ import kotlin.concurrent.withLock
 /**
  * Order of [repositories] matters
  */
-open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key>(
+open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key : ImmutableModel<Key>>(
     private vararg val repositories: UpdatingRepository<M, Key>
 ) : UpdatingRepository<M, Key>() {
 
@@ -81,8 +82,8 @@ open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key>(
 
 /** [UpdatingEnvelopesRepository] */
 open class CompositeEnvelopesRepositoryBase(
-    vararg repositories: UpdatingRepository<Envelope, String>
-) : CompositeUpdatingRepository<Envelope, String>(*repositories)
+    vararg repositories: UpdatingRepository<Envelope, Root>
+) : CompositeUpdatingRepository<Envelope, Root>(*repositories)
 
 /** [UpdatingCategoriesRepository] */
 open class CompositeCategoriesRepositoryBase(

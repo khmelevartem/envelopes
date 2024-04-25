@@ -4,9 +4,10 @@ import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
+import com.tubetoast.envelopes.common.domain.models.Root
 import com.tubetoast.envelopes.common.domain.models.Spending
 
-interface Repository<M : ImmutableModel<M>, Key> {
+interface Repository<M : ImmutableModel<M>, Key : ImmutableModel<Key>> {
     fun get(valueId: Id<M>): M?
     fun getCollection(keyId: Id<Key>): Set<M>
     fun getAll(): Set<M>
@@ -18,7 +19,8 @@ interface Repository<M : ImmutableModel<M>, Key> {
     fun edit(oldValue: M, newValue: M)
 }
 
-abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Key> {
+abstract class UpdatingRepository<M : ImmutableModel<M>, Key : ImmutableModel<Key>> :
+    Repository<M, Key> {
     var update: (() -> Unit)? = null
     var deleteListener: ((Id<M>) -> Unit)? = null
     val deleteListenerImpl: ((Id<Key>) -> Unit) = {
@@ -66,13 +68,13 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key> : Repository<M, Ke
     abstract fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>>
 }
 
-fun <M : ImmutableModel<M>, Key> Repository<M, Key>.put(
+fun <M : ImmutableModel<M>, Key : ImmutableModel<Key>> Repository<M, Key>.put(
     value: M,
-    keyProvider: ((Id<M>) -> Id<Key>)? = null
+    keyProvider: ((Id<M>) -> Id<Key>) = { Id.any }
 ) {
-    add(getKey(value.id) ?: keyProvider?.invoke(value.id) ?: Id.any, value)
+    add(getKey(value.id) ?: keyProvider.invoke(value.id), value)
 }
 
 typealias UpdatingSpendingRepository = UpdatingRepository<Spending, Category>
 typealias UpdatingCategoriesRepository = UpdatingRepository<Category, Envelope>
-typealias UpdatingEnvelopesRepository = UpdatingRepository<Envelope, String>
+typealias UpdatingEnvelopesRepository = UpdatingRepository<Envelope, Root>
