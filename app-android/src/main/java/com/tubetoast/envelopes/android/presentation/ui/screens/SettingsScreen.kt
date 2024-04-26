@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -16,7 +17,7 @@ import com.tubetoast.envelopes.android.presentation.ui.views.CheckboxSettingItem
 fun SettingsScreen(
     viewModel: SettingsViewModel,
 ) {
-    val items by remember { viewModel.items }
+    val items = viewModel.items
     EnvelopesTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -24,10 +25,11 @@ fun SettingsScreen(
         ) {
             LazyColumn {
                 items(items) { item ->
-                    val state by remember { item.checked }
+                    val itemState = item.checked.collectAsState()
+                    val checked by remember { itemState }
                     CheckboxSettingItem(
                         text = item.text,
-                        default = state
+                        default = checked
                     ) {
                         viewModel.toggle(item, it)
                     }

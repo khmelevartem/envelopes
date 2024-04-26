@@ -1,21 +1,20 @@
 package com.tubetoast.envelopes.android.presentation.ui.screens
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.tubetoast.envelopes.android.presentation.ui.views.SettingItemModel
+import com.tubetoast.envelopes.android.presentation.ui.views.toItemModel
+import com.tubetoast.envelopes.android.presentation.ui.views.toSetting
+import com.tubetoast.envelopes.android.settings.SettingsRepository
 
-class SettingsViewModel : ViewModel() {
+class SettingsViewModel(
+    private val settingsRepository: SettingsRepository
+) : ViewModel() {
 
-    val items: State<List<SettingItemModel>> = mutableStateOf(
-        listOf(
-            SettingItemModel(
-                text = "Test setting", checked = mutableStateOf(false)
-            )
-        )
-    )
+    val items: List<SettingItemModel> =
+        settingsRepository.settings.map { it.toItemModel() }
 
     fun toggle(item: SettingItemModel, isChecked: Boolean) {
         item.checked.value = isChecked
+        settingsRepository.saveChanges(listOf(item.toSetting()))
     }
 }
