@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import com.tubetoast.envelopes.android.presentation.ui.views.SettingItemModel
 import com.tubetoast.envelopes.android.presentation.ui.views.toItemModel
 import com.tubetoast.envelopes.android.presentation.ui.views.toSetting
-import com.tubetoast.envelopes.android.settings.SettingsRepository
+import com.tubetoast.envelopes.android.settings.MutableSettingsRepository
 
 class SettingsViewModel(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: MutableSettingsRepository
 ) : ViewModel() {
 
     val items: List<SettingItemModel> =

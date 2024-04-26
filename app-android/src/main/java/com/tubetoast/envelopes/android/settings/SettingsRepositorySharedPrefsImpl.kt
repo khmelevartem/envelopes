@@ -7,7 +7,7 @@ import android.content.SharedPreferences
 class SettingsRepositorySharedPrefsImpl(
     private val sharedPrefs: SharedPreferences,
     private val defaultSettingsRepo: SettingsRepository
-) : SettingsRepository {
+) : MutableSettingsRepository {
 
     constructor(
         context: Context,
@@ -19,16 +19,22 @@ class SettingsRepositorySharedPrefsImpl(
             defaultSettingsRepo.settings.forEach { default ->
                 add(
                     default.copy(
-                        checked = sharedPrefs.getBoolean(default.text, default.checked)
+                        checked = sharedPrefs.getBoolean(default.key.name, default.checked)
                     )
                 )
             }
         }.toList()
 
+    override fun getSetting(key: Setting.Key): Setting {
+        val default = defaultSettingsRepo.getSetting(key)
+        val savedIsChecked = sharedPrefs.getBoolean(key.name, default.checked)
+        return default.copy(checked = savedIsChecked)
+    }
+
     override fun saveChanges(settings: List<Setting>) {
         val editor = sharedPrefs.edit()
         settings.forEach {
-            editor.putBoolean(it.text, it.checked)
+            editor.putBoolean(it.key.name, it.checked)
         }
         editor.apply()
     }

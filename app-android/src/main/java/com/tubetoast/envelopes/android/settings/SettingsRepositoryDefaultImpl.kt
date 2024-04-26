@@ -1,11 +1,17 @@
 package com.tubetoast.envelopes.android.settings
 
-class SettingsRepositoryDefaultImpl : SettingsRepositoryInMemoryImpl() {
+open class SettingsRepositoryDefaultImpl : SettingsRepository {
 
-    override val defaultSettings: MutableMap<String, Setting>
-        get() = createSettings(
-            "Test setting" to false,
-            "Another test" to true,
-            "Only current month" to true
+    protected val defaultSettings: MutableMap<Setting.Key, Setting>
+        get() = createSettings(Setting.Key.entries.map { it.default() })
+
+    override val settings: List<Setting> get() = defaultSettings.values.toList()
+
+    override fun getSetting(key: Setting.Key): Setting =
+        (defaultSettings[key] ?: throw IllegalStateException("Setting for key $key not found"))
+
+    private fun createSettings(settings: List<Setting>): MutableMap<Setting.Key, Setting> =
+        mutableMapOf(
+            *settings.map { it.key to it }.toTypedArray()
         )
 }

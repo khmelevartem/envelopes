@@ -4,16 +4,17 @@ import com.tubetoast.envelopes.android.settings.Setting
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class SettingItemModel(
+    val key: Setting.Key,
     val text: String,
     var checked: MutableStateFlow<Boolean>
 )
 
-fun SettingItemModel(text: String, checked: Boolean) =
-    SettingItemModel(text, MutableStateFlow(checked))
+fun SettingItemModel(key: Setting.Key, text: String, checked: Boolean) =
+    SettingItemModel(key, text, MutableStateFlow(checked))
 
 fun SettingItemModel.toSetting() =
-    Setting(text, checked.value)
+    Setting(key, text, checked.value)
 
 fun Setting.toItemModel() =
-    SettingItemModel(text, checked)
+    SettingItemModel(key, text, checked)
 
