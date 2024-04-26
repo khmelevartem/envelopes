@@ -12,6 +12,7 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeVie
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
+import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsViewModel
 import com.tubetoast.envelopes.common.di.api
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.monefy.di.MonefyParserApi
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
     private val editEnvelopeViewModel: EditEnvelopeViewModel by viewModel()
     private val editCategoryViewModel: EditCategoryViewModel by viewModel()
     private val chooseEnvelopeViewModel: ChooseEnvelopeViewModel by viewModel()
+    private val settingsViewModel: SettingsViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,8 @@ class MainActivity : ComponentActivity() {
                 envelopesListViewModel,
                 editEnvelopeViewModel,
                 editCategoryViewModel,
-                chooseEnvelopeViewModel
+                chooseEnvelopeViewModel,
+                settingsViewModel
             )
         }
     }

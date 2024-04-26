@@ -17,6 +17,8 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeScree
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
+import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsScreen
+import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsViewModel
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
@@ -26,7 +28,8 @@ fun EnvelopesApp(
     envelopesListViewModel: EnvelopesListViewModel,
     editEnvelopeViewModel: EditEnvelopeViewModel,
     editCategoryViewModel: EditCategoryViewModel,
-    chooseEnvelopeViewModel: ChooseEnvelopeViewModel
+    chooseEnvelopeViewModel: ChooseEnvelopeViewModel,
+    settingsViewModel: SettingsViewModel,
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -79,6 +82,13 @@ fun EnvelopesApp(
                 )
             }
         }
+        composable(
+            route = AppNavigation.settings
+        ) {
+            SettingsScreen(
+                viewModel = settingsViewModel
+            )
+        }
     }
 }
 
@@ -95,6 +105,7 @@ object AppNavigation {
     const val envelopeScreen = "envelopeScreen/{$argEnvelopeId}"
     const val categoryScreen = "categoryScreen/{$argCategoryId}/{$argEnvelopeId}"
     const val chooseEnvelope = "chooseEnvelopeScreen/{$argCategoryId}/{$argEnvelopeId}"
+    const val settings = "settings"
 
     fun addEnvelope() = envelopeScreen.putArg(argEnvelopeId, null)
 
