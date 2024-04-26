@@ -5,6 +5,8 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewM
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsViewModel
+import com.tubetoast.envelopes.android.settings.MutableSettingsRepository
+import com.tubetoast.envelopes.android.settings.SettingsRepository
 import com.tubetoast.envelopes.android.settings.SettingsRepositoryDefaultImpl
 import com.tubetoast.envelopes.android.settings.SettingsRepositorySharedPrefsImpl
 import org.koin.android.ext.koin.androidContext
@@ -16,12 +18,12 @@ val appModule = module {
     viewModel { EditEnvelopeViewModel(get()) }
     viewModel { EditCategoryViewModel(get(), get(), get()) }
     viewModel { ChooseEnvelopeViewModel(get(), get()) }
-    viewModel {
-        SettingsViewModel(
-            SettingsRepositorySharedPrefsImpl(
-                androidContext(),
-                SettingsRepositoryDefaultImpl()
-            )
+    viewModel { SettingsViewModel(get()) }
+    single<MutableSettingsRepository> {
+        SettingsRepositorySharedPrefsImpl(
+            androidContext(),
+            SettingsRepositoryDefaultImpl()
         )
     }
+    single<SettingsRepository> { get<MutableSettingsRepository>() }
 }
