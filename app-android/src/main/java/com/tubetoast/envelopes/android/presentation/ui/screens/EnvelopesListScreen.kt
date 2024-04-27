@@ -1,5 +1,6 @@
 package com.tubetoast.envelopes.android.presentation.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,7 +51,9 @@ fun EnvelopesListScreen(
                         }
                     }
                 )
-                LazyColumn {
+                LazyColumn(
+                    verticalArrangement = Arrangement.SpaceAround,
+                ) {
                     items(itemModels.asItemModels()) { itemModel ->
                         MainListView {
                             EnvelopeView(

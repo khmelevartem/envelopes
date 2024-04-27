@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -15,7 +16,8 @@ fun MainListView(modifier: Modifier = Modifier, content: @Composable () -> Unit)
         modifier = modifier
             .fillMaxSize()
             .systemBarsPadding()
-            .padding(horizontal = 8.dp, vertical = 16.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .shadow(4.dp, shape = RoundedCornerShape(8.dp)),
         shape = RoundedCornerShape(8.dp),
         content = content
     )

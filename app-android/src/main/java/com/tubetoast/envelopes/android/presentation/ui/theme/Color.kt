@@ -35,4 +35,6 @@ object EColor {
     val GrayLighter = Color(0xffe9e9f9)
 }
 
-fun List<Color>.next(index: Int) = palette[index.mod(palette.size)]
+fun List<Color>.next(index: Int) = this[index.mod(palette.size)]
+
+fun Color.darken() = copy(red = red / 1.5f, green = green / 1.5f, blue = blue / 1.5f)

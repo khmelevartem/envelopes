@@ -37,7 +37,7 @@ fun ChooseEnvelopeScreen(
                 items(envelopes.asItemModels()) {
                     EnvelopeLabelView(itemModel = it, chosen = viewModel.isChosen(it.data)) {
                         viewModel.setNewChosenEnvelope(it.data)
-                        navController.popBackStack()
+                        navController.popBackStack(AppNavigation.start, false)
                     }
                 }
             }
