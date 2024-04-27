@@ -31,8 +31,9 @@ fun EnvelopesListScreen(
     navController: NavHostController,
     envelopesListViewModel: EnvelopesListViewModel
 ) {
-    val itemModelsState = envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
-    val itemModels by remember { itemModelsState }
+    val envelopesState = envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
+    val envelopes by remember { envelopesState }
+    val itemModels = envelopes.asItemModels()
     EnvelopesTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -54,7 +55,7 @@ fun EnvelopesListScreen(
                 LazyColumn(
                     verticalArrangement = Arrangement.SpaceAround,
                 ) {
-                    items(itemModels.asItemModels()) { itemModel ->
+                    items(itemModels) { itemModel ->
                         MainListView {
                             EnvelopeView(
                                 itemModel,

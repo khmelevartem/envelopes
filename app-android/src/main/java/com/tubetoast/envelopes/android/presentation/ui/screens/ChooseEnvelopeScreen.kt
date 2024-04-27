@@ -29,12 +29,13 @@ fun ChooseEnvelopeScreen(
             val envelopesState =
                 viewModel.envelopes(envelopeId).collectAsState(initial = emptyList())
             val envelopes by remember { envelopesState }
+            val iteModels = envelopes.asItemModels()
             Text(
                 text = category.name,
                 modifier = Modifier.fillMaxWidth()
             )
             LazyColumn {
-                items(envelopes.asItemModels()) {
+                items(iteModels) {
                     EnvelopeLabelView(itemModel = it, chosen = viewModel.isChosen(it.data)) {
                         viewModel.setNewChosenEnvelope(it.data)
                         navController.popBackStack(AppNavigation.start, false)

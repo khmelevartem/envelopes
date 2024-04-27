@@ -1,32 +1,38 @@
 package com.tubetoast.envelopes.android.presentation.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.tubetoast.envelopes.android.presentation.ui.theme.EColor.palette
-
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
 
 object EColor {
 
-    val Blue = Color(0xff6cbaff)
+    val Emerald = Color(0xff237D62)
+    val Haki = Color(0xff669672)
+
+    val Azure = Color(0xff6cbaff)
     val Mint = Color(0xff00e2cf)
-    val GreenLight = Color(0xff8ef488)
-    val Yellow = Color(0xffffe88b)
+    val Salad = Color(0xff8ef488)
+    val Lemon = Color(0xffffe88b)
     val Peach = Color(0xffffc5a3)
-    val Pink = Color(0xffffd7ff)
+    val Rose = Color(0xffffd7ff)
     val Vanilla = Color(0xffc9d7ff)
 
-    val palette = listOf(
-        Blue,
+    @Composable
+    fun ePalette(isDarkTheme: Boolean = isSystemInDarkTheme()): List<Color> {
+        return if (isDarkTheme) darkPalette else lightPalette
+    }
+
+    private val lightPalette = listOf(
+        Azure,
         Mint,
-        GreenLight,
-        Yellow,
+        Salad,
+        Lemon,
         Peach,
-        Pink,
+        Rose,
         Vanilla
     )
+
+    private val darkPalette = lightPalette.map { it.darken() }
 
     val GrayDarker = Color(0xff74747f)
     val GrayDark = Color(0xff94949f)
@@ -35,6 +41,6 @@ object EColor {
     val GrayLighter = Color(0xffe9e9f9)
 }
 
-fun List<Color>.next(index: Int) = this[index.mod(palette.size)]
+fun <T> List<T>.next(index: Int): T = this[index.mod(this.size)]
 
 fun Color.darken() = copy(red = red / 1.5f, green = green / 1.5f, blue = blue / 1.5f)
