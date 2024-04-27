@@ -1,7 +1,6 @@
 package com.tubetoast.envelopes.common.domain.models
 
 import java.util.Calendar
-import kotlin.random.Random
 
 data class Date(
     val day: Int,
@@ -42,8 +41,4 @@ data class Date(
                 )
             }
     }
-}
-
-fun randomDate() = Random(System.currentTimeMillis()).run {
-    Date(day = nextInt(), month = nextInt(), year = nextInt())
 }

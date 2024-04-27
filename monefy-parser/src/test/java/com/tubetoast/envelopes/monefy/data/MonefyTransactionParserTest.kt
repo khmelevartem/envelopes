@@ -1,9 +1,9 @@
 package com.tubetoast.envelopes.monefy.data
 
 import com.tubetoast.envelopes.common.domain.models.Amount
+import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Earning
 import com.tubetoast.envelopes.common.domain.models.Spending
-import com.tubetoast.envelopes.common.domain.models.randomDate
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -12,7 +12,7 @@ class MonefyTransactionParserTest {
 
     @Test
     fun parseSpending() {
-        val date = randomDate()
+        val date = Date.today()
         val comment = "comment"
         val realString = "-2 500"
         val actual = parser.parse(
@@ -30,7 +30,7 @@ class MonefyTransactionParserTest {
 
     @Test
     fun parseEarning() {
-        val date = randomDate()
+        val date = Date.today()
         val comment = "comment"
         val realString = "2500.2"
         val actual = parser.parse(

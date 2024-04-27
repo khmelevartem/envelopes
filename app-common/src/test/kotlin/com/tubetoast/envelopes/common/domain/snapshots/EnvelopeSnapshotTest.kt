@@ -3,9 +3,9 @@ package com.tubetoast.envelopes.common.domain.snapshots
 import com.google.common.truth.Truth.assertThat
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
+import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Spending
-import com.tubetoast.envelopes.common.domain.models.randomDate
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
@@ -18,11 +18,11 @@ class EnvelopeSnapshotTest {
                 transactions = listOf(
                     Spending(
                         amount = Amount(units = 10),
-                        date = randomDate()
+                        date = Date.today()
                     ),
                     Spending(
                         amount = Amount(units = 30),
-                        date = randomDate()
+                        date = Date.today()
                     )
                 )
 
@@ -32,11 +32,11 @@ class EnvelopeSnapshotTest {
                 transactions = listOf(
                     Spending(
                         amount = Amount(units = 50),
-                        date = randomDate()
+                        date = Date.today()
                     ),
                     Spending(
                         amount = Amount(units = 30),
-                        date = randomDate()
+                        date = Date.today()
                     )
                 )
             )
