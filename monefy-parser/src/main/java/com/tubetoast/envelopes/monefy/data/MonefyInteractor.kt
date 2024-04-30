@@ -14,17 +14,19 @@ class MonefyInteractor(
     private val spendingRepository: UpdatingSpendingRepository,
 ) {
     @JvmOverloads
-    suspend fun import(inputStream: InputStream, startFrom: Date? = null) {
-        monefyDataParser.parse(inputStream.reader().readLines(), startFrom)
-            .forEach { snapshot ->
-                val category = snapshot.category
-                categoriesRepository.put(category) {
-                    undefinedCategoriesEnvelope.id
-                }
-                snapshot.transactions
-                    .filterIsInstance<Spending>()
-                    .map { spending -> category.id to spending }
-                    .let { spendingRepository.add(*it.toTypedArray()) }
+    suspend fun import(inputStream: InputStream, startFrom: Date? = null): Date? {
+        val snapshots = monefyDataParser.parse(inputStream.reader().readLines(), startFrom)
+        snapshots.onEach { snapshot ->
+            val category = snapshot.category
+            categoriesRepository.put(category) {
+                undefinedCategoriesEnvelope.id
             }
+            snapshot.transactions
+                .filterIsInstance<Spending>()
+                .map { spending -> category.id to spending }
+                .let { spendingRepository.add(*it.toTypedArray()) }
+        }
+        return snapshots.flatMap { it.transactions.map { transaction -> transaction.date } }
+            .maxOrNull() ?: startFrom
     }
 }

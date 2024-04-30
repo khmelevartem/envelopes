@@ -42,3 +42,12 @@ data class Date(
             }
     }
 }
+
+
+object DateConverter {
+    private const val DELIMITER = "/"
+    fun String.toDate() = split(DELIMITER).map { it.toInt() }
+        .let { (d, m, y) -> Date(day = d, month = m, year = y) }
+
+    fun Date.fromDate() = "$day$DELIMITER$month$DELIMITER$year"
+}

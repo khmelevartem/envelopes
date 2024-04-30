@@ -7,11 +7,11 @@ data class Setting(
     val checked: Boolean
 ) {
     enum class Key {
-        CURRENT_MONTH
+        FROM_LAST_IMPORT
     }
 }
 
 fun Setting.Key.default(): Setting =
     when (this) {
-        Setting.Key.CURRENT_MONTH -> Setting(this, "Current month", true)
+        Setting.Key.FROM_LAST_IMPORT -> Setting(this, "From Last Import", true)
     }

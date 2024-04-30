@@ -1,5 +1,6 @@
 package com.tubetoast.envelopes.android.di
 
+import com.tubetoast.envelopes.android.presentation.MainViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
@@ -19,6 +20,7 @@ val appModule = module {
     viewModel { EditCategoryViewModel(get(), get(), get()) }
     viewModel { ChooseEnvelopeViewModel(get(), get()) }
     viewModel { SettingsViewModel(get()) }
+    viewModel { MainViewModel(get(), get(), androidContext()) }
     single<MutableSettingsRepository> {
         SettingsRepositorySharedPrefsImpl(
             androidContext(),

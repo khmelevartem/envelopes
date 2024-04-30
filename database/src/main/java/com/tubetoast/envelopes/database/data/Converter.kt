@@ -2,7 +2,8 @@ package com.tubetoast.envelopes.database.data
 
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
-import com.tubetoast.envelopes.common.domain.models.Date
+import com.tubetoast.envelopes.common.domain.models.DateConverter.fromDate
+import com.tubetoast.envelopes.common.domain.models.DateConverter.toDate
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
@@ -63,11 +64,4 @@ class SpendingConverter : Converter<Spending, SpendingEntity> {
             comment = domainModel.comment
         )
 
-    companion object DateConverter {
-        private const val DELIMITER = "/"
-        fun String.toDate() = split(DELIMITER).map { it.toInt() }
-            .let { (d, m, y) -> Date(day = d, month = m, year = y) }
-
-        fun Date.fromDate() = "$day$DELIMITER$month$DELIMITER$year"
-    }
 }
