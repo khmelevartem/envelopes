@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.common.data.EnvelopesRepositoryWithUndefinedCategories.Companion.undefinedCategoriesEnvelope
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
+import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,7 @@ class EnvelopesListViewModel(
     }
 
     val itemModels: Flow<List<EnvelopeSnapshot>> by lazy {
-        snapshotsInteractor.envelopeSnapshotFlow
+        snapshotsInteractor.snapshotsByDatesFlow(Date.currentMonth())
             .map { it.filterEmptyCategories() }
     }
 

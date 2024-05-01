@@ -21,11 +21,6 @@ class DateTest {
     }
 
     @Test
-    fun today() {
-        println(Date.today())
-    }
-
-    @Test
     fun init() {
         Assertions.assertDoesNotThrow {
             Date(day = 1, month = 1, year = 1)

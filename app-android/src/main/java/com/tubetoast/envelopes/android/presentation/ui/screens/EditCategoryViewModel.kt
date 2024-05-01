@@ -188,7 +188,7 @@ class EditCategoryMode(
 
     override fun envelope(id: Id<Envelope>?, change: (Envelope) -> Unit) {
         scope.launch {
-            snapshotsInteractor.envelopeSnapshotFlow.collect { set ->
+            snapshotsInteractor.allSnapshotsFlow.collect { set ->
                 val envelope = set.find { snapshot ->
                     snapshot.categories.find { it.category == editedCategory } != null
                 }?.envelope

@@ -8,14 +8,10 @@ data class Date(
     val year: Int
 ) : ImmutableModel<Date>(), Comparable<Date> {
     init {
-        if (month !in 1..12) throw IllegalArgumentException("month $month")
-        when (month) {
-            1, 3, 5, 7, 8, 10, 12 -> if (day !in 1..31) throw IllegalArgumentException("month $month day $day")
-            4, 6, 9, 11 -> if (day > 30) throw IllegalArgumentException("month $month day $day")
-            2 -> if (year.mod(4) == 0 && day > 29 || year.mod(4) != 0 && day > 28) throw IllegalArgumentException(
-                "month $month day $day"
-            )
-        }
+        if (month !in 1..12)
+            throw IllegalArgumentException("month $month")
+        if (daysByMonths(year)[month]!! < day)
+            throw IllegalArgumentException("year $year month $month day $day")
     }
 
     override fun compareTo(other: Date): Int =
@@ -26,11 +22,27 @@ data class Date(
         }
 
     companion object {
+
+        private val vYear = createMap(isVisokosniy = true)
+
+        private val oYear = createMap()
+
+        private fun createMap(isVisokosniy: Boolean = false) = mutableMapOf<Int, Int>().apply {
+            arrayOf(1, 3, 5, 7, 8, 10, 12).forEach { put(it, 31) }
+            arrayOf(4, 6, 9, 11).forEach { put(it, 30) }
+            put(2, if (isVisokosniy) 29 else 28)
+        }
+
+        private fun daysByMonths(year: Int) =
+            if (year.mod(4) == 0) vYear else oYear
+
         fun today(): Date =
             date { get(Calendar.DAY_OF_MONTH) }
 
-        fun currentMonth(day: Int = 1) =
-            date { day }
+        fun currentMonth() =
+            date { 1 }..date {
+                daysByMonths(get(Calendar.YEAR))[get(Calendar.MONTH) + 1]!!
+            }
 
         private fun date(day: Calendar.() -> Int) =
             Calendar.getInstance().run {
@@ -43,6 +55,13 @@ data class Date(
     }
 }
 
+data class DateRange(
+    override val endInclusive: Date,
+    override val start: Date
+) : ClosedRange<Date>
+
+infix operator fun Date.rangeTo(other: Date): DateRange =
+    DateRange(other, this)
 
 object DateConverter {
     private const val DELIMITER = "/"

@@ -21,7 +21,7 @@ class ChooseEnvelopeViewModel(
     private var chosenEnvelope = mutableStateOf(Envelope.EMPTY)
 
     fun envelopes(chosenEnvelopeId: Int?): Flow<List<Envelope>> =
-        snapshotsInteractor.envelopeSnapshotFlow
+        snapshotsInteractor.allSnapshotsFlow
             .map {
                 it.map { snapshot ->
                     snapshot.envelope.also { envelope ->
