@@ -12,6 +12,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,13 +27,16 @@ import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
 import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeView
 import com.tubetoast.envelopes.android.presentation.ui.views.MainListView
 import com.tubetoast.envelopes.android.presentation.ui.views.PlusView
+import com.tubetoast.envelopes.common.domain.models.nextMonth
+import com.tubetoast.envelopes.common.domain.models.previousMonth
 
 @Composable
 fun EnvelopesListScreen(
     navController: NavHostController,
     envelopesListViewModel: EnvelopesListViewModel
 ) {
-    val envelopesState = envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
+    val envelopesState =
+        envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
     val envelopes by remember { envelopesState }
     val itemModels = envelopes.asItemModels()
     EnvelopesTheme {
@@ -46,15 +51,29 @@ fun EnvelopesListScreen(
                     title = { Text("Envelopes") },
                     actions = {
                         IconButton(
+                            onClick = { envelopesListViewModel.changeMonth { previousMonth() } }
+                        ) {
+                            Icon(
+                                Icons.Default.KeyboardArrowLeft,
+                                contentDescription = "previousMonth"
+                            )
+                        }
+                        Text(text = envelopesListViewModel.displayedMonth.value.start.run {
+                            "$month/${year.mod(2000)}"
+                        })
+                        IconButton(
+                            onClick = { envelopesListViewModel.changeMonth { nextMonth() } }
+                        ) {
+                            Icon(Icons.Default.KeyboardArrowRight, contentDescription = "nextMonth")
+                        }
+                        IconButton(
                             onClick = { navController.navigate(AppNavigation.settings) }
                         ) {
                             Icon(Icons.Default.Settings, contentDescription = "Import")
                         }
                     }
                 )
-                LazyColumn(
-                    verticalArrangement = Arrangement.SpaceAround,
-                ) {
+                LazyColumn(verticalArrangement = Arrangement.SpaceAround) {
                     items(itemModels) { itemModel ->
                         MainListView {
                             EnvelopeView(

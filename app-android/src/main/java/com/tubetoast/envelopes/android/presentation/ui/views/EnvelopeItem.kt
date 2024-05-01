@@ -29,61 +29,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType.Companion.Sp
 import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.ui.screens.ItemModel
-import com.tubetoast.envelopes.android.presentation.ui.theme.EColor
 import com.tubetoast.envelopes.android.presentation.ui.theme.darken
-import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
-import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.Spending
-import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
-
-@Preview
-@Composable
-fun Preview() {
-    Surface(modifier = Modifier.fillMaxWidth()) {
-        EnvelopeView(
-            itemModel = ItemModel(
-                EnvelopeSnapshot(
-                    envelope = Envelope("Envelope", Amount(1000)),
-                    categories = listOf(
-                        CategorySnapshot(
-                            Category("Category"),
-                            listOf(Spending(Amount(440), Date.today()))
-                        ),
-                        CategorySnapshot(
-                            Category("Category2"),
-                            listOf(Spending(Amount(44), Date.today()))
-                        ),
-                        CategorySnapshot(
-                            Category("Categor2y2"),
-                            listOf(Spending(Amount(44), Date.today()))
-                        ),
-                        CategorySnapshot(
-                            Category("Category223"),
-                            listOf(Spending(Amount(44), Date.today()))
-                        ),
-                        CategorySnapshot(
-                            Category("Cary2"),
-                            listOf(Spending(Amount(44), Date.today()))
-                        )
-                    ),
-                ),
-                color = EColor.Peach,
-            ),
-            onEditClick = { },
-            onDeleteClick = { },
-            onAddClick = { },
-            onCategoryClick = { _, _ -> },
-        )
-    }
-}
 
 @Composable
 fun EnvelopeView(
