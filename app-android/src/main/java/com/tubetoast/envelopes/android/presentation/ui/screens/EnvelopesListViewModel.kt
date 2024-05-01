@@ -2,6 +2,7 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tubetoast.envelopes.common.data.EnvelopesRepositoryWithUndefinedCategories.Companion.undefinedCategoriesEnvelope
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Envelope
@@ -25,14 +26,16 @@ class EnvelopesListViewModel(
             .map { it.filterEmptyCategories() }
     }
 
-    private fun Set<EnvelopeSnapshot>.filterEmptyCategories() = map { snapshot ->
-            val nonEmptyCategories = snapshot.categories.filter { category ->
-                category.isNotEmpty()
-            }
-            if (nonEmptyCategories.size != snapshot.categories.size) {
-                snapshot.copy(categories = nonEmptyCategories)
-            } else {
-                snapshot
-            }
+    private fun Set<EnvelopeSnapshot>.filterEmptyCategories() = mapNotNull { snapshot ->
+        val nonEmptyCategories = snapshot.categories.filter { category ->
+            category.isNotEmpty()
         }
+        if (nonEmptyCategories.size != snapshot.categories.size) {
+            snapshot.copy(categories = nonEmptyCategories)
+        } else if (snapshot.envelope.id == undefinedCategoriesEnvelope.id && nonEmptyCategories.isEmpty()) {
+            null
+        } else {
+            snapshot
+        }
+    }
 }
