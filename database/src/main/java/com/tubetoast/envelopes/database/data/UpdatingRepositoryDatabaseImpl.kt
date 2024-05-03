@@ -11,7 +11,7 @@ import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Root
 import com.tubetoast.envelopes.common.domain.models.Spending
 
-open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key: ImmutableModel<Key>>(
+open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key : ImmutableModel<Key>>(
     private val dataSource: DataSource<M, Key, *, *>
 ) : UpdatingRepository<M, Key>() {
 
@@ -21,6 +21,10 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key: ImmutableM
 
     override fun getCollection(keyId: Id<Key>): Set<M> {
         return dataSource.getCollection(keyId).toSet()
+    }
+
+    override fun moveImpl(value: M, newKyId: Id<Key>): Boolean {
+        return dataSource.move(value, newKyId)
     }
 
     override fun getAll(): Set<M> {

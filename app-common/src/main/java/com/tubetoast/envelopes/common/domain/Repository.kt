@@ -45,7 +45,7 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key : ImmutableModel<Ke
     }
 
     final override fun move(value: M, newKey: Id<Key>) {
-        if (deleteImpl(value) && addImpl(value, newKey)) {
+        if (moveImpl(value, newKey)) {
             update?.invoke()
         }
     }
@@ -63,6 +63,7 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key : ImmutableModel<Ke
     abstract fun addImpl(value: M, keyId: Id<Key>): Boolean
     abstract fun deleteImpl(value: M): Boolean
     abstract fun editImpl(oldValue: M, newValue: M): Boolean
+    abstract fun moveImpl(value: M, newKyId: Id<Key>): Boolean
 
     /** Returns deleted */
     abstract fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>>

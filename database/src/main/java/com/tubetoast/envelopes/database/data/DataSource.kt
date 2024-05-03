@@ -19,8 +19,8 @@ abstract class DataSource<M, K, MDE, KDE>(
 
     fun getAll(): List<M> = dao.getAll().map { converter.toDomainModel(it) }
 
-    fun getCollection(keyId: Id<K>): List<M> =
-        parentDao?.get(keyId.code)?.primaryKey?.let { foreignKey ->
+    fun getCollection(parentId: Id<K>): List<M> =
+        parentDao?.get(parentId.code)?.primaryKey?.let { foreignKey ->
             dao.getCollection(foreignKey).map { converter.toDomainModel(it) }
         }.orEmpty()
 
@@ -34,8 +34,8 @@ abstract class DataSource<M, K, MDE, KDE>(
 
         }
 
-    fun write(value: M, keyId: Id<K>) = try {
-        val foreignKey = parentDao?.get(keyId.code)?.primaryKey
+    fun write(value: M, parentId: Id<K>) = try {
+        val foreignKey = parentDao?.get(parentId.code)?.primaryKey
         dao.write(converter.toDatabaseEntity(value, foreignKey))
         true // fix it with custom insert
     } catch (e: SQLiteConstraintException) {
@@ -48,14 +48,21 @@ abstract class DataSource<M, K, MDE, KDE>(
 
     fun delete(valueId: Id<M>) = dao.delete(valueId.code) != 0
 
-    fun deleteCollection(keyId: Id<K>) =
-        parentDao?.get(keyId.code)?.primaryKey?.let { foreignKey ->
+    fun deleteCollection(parentID: Id<K>) =
+        parentDao?.get(parentID.code)?.primaryKey?.let { foreignKey ->
             dao.deleteCollection(foreignKey) != 0
         }
 
     fun update(oldValueId: Id<M>, value: M): Boolean {
         val oldMDE = dao.get(oldValueId.code) ?: return false
         val newMDE = converter.toDatabaseEntity(value, oldMDE.foreignKey, oldMDE.primaryKey)
+        return dao.update(newMDE) != 0
+    }
+
+    fun move(value: M, newParentId: Id<K>): Boolean {
+        val oldMDE = dao.get(value.id.code) ?: return false
+        val newForeignKey = parentDao?.get(newParentId.code)?.primaryKey ?: return false
+        val newMDE = converter.toDatabaseEntity(value, newForeignKey, oldMDE.primaryKey)
         return dao.update(newMDE) != 0
     }
 }

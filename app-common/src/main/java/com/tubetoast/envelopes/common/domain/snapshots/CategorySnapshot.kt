@@ -5,7 +5,7 @@ import com.tubetoast.envelopes.common.domain.models.Transaction
 
 data class CategorySnapshot(
     val category: Category,
-    val transactions: List<Transaction<*>>
+    val transactions: Set<Transaction<*>>
 ) {
     fun isNotEmpty() = transactions.isNotEmpty()
 }

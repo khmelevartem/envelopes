@@ -12,10 +12,10 @@ import org.junit.jupiter.params.provider.ValueSource
 class EnvelopeSnapshotTest {
     private fun snapshot(limit: Int) = EnvelopeSnapshot(
         envelope = Envelope(name = "envelope", limit = Amount(limit)),
-        categories = listOf(
+        categories = setOf(
             CategorySnapshot(
                 category = Category("category"),
-                transactions = listOf(
+                transactions = setOf(
                     Spending(
                         amount = Amount(units = 10),
                         date = Date.today()
@@ -29,7 +29,7 @@ class EnvelopeSnapshotTest {
             ),
             CategorySnapshot(
                 category = Category("category2"),
-                transactions = listOf(
+                transactions = setOf(
                     Spending(
                         amount = Amount(units = 50),
                         date = Date.today()

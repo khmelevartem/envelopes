@@ -67,8 +67,15 @@ open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key : ImmutableMod
 
     override fun editImpl(oldValue: M, newValue: M): Boolean =
         lock.withLock {
-            repositories.map { repo ->
+            repositories.asSequence().filter { repo ->
                 repo.editImpl(oldValue, newValue)
+            }.any()
+        }
+
+    override fun moveImpl(value: M, newKyId: Id<Key>): Boolean =
+        lock.withLock {
+            repositories.asSequence().filter { repo ->
+                repo.moveImpl(value, newKyId)
             }.any()
         }
 

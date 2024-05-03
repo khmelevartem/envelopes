@@ -53,6 +53,13 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key : Immutable
             }
         } ?: false
 
+    override fun moveImpl(value: M, newKyId: Id<Key>): Boolean {
+        keys[value.id]?.let { oldKey ->
+            return getCollection(oldKey).remove(value) && getCollection(newKyId).add(value)
+        }
+        return false
+    }
+
     override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {
         return sets.remove(keyId)?.mapTo(mutableSetOf()) { it.id }.orEmpty()
     }

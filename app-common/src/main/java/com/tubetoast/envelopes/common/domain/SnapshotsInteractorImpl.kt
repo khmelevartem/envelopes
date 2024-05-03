@@ -35,10 +35,10 @@ class SnapshotsInteractorImpl(
             EnvelopeSnapshot(
                 envelope,
                 categoriesRepository.getCollection(envelope.id)
-                    .map { category ->
+                    .mapTo(mutableSetOf()) { category ->
                         CategorySnapshot(
                             category,
-                            spendingRepository.getCollection(category.id).toList()
+                            spendingRepository.getCollection(category.id)
                         )
                     }
             )
@@ -53,9 +53,9 @@ class SnapshotsInteractorImpl(
         updateFlow()
         return flow.map { set ->
             set.mapTo(mutableSetOf()) { snapshot ->
-                snapshot.copy(categories = snapshot.categories.map { categorySnapshot ->
+                snapshot.copy(categories = snapshot.categories.mapTo(mutableSetOf()) { categorySnapshot ->
                     categorySnapshot.copy(transactions = categorySnapshot.transactions
-                        .filter { transaction ->
+                        .filterTo(mutableSetOf()) { transaction ->
                             transaction.date in dateRange
                         })
                 })
