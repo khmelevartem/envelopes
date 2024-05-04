@@ -43,6 +43,12 @@ open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key : ImmutableMod
         }
     }
 
+    override fun getAllByKeys(): Map<Id<Key>, Set<M>> = lock.withLock {
+        repositories.fold(mutableMapOf()) { map, repo ->
+            map.apply { putAll(repo.getAllByKeys()) }
+        }
+    }
+
     override fun getKey(valueId: Id<M>): Id<Key>? {
         lock.withLock {
             repositories.forEach { repo ->

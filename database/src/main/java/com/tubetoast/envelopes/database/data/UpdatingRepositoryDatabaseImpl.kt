@@ -31,6 +31,10 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key : Immutable
         return dataSource.getAll().toSet()
     }
 
+    override fun getAllByKeys(): Map<Id<Key>, Set<M>> {
+        return dataSource.getAllByKeys()
+    }
+
     override fun getKey(valueId: Id<M>): Id<Key>? {
         return dataSource.getKey(valueId)
     }

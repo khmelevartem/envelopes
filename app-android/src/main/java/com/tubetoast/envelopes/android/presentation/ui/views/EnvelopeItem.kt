@@ -90,7 +90,7 @@ private fun Categories(
                 color = itemModel.color.darken(),
                 shape = RoundedCornerShape(4.dp)
             )
-        items(itemModel.data.categories) {
+        items(itemModel.data.categories.toList()) {
             CategoryView(
                 snapshot = it,
                 modifier = categoriesModifier

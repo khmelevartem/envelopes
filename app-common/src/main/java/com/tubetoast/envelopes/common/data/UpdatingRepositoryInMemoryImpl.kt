@@ -28,6 +28,10 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key : Immutable
     override fun getAll(): Set<M> =
         sets.flatMapTo(mutableSetOf()) { it.value }
 
+    override fun getAllByKeys(): Map<Id<Key>, Set<M>> {
+        return sets
+    }
+
     override fun getKey(valueId: Id<M>): Id<Key>? {
         return keys[valueId]
     }

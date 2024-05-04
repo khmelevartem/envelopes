@@ -12,7 +12,7 @@ class MonefyDataParser(
 ) {
 
     fun parse(lines: List<String>, startFrom: Date? = null): List<CategorySnapshot> {
-        val snapshots: MutableMap<String, MutableList<Transaction<*>>> = mutableMapOf()
+        val snapshots: MutableMap<String, MutableSet<Transaction<*>>> = mutableMapOf()
 
         val columns = MonefyDataColumns.parse(lines.first())
         lines.subList(1, lines.size).forEach { line ->
@@ -31,7 +31,7 @@ class MonefyDataParser(
 
     private fun String.process(
         columns: MonefyDataColumns,
-        snapshots: MutableMap<String, MutableList<Transaction<*>>>,
+        snapshots: MutableMap<String, MutableSet<Transaction<*>>>,
         startFrom: Date?
     ) {
         val values = split(DELIMITER).takeIf { it.size == columns.size }
@@ -39,7 +39,7 @@ class MonefyDataParser(
         val category = values[columns.category]
         val date = dateParser.parseDate(values[columns.date])
         if (startFrom != null && date < startFrom) return
-        snapshots.getOrPut(category) { mutableListOf() }.add(
+        snapshots.getOrPut(category) { mutableSetOf() }.add(
             operationParser.parse(
                 string = values[columns.amount],
                 date = date,

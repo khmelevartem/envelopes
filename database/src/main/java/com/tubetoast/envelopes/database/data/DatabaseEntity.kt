@@ -3,17 +3,18 @@ package com.tubetoast.envelopes.database.data
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.tubetoast.envelopes.common.domain.models.Root
 
 abstract class DatabaseEntity {
     abstract val primaryKey: Int
-    abstract val foreignKey: Int?
+    abstract val foreignKey: Int
     abstract val valueId: Int
 }
 
 @Entity
 data class EnvelopeEntity(
     @PrimaryKey(autoGenerate = true) override var primaryKey: Int = 0,
-    override val foreignKey: Int? = null,
+    override val foreignKey: Int = Root.id.code,
     override val valueId: Int,
     val name: String,
     val limit: Int,

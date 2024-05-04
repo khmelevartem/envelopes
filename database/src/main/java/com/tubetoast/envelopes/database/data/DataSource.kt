@@ -8,6 +8,7 @@ import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Root
 import com.tubetoast.envelopes.common.domain.models.Spending
+import com.tubetoast.envelopes.common.domain.models.id
 
 // Model, Key, ModelDatabaseEntity, KeyDatabaseEntity
 abstract class DataSource<M, K, MDE, KDE>(
@@ -17,25 +18,44 @@ abstract class DataSource<M, K, MDE, KDE>(
     private val parentConverter: Converter<K, KDE>?
 ) where M : ImmutableModel<M>, K : ImmutableModel<K>, MDE : DatabaseEntity, KDE : DatabaseEntity {
 
-    fun getAll(): List<M> = dao.getAll().map { converter.toDomainModel(it) }
+    fun get(valueId: Id<M>): M? = dao.get(valueId.code)?.let { converter.toDomainModel(it) }
 
     fun getCollection(parentId: Id<K>): List<M> =
         parentDao?.get(parentId.code)?.primaryKey?.let { foreignKey ->
             dao.getCollection(foreignKey).map { converter.toDomainModel(it) }
         }.orEmpty()
 
-    fun get(valueId: Id<M>): M? = dao.get(valueId.code)?.let { converter.toDomainModel(it) }
+    fun getAll(): List<M> = dao.getAll().map { converter.toDomainModel(it) }
+
+    fun getAllByKeys(): Map<Id<K>, Set<M>> {
+        val data = dao.getAll()
+        val map = mutableMapOf<Int, MutableSet<M>>()
+        data.forEach {
+            map.getOrPut(it.foreignKey) { mutableSetOf() }
+                .add(converter.toDomainModel(it))
+        }
+
+        return map.mapKeys {
+            parentDao?.getByKey(it.key)
+                ?.let { parent -> parentConverter?.toDomainModel(parent)?.id }
+                ?: Root.id.id()
+        }
+    }
 
     fun getKey(valueId: Id<M>): Id<K>? =
         dao.get(valueId.code)?.foreignKey?.let { parentPrimaryKey ->
             parentDao?.getByKey(parentPrimaryKey)?.let {
                 parentConverter?.toDomainModel(it)?.id
             }
-
         }
 
     fun write(value: M, parentId: Id<K>) = try {
-        val foreignKey = parentDao?.get(parentId.code)?.primaryKey
+        val foreignKey = if (parentDao == null) {
+            Root.id.code
+        } else {
+            parentDao.get(parentId.code)?.primaryKey
+                ?: throw IllegalArgumentException("Must have parent")
+        }
         dao.write(converter.toDatabaseEntity(value, foreignKey))
         true // fix it with custom insert
     } catch (e: SQLiteConstraintException) {

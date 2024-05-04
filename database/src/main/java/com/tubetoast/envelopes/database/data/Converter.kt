@@ -10,7 +10,7 @@ import com.tubetoast.envelopes.common.domain.models.Spending
 
 interface Converter<M : ImmutableModel<M>, DE : DatabaseEntity> {
     fun toDomainModel(databaseEntity: DE): M
-    fun toDatabaseEntity(domainModel: M, foreignKey: Int?, primaryKey: Int = 0): DE
+    fun toDatabaseEntity(domainModel: M, foreignKey: Int, primaryKey: Int = 0): DE
 }
 
 class EnvelopeConverter : Converter<Envelope, EnvelopeEntity> {
@@ -18,7 +18,7 @@ class EnvelopeConverter : Converter<Envelope, EnvelopeEntity> {
         Envelope(name = name, limit = Amount(units = limit))
     }
 
-    override fun toDatabaseEntity(domainModel: Envelope, foreignKey: Int?, primaryKey: Int) =
+    override fun toDatabaseEntity(domainModel: Envelope, foreignKey: Int, primaryKey: Int) =
         EnvelopeEntity(
             primaryKey = primaryKey,
             valueId = domainModel.id.code,
@@ -33,12 +33,11 @@ class CategoryConverter : Converter<Category, CategoryEntity> {
         Category(name = name, limit = limit?.let { Amount(units = it) })
     }
 
-    override fun toDatabaseEntity(domainModel: Category, foreignKey: Int?, primaryKey: Int) =
+    override fun toDatabaseEntity(domainModel: Category, foreignKey: Int, primaryKey: Int) =
         CategoryEntity(
             primaryKey = primaryKey,
             valueId = domainModel.id.code,
-            foreignKey = foreignKey
-                ?: throw IllegalArgumentException("ForeignKey must not be null"),
+            foreignKey = foreignKey,
             name = domainModel.name,
             limit = domainModel.limit?.units
         )
@@ -53,12 +52,11 @@ class SpendingConverter : Converter<Spending, SpendingEntity> {
         )
     }
 
-    override fun toDatabaseEntity(domainModel: Spending, foreignKey: Int?, primaryKey: Int) =
+    override fun toDatabaseEntity(domainModel: Spending, foreignKey: Int, primaryKey: Int) =
         SpendingEntity(
             primaryKey = primaryKey,
             valueId = domainModel.id.code,
-            foreignKey = foreignKey
-                ?: throw IllegalArgumentException("ForeignKey must not be null"),
+            foreignKey = foreignKey,
             amount = domainModel.amount.units,
             date = domainModel.date.fromDate(),
             comment = domainModel.comment

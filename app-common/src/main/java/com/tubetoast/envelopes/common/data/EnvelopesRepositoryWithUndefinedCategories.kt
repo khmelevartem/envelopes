@@ -27,6 +27,10 @@ class EnvelopesRepositoryWithUndefinedCategories : EnvelopesRepositoryInMemoryBa
         return emptySet()
     }
 
+    override fun getAllByKeys(): Map<Id<Root>, Set<Envelope>> {
+        return mapOf(Root.id to setOf(undefinedCategoriesEnvelope))
+    }
+
     override fun addImpl(value: Envelope, keyId: Id<Root>): Boolean {
         return false
     }

@@ -65,7 +65,7 @@ class EnvelopesListViewModel(
     }
 
     private fun Set<EnvelopeSnapshot>.filterEmptyCategories() = mapNotNull { snapshot ->
-        val nonEmptyCategories = snapshot.categories.filter { category ->
+        val nonEmptyCategories = snapshot.categories.filterTo(mutableSetOf()) { category ->
             category.isNotEmpty()
         }
         if (nonEmptyCategories.size != snapshot.categories.size) {
