@@ -9,7 +9,6 @@ import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.DateRange
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.undefinedCategoriesEnvelope
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ProducerScope
@@ -17,7 +16,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class EnvelopesListViewModel(
@@ -26,7 +24,7 @@ class EnvelopesListViewModel(
 ) : ViewModel() {
 
     private var job: Job? = null
-    private lateinit var producerScope: ProducerScope<List<EnvelopeSnapshot>>
+    private lateinit var producerScope: ProducerScope<Iterable<EnvelopeSnapshot>>
     private val _displayedMonth = mutableStateOf(Date.currentMonth())
     val displayedMonth: State<DateRange> get() = _displayedMonth
 
@@ -42,7 +40,7 @@ class EnvelopesListViewModel(
         startCollecting()
     }
 
-    val itemModels: Flow<List<EnvelopeSnapshot>> = callbackFlow {
+    val itemModels: Flow<Iterable<EnvelopeSnapshot>> = callbackFlow {
         producerScope = this
         startCollecting()
         awaitClose {
@@ -53,27 +51,12 @@ class EnvelopesListViewModel(
     private fun startCollecting(dateRange: DateRange = _displayedMonth.value) {
         job = producerScope.launch {
             snapshotsInteractor.snapshotsByDatesFlow(dateRange)
-                .map { it.filterEmptyCategories() }.collect {
-                    producerScope.trySendBlocking(it)
-                }
+                .collect { producerScope.trySendBlocking(it) }
         }
     }
 
     private fun stop() {
         job?.cancel()
         job = null
-    }
-
-    private fun Set<EnvelopeSnapshot>.filterEmptyCategories() = mapNotNull { snapshot ->
-        val nonEmptyCategories = snapshot.categories.filterTo(mutableSetOf()) { category ->
-            category.isNotEmpty()
-        }
-        if (nonEmptyCategories.size != snapshot.categories.size) {
-            snapshot.copy(categories = nonEmptyCategories)
-        } else if (snapshot.envelope.id == undefinedCategoriesEnvelope.id && nonEmptyCategories.isEmpty()) {
-            null
-        } else {
-            snapshot
-        }
     }
 }

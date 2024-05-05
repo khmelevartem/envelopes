@@ -11,5 +11,5 @@ data class ItemModel<T>(
 )
 
 @Composable
-fun <T> Collection<T>.asItemModels() =
+fun <T> Iterable<T>.asItemModels() =
     mapIndexed { index, value -> ItemModel(value, EColor.ePalette().next(index)) }

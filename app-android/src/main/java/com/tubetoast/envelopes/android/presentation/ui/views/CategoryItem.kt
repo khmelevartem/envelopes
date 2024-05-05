@@ -7,6 +7,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 
@@ -18,7 +19,9 @@ fun CategoryView(
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.clickable(onClick = onClick)
+        modifier = modifier
+            .clickable(onClick = onClick)
+            .alpha(if (snapshot.isNotEmpty()) 1f else 0.7f)
     ) {
         Text(text = snapshot.category.name, modifier = Modifier.padding(horizontal = 8.dp))
     }
