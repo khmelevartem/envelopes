@@ -33,18 +33,14 @@ class EditCategoryViewModel(
         fun destroy() = scope.coroutineContext.cancelChildren()
     }
 
-    data class UIState(
-        val draftCategory: Category,
+    data class CategoryOperations(
         val canConfirm: Boolean,
         val canDelete: Boolean,
-        val envelope: Envelope
     ) {
         companion object {
-            val EMPTY = UIState(
-                Category.EMPTY,
+            val EMPTY = CategoryOperations(
                 canConfirm = false,
                 canDelete = false,
-                envelope = Envelope.EMPTY
             )
         }
     }
@@ -56,45 +52,44 @@ class EditCategoryViewModel(
             field = value
         }
 
-    private val uiState = mutableStateOf(UIState.EMPTY)
+    private val _categoryOperations = mutableStateOf(CategoryOperations.EMPTY)
+    private val _envelope = mutableStateOf(Envelope.EMPTY)
+    private val _draftCategory = mutableStateOf(Category.EMPTY)
 
-    fun uiState(id: Int?, envelopeId: Int?): State<UIState> {
+    val categoryOperations: State<CategoryOperations> get() = _categoryOperations
+    val envelope: State<Envelope> get() = _envelope
+
+    fun init(categoryId: Int?, envelopeId: Int?): State<Category> {
         viewModelScope.launch {
-            id?.let {
-                categoryInteractor.getCategory(id.id())?.let { editedCategory ->
+            categoryId?.let {
+                categoryInteractor.getCategory(categoryId.id())?.let { editedCategory ->
                     mode = EditCategoryMode(
                         categoryInteractor = categoryInteractor,
                         snapshotsInteractor = snapshotsInteractor,
                         editedCategory = editedCategory,
                         scope = viewModelScope
                     )
-                    updateUIState(editedCategory)
+                    updateCategory(editedCategory)
                 }
             } ?: reset()
             mode.envelope(envelopeId?.id()) { env ->
-                updateEnvelope(envelope = env)
+                _envelope.value = env
             }
         }
-        return uiState
+        return _draftCategory
     }
 
     fun setName(input: String) {
-        updateUIState(uiState.value.draftCategory.copy(name = input))
+        updateCategory(_draftCategory.value.copy(name = input))
     }
 
     fun setLimit(input: String) {
-        if (input.isBlank()) {
-            updateUIState(uiState.value.draftCategory.copy(limit = Amount.ZERO))
-        } else {
-            input.toIntOrNull()?.let {
-                updateUIState(uiState.value.draftCategory.copy(limit = Amount(it)))
-            }
-        }
+        updateCategory(_draftCategory.value.copy(limit = Amount(input.toIntOrNull() ?: 0)))
     }
 
     fun confirm() {
         viewModelScope.launch {
-            mode.confirm(uiState.value.draftCategory, uiState.value.envelope)
+            mode.confirm(_draftCategory.value, _envelope.value)
             reset()
         }
     }
@@ -113,22 +108,20 @@ class EditCategoryViewModel(
         mode.destroy()
     }
 
-    private fun updateUIState(category: Category = uiState.value.draftCategory) {
+    private fun updateCategory(category: Category) {
+        _draftCategory.value = category
         viewModelScope.launch {
-            uiState.value = uiState.value.copy(
-                draftCategory = category,
+            _categoryOperations.value = CategoryOperations(
                 canConfirm = mode.canConfirm(category),
                 canDelete = mode.canDelete(),
             )
         }
     }
 
-    private fun updateEnvelope(envelope: Envelope) {
-        uiState.value = uiState.value.copy(envelope = envelope)
-    }
-
     private fun reset() {
-        uiState.value = UIState.EMPTY
+        _draftCategory.value = Category.EMPTY
+        _envelope.value = Envelope.EMPTY
+        _categoryOperations.value = CategoryOperations.EMPTY
         mode = CreateCategoryMode(categoryInteractor, envelopeInteractor, viewModelScope)
     }
 }

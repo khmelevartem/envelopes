@@ -21,57 +21,53 @@ class EditEnvelopeViewModel(
         suspend fun delete()
     }
 
-    data class UIState(
-        val draftEnvelope: Envelope,
+    data class EnvelopeOperations(
         val canConfirm: Boolean,
         val canDelete: Boolean
     ) {
         companion object {
-            val EMPTY = UIState(Envelope.EMPTY, canConfirm = false, canDelete = false)
+            val EMPTY = EnvelopeOperations(canConfirm = false, canDelete = false)
         }
     }
 
     private var mode: Mode = CreateEnvelopeMode(envelopeInteractor)
+    private val _operations = mutableStateOf(EnvelopeOperations.EMPTY)
+    private val draftEnvelope = mutableStateOf(Envelope.EMPTY)
 
-    private val uiState = mutableStateOf(UIState.EMPTY)
+    val operations: State<EnvelopeOperations> = _operations
 
-    fun uiState(envelopeId: Int?): State<UIState> {
+    fun envelope(envelopeId: Int?): State<Envelope> {
         envelopeId?.let { id ->
             viewModelScope.launch {
                 envelopeInteractor.getExactEnvelope(id.id())?.let {
-                    updateUIState(it)
-                    mode = EditEnvelopeMode(
-                        editedEnvelope = it,
-                        envelopeInteractor = envelopeInteractor
-                    )
+                    mode = EditEnvelopeMode(envelopeInteractor, it)
+                    updateEnvelope(it)
                 } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
             }
         } ?: reset()
-        return uiState
+        return draftEnvelope
     }
 
-    private fun updateUIState(envelope: Envelope = uiState.value.draftEnvelope) {
+    private fun updateEnvelope(envelope: Envelope) {
+        draftEnvelope.value = envelope
         viewModelScope.launch {
-            uiState.value = UIState(envelope, mode.canConfirm(envelope), mode.canDelete())
+            _operations.value = EnvelopeOperations(
+                    canConfirm = mode.canConfirm(envelope),
+                    canDelete = mode.canDelete()
+                )
         }
     }
 
     fun setName(input: String) {
-        updateUIState(uiState.value.draftEnvelope.copy(name = input))
+        updateEnvelope(draftEnvelope.value.copy(name = input))
     }
 
     fun setLimit(input: String) {
-        if (input.isBlank()) {
-            updateUIState(uiState.value.draftEnvelope.copy(limit = Amount.ZERO))
-        } else {
-            input.toIntOrNull()?.let {
-                updateUIState(uiState.value.draftEnvelope.copy(limit = Amount(it)))
-            }
-        }
+        updateEnvelope(draftEnvelope.value.copy(limit = Amount(input.toIntOrNull() ?: 0)))
     }
 
     fun confirm() {
-        viewModelScope.launch { mode.confirm(uiState.value.draftEnvelope) }
+        viewModelScope.launch { mode.confirm(draftEnvelope.value) }
         reset()
     }
 
@@ -82,7 +78,8 @@ class EditEnvelopeViewModel(
 
     private fun reset() {
         mode = CreateEnvelopeMode(envelopeInteractor)
-        uiState.value = UIState.EMPTY
+        draftEnvelope.value = Envelope.EMPTY
+        _operations.value = EnvelopeOperations.EMPTY
     }
 }
 

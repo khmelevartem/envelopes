@@ -26,14 +26,14 @@ fun EditCategoryScreen(
 ) {
     EnvelopesTheme {
         Column {
-            val uiState by remember { viewModel.uiState(categoryId, envelopeId) }
+            val draftCategory by remember { viewModel.init(categoryId, envelopeId) }
             TextField(
-                value = uiState.draftCategory.name,
+                value = draftCategory.name,
                 onValueChange = { viewModel.setName(it) },
                 modifier = Modifier.fillMaxWidth()
             )
             TextField(
-                value = uiState.draftCategory.limit?.units?.takeIf { it > 0 }?.toString().orEmpty(),
+                value = draftCategory.limit?.units?.takeIf { it > 0 }?.toString().orEmpty(),
                 onValueChange = { viewModel.setLimit(it) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -42,12 +42,13 @@ fun EditCategoryScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                val categoryOperations by remember { viewModel.categoryOperations }
                 Button(
                     onClick = {
                         viewModel.confirm()
                         navController.popBackStack()
                     },
-                    enabled = uiState.canConfirm
+                    enabled = categoryOperations.canConfirm
                 ) {
                     Text(text = "Confirm")
                 }
@@ -56,19 +57,21 @@ fun EditCategoryScreen(
                         viewModel.delete()
                         navController.popBackStack()
                     },
-                    enabled = uiState.canDelete
+                    enabled = categoryOperations.canDelete
                 ) {
                     Text(text = "Delete")
                 }
+
+                val envelope by remember { viewModel.envelope }
                 Button(
                     onClick = {
                         navController.navigate(
-                            AppNavigation.chooseEnvelope(uiState.draftCategory, uiState.envelope)
+                            AppNavigation.chooseEnvelope(draftCategory, envelope)
                         )
                     },
                     enabled = viewModel.canChooseEnvelope()
                 ) {
-                    Text(text = "Envelope: ${uiState.envelope.name}")
+                    Text(text = "Envelope: ${envelope.name}")
                 }
             }
         }
