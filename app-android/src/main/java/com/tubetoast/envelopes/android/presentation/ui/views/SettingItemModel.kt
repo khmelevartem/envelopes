@@ -1,6 +1,6 @@
 package com.tubetoast.envelopes.android.presentation.ui.views
 
-import com.tubetoast.envelopes.android.settings.Setting
+import com.tubetoast.envelopes.common.settings.Setting
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class SettingItemModel(

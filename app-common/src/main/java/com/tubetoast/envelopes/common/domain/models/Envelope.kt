@@ -7,6 +7,8 @@ data class Envelope(
 
     override val id: Id<Envelope> = name.id()
 
+    val yearLimit = limit * 12
+
     companion object {
         val EMPTY = Envelope(name = "", limit = Amount.ZERO)
     }

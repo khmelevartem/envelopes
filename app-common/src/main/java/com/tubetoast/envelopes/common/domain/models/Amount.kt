@@ -25,7 +25,13 @@ data class Amount(
         return this.units.toFloat() / another.units // avoid shared not to overflow int
     }
 
-    fun inShares(): Int = this.units * this.currency.shares + this.shares
+    infix operator fun times(other: Int) = run {
+        val (units, shares) = (inShares() * other)
+            .let { it / currency.shares to it.mod(currency.shares) }
+        copy(units = units, shares = shares)
+    }
+
+    private fun inShares(): Int = units * currency.shares + shares
 
     private fun checkCurrency(another: Amount) {
         check(this.currency == another.currency) {

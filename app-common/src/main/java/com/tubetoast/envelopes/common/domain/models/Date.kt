@@ -36,5 +36,9 @@ data class Date(
         fun currentMonth() = today().let {
             it.copy(day = 1)..it.copy(day = it.daysInThisMonth())
         }
+
+        fun currentYear() = today().let {
+            it.copy(day = 1, month = 1)..it.copy(day = 31, month = 12)
+        }
     }
 }

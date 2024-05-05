@@ -27,8 +27,6 @@ import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
 import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeView
 import com.tubetoast.envelopes.android.presentation.ui.views.MainListView
 import com.tubetoast.envelopes.android.presentation.ui.views.PlusView
-import com.tubetoast.envelopes.common.domain.models.nextMonth
-import com.tubetoast.envelopes.common.domain.models.previousMonth
 
 @Composable
 fun EnvelopesListScreen(
@@ -39,6 +37,8 @@ fun EnvelopesListScreen(
         envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
     val envelopes by remember { envelopesState }
     val itemModels = envelopes.asItemModels()
+    val periodState =
+        envelopesListViewModel.displayedPeriod.collectAsState(initial = "")
     EnvelopesTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -51,18 +51,17 @@ fun EnvelopesListScreen(
                     title = { Text("Envelopes") },
                     actions = {
                         IconButton(
-                            onClick = { envelopesListViewModel.changeMonth { previousMonth() } }
+                            onClick = { envelopesListViewModel.previousPeriod() }
                         ) {
                             Icon(
                                 Icons.Default.KeyboardArrowLeft,
                                 contentDescription = "previousMonth"
                             )
                         }
-                        Text(text = envelopesListViewModel.displayedMonth.value.start.run {
-                            "$month/${year.mod(2000)}"
-                        })
+                        val period by remember { periodState }
+                        Text(text = period)
                         IconButton(
-                            onClick = { envelopesListViewModel.changeMonth { nextMonth() } }
+                            onClick = { envelopesListViewModel.nextPeriod() }
                         ) {
                             Icon(Icons.Default.KeyboardArrowRight, contentDescription = "nextMonth")
                         }
@@ -78,6 +77,7 @@ fun EnvelopesListScreen(
                         MainListView {
                             EnvelopeView(
                                 itemModel,
+                                envelopesListViewModel.filterByYear,
                                 onEditClick = { navController.navigate(AppNavigation.editEnvelope(it)) },
                                 onDeleteClick = { envelopesListViewModel.delete(it) },
                                 onAddClick = { navController.navigate(AppNavigation.addCategory(it)) },

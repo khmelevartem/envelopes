@@ -41,13 +41,14 @@ import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 @Composable
 fun EnvelopeView(
     itemModel: ItemModel<EnvelopeSnapshot>,
+    byYear: Boolean,
     onEditClick: (Envelope) -> Unit,
     onDeleteClick: (Envelope) -> Unit,
     onAddClick: (Envelope) -> Unit,
     onCategoryClick: (Category, Envelope) -> Unit,
     modifier: Modifier = Modifier
 ) = Surface(color = itemModel.color, modifier = modifier) {
-    val percentage = itemModel.data.percentage
+    val percentage = itemModel.data.run { if (byYear) yearPercentage else percentage }
     val darkColor = MaterialTheme.colors.onSurface.copy(alpha = 0.3f)
     ProgressBar(percentage, darkColor)
     Percentage(percentage, darkColor)
@@ -59,7 +60,7 @@ fun EnvelopeView(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Info(itemModel, darkColor)
+            Info(itemModel, byYear, darkColor)
             Buttons(onEditClick, itemModel, onDeleteClick)
         }
         Categories(modifier, itemModel, onCategoryClick, onAddClick)
@@ -130,6 +131,7 @@ private fun Buttons(
 @Composable
 private fun Info(
     itemModel: ItemModel<EnvelopeSnapshot>,
+    byYear: Boolean,
     darkColor: Color
 ) {
     itemModel.data.run {
@@ -140,8 +142,9 @@ private fun Info(
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1
             )
+            val limit = envelope.run { if (byYear) yearLimit else limit }.units.formatNumber()
             Text(
-                text = "${sum.units.formatNumber()} / ${envelope.limit.units.formatNumber()}",
+                text = "${sum.units.formatNumber()} / $limit",
                 fontSize = TextUnit(value = 20f, type = Sp),
                 color = darkColor,
                 fontWeight = FontWeight.Bold,
@@ -161,6 +164,7 @@ private fun Percentage(percentage: Float, darkColor: Color) {
             fontWeight = FontWeight.Bold,
             fontSize = TextUnit(value = 96f, type = Sp),
             color = darkColor,
+            maxLines = 1,
         )
     }
 }

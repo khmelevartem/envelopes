@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.tubetoast.envelopes.android.presentation.ui.views.SettingItemModel
 import com.tubetoast.envelopes.android.presentation.ui.views.toItemModel
 import com.tubetoast.envelopes.android.presentation.ui.views.toSetting
-import com.tubetoast.envelopes.android.settings.MutableSettingsRepository
+import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
 
 class SettingsViewModel(
     private val settingsRepository: MutableSettingsRepository

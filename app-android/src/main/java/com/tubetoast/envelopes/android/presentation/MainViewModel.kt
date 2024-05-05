@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tubetoast.envelopes.android.settings.Setting
-import com.tubetoast.envelopes.android.settings.SettingsRepository
 import com.tubetoast.envelopes.common.domain.models.DateConverter.fromDate
 import com.tubetoast.envelopes.common.domain.models.DateConverter.toDate
+import com.tubetoast.envelopes.common.settings.Setting
+import com.tubetoast.envelopes.common.settings.SettingsRepository
 import com.tubetoast.envelopes.monefy.data.MonefyInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -3,6 +3,9 @@ package com.tubetoast.envelopes.android.settings
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
+import com.tubetoast.envelopes.common.settings.Setting
+import com.tubetoast.envelopes.common.settings.SettingsRepository
 
 class SettingsRepositorySharedPrefsImpl(
     private val sharedPrefs: SharedPreferences,

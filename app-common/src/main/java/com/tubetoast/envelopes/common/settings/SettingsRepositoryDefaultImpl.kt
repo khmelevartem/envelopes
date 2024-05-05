@@ -1,4 +1,4 @@
-package com.tubetoast.envelopes.android.settings
+package com.tubetoast.envelopes.common.settings
 
 open class SettingsRepositoryDefaultImpl : SettingsRepository {
 
