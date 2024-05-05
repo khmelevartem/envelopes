@@ -5,7 +5,6 @@ import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +19,7 @@ class SnapshotsInteractorImpl(
 ) : SnapshotsInteractor {
 
     private val flow = MutableStateFlow<Set<EnvelopeSnapshot>>(emptySet())
-    private val scope = CoroutineScope(Job() + Dispatchers.IO)
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     init {
         listOf(spendingRepository, categoriesRepository, envelopesRepository).forEach {

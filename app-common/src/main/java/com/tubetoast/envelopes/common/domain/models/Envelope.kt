@@ -11,3 +11,6 @@ data class Envelope(
         val EMPTY = Envelope(name = "", limit = Amount.ZERO)
     }
 }
+
+val undefinedCategoriesEnvelope =
+    Envelope(name = "Undefined", limit = Amount(Integer.MAX_VALUE))

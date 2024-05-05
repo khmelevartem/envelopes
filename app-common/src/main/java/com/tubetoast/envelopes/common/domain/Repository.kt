@@ -73,9 +73,9 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key : ImmutableModel<Ke
 
 fun <M : ImmutableModel<M>, Key : ImmutableModel<Key>> Repository<M, Key>.put(
     value: M,
-    keyProvider: ((Id<M>) -> Id<Key>) = { Id.any }
+    keyFallback: ((Id<M>) -> Id<Key>) = { Id.any }
 ) {
-    add(getKey(value.id) ?: keyProvider.invoke(value.id), value)
+    add(getKey(value.id) ?: keyFallback.invoke(value.id), value)
 }
 
 typealias UpdatingSpendingRepository = UpdatingRepository<Spending, Category>

@@ -30,10 +30,10 @@ class MainViewModel(
     )
 
     fun import(input: InputStream) {
-        val onlyCurrentMonth = settingsRepository.getSetting(Setting.Key.FROM_LAST_IMPORT).checked
+        val fromLastImport = settingsRepository.getSetting(Setting.Key.FROM_LAST_IMPORT).checked
         viewModelScope.launch(Dispatchers.IO) {
             input.use { input ->
-                val startFrom = if (onlyCurrentMonth) {
+                val startFrom = if (fromLastImport) {
                     sharedPrefs.getString(LAST_IMPORT, null)?.toDate()
                 } else {
                     null
