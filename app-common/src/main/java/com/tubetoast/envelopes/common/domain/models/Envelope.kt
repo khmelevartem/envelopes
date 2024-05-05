@@ -15,4 +15,4 @@ data class Envelope(
 }
 
 val undefinedCategoriesEnvelope =
-    Envelope(name = "Undefined", limit = Amount(Integer.MAX_VALUE))
+    Envelope(name = "Undefined", limit = Amount.ZERO)
