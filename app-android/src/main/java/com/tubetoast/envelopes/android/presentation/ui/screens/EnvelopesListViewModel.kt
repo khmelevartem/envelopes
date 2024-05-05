@@ -7,6 +7,8 @@ import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.DateRange
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.currentMonth
+import com.tubetoast.envelopes.common.domain.models.currentYear
 import com.tubetoast.envelopes.common.domain.models.nextMonth
 import com.tubetoast.envelopes.common.domain.models.nextYear
 import com.tubetoast.envelopes.common.domain.models.previousMonth
@@ -27,16 +29,17 @@ import kotlinx.coroutines.launch
 class EnvelopesListViewModel(
     private val snapshotsInteractor: SnapshotsInteractor,
     private val envelopeInteractor: EnvelopeInteractor,
-    private val settingsRepository: SettingsRepository
+    settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private var job: Job? = null
     private lateinit var producerScope: ProducerScope<Iterable<EnvelopeSnapshot>>
-
-    private val _displayedPeriod =
+    private val _filterByYear = settingsRepository.getSettingFlow(Setting.Key.FILTER_BY_YEAR)
+    private val _displayedPeriod by lazy {
         MutableStateFlow(if (filterByYear) Date.currentYear() else Date.currentMonth())
+    }
 
-    val filterByYear get() = settingsRepository.getSetting(Setting.Key.FILTER_BY_YEAR).checked
+    val filterByYear get() = _filterByYear.value.checked
 
     val displayedPeriod: Flow<String>
         get() = _displayedPeriod.map {
@@ -49,7 +52,8 @@ class EnvelopesListViewModel(
 
     val itemModels: Flow<Iterable<EnvelopeSnapshot>> = callbackFlow {
         producerScope = this
-        startCollecting()
+        startListenToSettings()
+//        startCollecting()
         awaitClose {
             stop()
         }
@@ -88,6 +92,14 @@ class EnvelopesListViewModel(
         job = producerScope.launch {
             snapshotsInteractor.snapshotsByDatesFlow(dateRange)
                 .collect { producerScope.trySendBlocking(it) }
+        }
+    }
+
+    private fun startListenToSettings() {
+        viewModelScope.launch {
+            _filterByYear.collect {
+                changePeriod { if (it.checked) start.currentYear() else start.currentMonth() }
+            }
         }
     }
 }

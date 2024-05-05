@@ -63,7 +63,9 @@ class EditEnvelopeViewModel(
     }
 
     fun setLimit(input: String) {
-        updateEnvelope(draftEnvelope.value.copy(limit = Amount(input.toIntOrNull() ?: 0)))
+        val limit = input.toIntOrNull() ?: 0
+        require(limit >= 0) { "seems that u need Long for that" }
+        updateEnvelope(draftEnvelope.value.copy(limit = Amount(limit)))
     }
 
     fun confirm() {

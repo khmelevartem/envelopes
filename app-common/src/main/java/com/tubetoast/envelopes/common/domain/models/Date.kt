@@ -33,12 +33,16 @@ data class Date(
                 )
             }
 
-        fun currentMonth() = today().let {
-            it.copy(day = 1)..it.copy(day = it.daysInThisMonth())
-        }
+        fun currentMonth() = today().currentMonth()
 
-        fun currentYear() = today().let {
-            it.copy(day = 1, month = 1)..it.copy(day = 31, month = 12)
-        }
+        fun currentYear() = today().currentYear()
     }
+}
+
+fun Date.currentMonth() = let {
+    it.copy(day = 1)..it.copy(day = it.daysInThisMonth())
+}
+
+fun Date.currentYear() = let {
+    it.copy(day = 1, month = 1)..it.copy(day = 31, month = 12)
 }
