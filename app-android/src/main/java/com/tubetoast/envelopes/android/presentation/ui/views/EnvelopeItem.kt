@@ -2,6 +2,7 @@ package com.tubetoast.envelopes.android.presentation.ui.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +47,9 @@ fun EnvelopeView(
     onAddClick: (Envelope) -> Unit,
     onCategoryClick: (Category, Envelope) -> Unit,
     modifier: Modifier = Modifier
-) = Surface(color = itemModel.color, modifier = modifier) {
+) = Surface(
+    color = itemModel.color,
+    modifier = modifier.clickable { onEditClick(itemModel.data.envelope) }) {
     val percentage = itemModel.data.run { if (byYear) yearPercentage else percentage }
     val darkColor = MaterialTheme.colors.onSurface.copy(alpha = 0.3f)
     ProgressBar(percentage, darkColor)
@@ -61,7 +63,9 @@ fun EnvelopeView(
                 .fillMaxWidth()
         ) {
             Info(itemModel, byYear, darkColor)
-            Buttons(onEditClick, itemModel, onDeleteClick)
+            IconButton(onClick = { onDeleteClick(itemModel.data.envelope) }) {
+                Icon(Icons.Rounded.Delete, contentDescription = "delete envelope")
+            }
         }
         Categories(modifier, itemModel, onCategoryClick, onAddClick)
     }
@@ -114,14 +118,10 @@ private fun Categories(
 
 @Composable
 private fun Buttons(
-    onEditClick: (Envelope) -> Unit,
     itemModel: ItemModel<EnvelopeSnapshot>,
     onDeleteClick: (Envelope) -> Unit
 ) {
     Row(horizontalArrangement = Arrangement.End) {
-        IconButton(onClick = { onEditClick(itemModel.data.envelope) }) {
-            Icon(Icons.Rounded.Edit, contentDescription = "edit envelope")
-        }
         IconButton(onClick = { onDeleteClick(itemModel.data.envelope) }) {
             Icon(Icons.Rounded.Delete, contentDescription = "delete envelope")
         }
