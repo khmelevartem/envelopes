@@ -6,12 +6,17 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.ui.Modifier
 import com.tubetoast.envelopes.android.presentation.ui.EnvelopesApp
 import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsViewModel
+import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -27,13 +32,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         readIntent(intent)
         setContent {
-            EnvelopesApp(
-                envelopesListViewModel,
-                editEnvelopeViewModel,
-                editCategoryViewModel,
-                chooseEnvelopeViewModel,
-                settingsViewModel
-            )
+            EnvelopesTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+                    EnvelopesApp(
+                        envelopesListViewModel,
+                        editEnvelopeViewModel,
+                        editCategoryViewModel,
+                        chooseEnvelopeViewModel,
+                        settingsViewModel
+                    )
+                }
+            }
         }
     }
 
