@@ -10,45 +10,52 @@ import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.id
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class ChooseEnvelopeViewModel(
     private val categoryInteractor: CategoryInteractor,
     private val snapshotsInteractor: SnapshotsInteractor
 ) : ViewModel() {
-    private val category = mutableStateOf(Category.EMPTY)
-    private var chosenEnvelope = mutableStateOf(Envelope.EMPTY)
 
-    fun envelopes(chosenEnvelopeId: Int?): Flow<List<Envelope>> =
-        snapshotsInteractor.allSnapshotsFlow
-            .map {
-                it.map { snapshot ->
-                    snapshot.envelope.also { envelope ->
-                        if (envelope.id.code == chosenEnvelopeId) chosenEnvelope.value = envelope
-                    }
+    private val categoryFlow = MutableStateFlow(Category.EMPTY)
+    private val envelopesFlow = mutableStateOf(emptyList<ChoosableEnvelope>())
+
+    data class ChoosableEnvelope(
+        val envelope: Envelope,
+        val isChosen: Boolean
+    )
+
+    init {
+        viewModelScope.launch {
+            snapshotsInteractor.allSnapshotsFlow.combine(categoryFlow) { snapshots, category ->
+                envelopesFlow.value = snapshots.map { snapshot ->
+                    ChoosableEnvelope(
+                        snapshot.envelope,
+                        snapshot.categories.find { it.category == category } != null)
                 }
-            }
+            }.collect()
+        }
+    }
 
-    fun category(id: Int?): State<Category> {
+    fun envelopes(): State<List<ChoosableEnvelope>> = envelopesFlow
+
+    fun category(id: Int?): Flow<Category> {
         id?.let {
             viewModelScope.launch {
                 categoryInteractor.getCategory(id.id())?.let {
-                    category.value = it
+                    categoryFlow.value = it
                 } ?: throw IllegalStateException("Trying to set category id $id that doesn't exit")
             }
         }
-        return category
-    }
-
-    fun isChosen(envelope: Envelope): Boolean {
-        return chosenEnvelope.value == envelope
+        return categoryFlow
     }
 
     fun setNewChosenEnvelope(envelope: Envelope) {
         viewModelScope.launch {
-            categoryInteractor.moveCategory(category.value, envelope.id)
+            categoryInteractor.moveCategory(categoryFlow.value, envelope.id)
         }
-        chosenEnvelope.value = envelope // crutch
     }
 }

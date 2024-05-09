@@ -68,17 +68,14 @@ fun EnvelopesApp(
             route = AppNavigation.chooseEnvelope,
             arguments = listOf(
                 navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
-                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
             )
         ) {
             navBackStackEntry?.arguments?.run {
-                val envelopeId = takeInt(AppNavigation.argEnvelopeId)
                 val categoryId = takeInt(AppNavigation.argCategoryId)
                 ChooseEnvelopeScreen(
                     navController = navController,
                     viewModel = chooseEnvelopeViewModel,
-                    categoryId = categoryId,
-                    envelopeId = envelopeId
+                    categoryId = categoryId
                 )
             }
         }
@@ -104,7 +101,7 @@ object AppNavigation {
     const val argCategoryId = "categoryId"
     const val envelopeScreen = "envelopeScreen/{$argEnvelopeId}"
     const val categoryScreen = "categoryScreen/{$argCategoryId}/{$argEnvelopeId}"
-    const val chooseEnvelope = "chooseEnvelopeScreen/{$argCategoryId}/{$argEnvelopeId}"
+    const val chooseEnvelope = "chooseEnvelopeScreen/{$argCategoryId}"
     const val settings = "settings"
 
     fun addEnvelope() = envelopeScreen.putArg(argEnvelopeId, null)
@@ -120,8 +117,8 @@ object AppNavigation {
     private fun String.putArg(argName: String, argValue: ImmutableModel<*>?) =
         this.replace("{$argName}", "${argValue?.id?.code ?: NO_VALUE}")
 
-    fun chooseEnvelope(category: Category, envelope: Envelope) =
-        chooseEnvelope.putArg(argCategoryId, category).putArg(argEnvelopeId, envelope)
+    fun chooseEnvelope(category: Category) =
+        chooseEnvelope.putArg(argCategoryId, category)
 
     const val start = envelopesList
 }

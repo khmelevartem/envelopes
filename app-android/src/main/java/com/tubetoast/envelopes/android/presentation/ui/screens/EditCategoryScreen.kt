@@ -64,7 +64,7 @@ fun EditCategoryScreen(
             Button(
                 onClick = {
                     navController.navigate(
-                        AppNavigation.chooseEnvelope(draftCategory, envelope)
+                        AppNavigation.chooseEnvelope(draftCategory)
                     )
                 },
                 enabled = viewModel.canChooseEnvelope()
