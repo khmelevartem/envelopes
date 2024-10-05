@@ -17,6 +17,7 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewM
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsViewModel
 import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
+import com.tubetoast.envelopes.android.presentation.ui.views.TopAppBarViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
     private val editCategoryViewModel: EditCategoryViewModel by viewModel()
     private val chooseEnvelopeViewModel: ChooseEnvelopeViewModel by viewModel()
     private val settingsViewModel: SettingsViewModel by viewModel()
+    private val topAppBarViewModel: TopAppBarViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +44,8 @@ class MainActivity : ComponentActivity() {
                         editEnvelopeViewModel,
                         editCategoryViewModel,
                         chooseEnvelopeViewModel,
-                        settingsViewModel
+                        settingsViewModel,
+                        topAppBarViewModel
                     )
                 }
             }

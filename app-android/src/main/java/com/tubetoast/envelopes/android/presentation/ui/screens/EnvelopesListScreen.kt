@@ -2,7 +2,6 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,16 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -31,25 +22,26 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
 import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeView
+import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopesTopAppBar
 import com.tubetoast.envelopes.android.presentation.ui.views.MainListView
 import com.tubetoast.envelopes.android.presentation.ui.views.PlusView
+import com.tubetoast.envelopes.android.presentation.ui.views.TopAppBarViewModel
 import com.tubetoast.envelopes.common.domain.models.sum
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 
 @Composable
 fun EnvelopesListScreen(
     navController: NavHostController,
-    envelopesListViewModel: EnvelopesListViewModel
+    envelopesListViewModel: EnvelopesListViewModel,
+    topAppBarViewModel: TopAppBarViewModel
 ) {
     val envelopesState =
         envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
     val envelopes by remember { envelopesState }
     val itemModels = envelopes.asItemModels()
-    val periodState =
-        envelopesListViewModel.displayedPeriod.collectAsState(initial = "")
     val listState = rememberLazyListState()
     Column {
-        EnvelopesTopAppBar(envelopesListViewModel, periodState, navController)
+        EnvelopesTopAppBar(topAppBarViewModel, navController)
         TotalView(envelopes, envelopesListViewModel.filterByYear)
         ListOfEnvelopes(listState, itemModels, envelopesListViewModel, navController)
     }
@@ -88,46 +80,6 @@ private fun ListOfEnvelopes(
             }
         }
     }
-}
-
-@Composable
-private fun EnvelopesTopAppBar(
-    envelopesListViewModel: EnvelopesListViewModel,
-    periodState: State<String>,
-    navController: NavHostController
-) {
-    TopAppBar(
-        backgroundColor = Color.Black,
-        contentColor = Color.White,
-        title = { Text("Envelopes") },
-        actions = {
-            IconButton(
-                onClick = { envelopesListViewModel.previousPeriod() }
-            ) {
-                Icon(
-                    Icons.Default.KeyboardArrowLeft,
-                    contentDescription = "previousMonth"
-                )
-            }
-            val period by remember { periodState }
-            Text(
-                text = period,
-                modifier = Modifier.clickable {
-                    envelopesListViewModel.changePeriodType()
-                }
-            )
-            IconButton(
-                onClick = { envelopesListViewModel.nextPeriod() }
-            ) {
-                Icon(Icons.Default.KeyboardArrowRight, contentDescription = "nextMonth")
-            }
-            IconButton(
-                onClick = { navController.navigate(AppNavigation.settings) }
-            ) {
-                Icon(Icons.Default.Settings, contentDescription = "Import")
-            }
-        }
-    )
 }
 
 @Composable

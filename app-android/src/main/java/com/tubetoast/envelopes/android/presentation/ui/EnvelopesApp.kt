@@ -19,6 +19,7 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListScre
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsViewModel
+import com.tubetoast.envelopes.android.presentation.ui.views.TopAppBarViewModel
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
@@ -30,12 +31,13 @@ fun EnvelopesApp(
     editCategoryViewModel: EditCategoryViewModel,
     chooseEnvelopeViewModel: ChooseEnvelopeViewModel,
     settingsViewModel: SettingsViewModel,
+    topAppBarViewModel: TopAppBarViewModel
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     NavHost(navController = navController, startDestination = AppNavigation.start) {
         composable(route = AppNavigation.envelopesList) {
-            EnvelopesListScreen(navController, envelopesListViewModel)
+            EnvelopesListScreen(navController, envelopesListViewModel, topAppBarViewModel)
         }
         composable(
             route = AppNavigation.envelopeScreen,
