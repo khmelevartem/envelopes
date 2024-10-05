@@ -2,6 +2,7 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -109,7 +110,12 @@ private fun EnvelopesTopAppBar(
                 )
             }
             val period by remember { periodState }
-            Text(text = period)
+            Text(
+                text = period,
+                modifier = Modifier.clickable {
+                    envelopesListViewModel.changePeriodType()
+                }
+            )
             IconButton(
                 onClick = { envelopesListViewModel.nextPeriod() }
             ) {

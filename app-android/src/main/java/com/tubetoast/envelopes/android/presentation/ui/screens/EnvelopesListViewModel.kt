@@ -14,8 +14,8 @@ import com.tubetoast.envelopes.common.domain.models.nextYear
 import com.tubetoast.envelopes.common.domain.models.previousMonth
 import com.tubetoast.envelopes.common.domain.models.previousYear
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
+import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
 import com.tubetoast.envelopes.common.settings.Setting
-import com.tubetoast.envelopes.common.settings.SettingsRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 class EnvelopesListViewModel(
     private val snapshotsInteractor: SnapshotsInteractor,
     private val envelopeInteractor: EnvelopeInteractor,
-    settingsRepository: SettingsRepository
+    private val settingsRepository: MutableSettingsRepository
 ) : ViewModel() {
 
     private var job: Job? = null
@@ -63,6 +63,14 @@ class EnvelopesListViewModel(
         viewModelScope.launch {
             envelopeInteractor.deleteEnvelope(envelope)
         }
+    }
+
+    fun changePeriodType() {
+        settingsRepository.saveChanges(
+            listOf(
+                _filterByYear.value.run { copy(checked = !checked) }
+            )
+        )
     }
 
     fun nextPeriod() {
