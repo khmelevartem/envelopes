@@ -7,12 +7,12 @@ import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.DateRange
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.models.currentMonth
-import com.tubetoast.envelopes.common.domain.models.currentYear
+import com.tubetoast.envelopes.common.domain.models.monthAsRange
 import com.tubetoast.envelopes.common.domain.models.nextMonth
 import com.tubetoast.envelopes.common.domain.models.nextYear
 import com.tubetoast.envelopes.common.domain.models.previousMonth
 import com.tubetoast.envelopes.common.domain.models.previousYear
+import com.tubetoast.envelopes.common.domain.models.yearAsRange
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
 import com.tubetoast.envelopes.common.settings.Setting
@@ -38,6 +38,7 @@ class EnvelopesListViewModel(
     private val _displayedPeriod by lazy {
         MutableStateFlow(if (filterByYear) Date.currentYear() else Date.currentMonth())
     }
+    private var lastViewedMonth = _displayedPeriod.value.start.month
 
     val filterByYear get() = _filterByYear.value.checked
 
@@ -106,7 +107,15 @@ class EnvelopesListViewModel(
     private fun startListenToSettings() {
         viewModelScope.launch {
             _filterByYear.collect {
-                changePeriod { if (it.checked) start.currentYear() else start.currentMonth() }
+                changePeriod {
+                    if (it.checked) {
+                        lastViewedMonth = start.month
+                        start.yearAsRange()
+                    } else {
+                        Date(day = start.day, month = lastViewedMonth, year = start.year)
+                            .monthAsRange()
+                    }
+                }
             }
         }
     }
