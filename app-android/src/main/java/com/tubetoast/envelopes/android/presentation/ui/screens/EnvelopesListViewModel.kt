@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Date
+import com.tubetoast.envelopes.common.domain.models.Date.Companion.today
 import com.tubetoast.envelopes.common.domain.models.DateRange
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.monthAsRange
@@ -75,10 +76,16 @@ class EnvelopesListViewModel(
     }
 
     fun nextPeriod() {
-        changePeriod {
-            if (filterByYear) nextYear() else nextMonth()
+        val today = today()
+        _displayedPeriod.value.apply {
+            if (filterByYear) {
+                if (start.year < today.year) changePeriod { nextYear() }
+            } else {
+                if (start.year < today.year || start.month < today.month) changePeriod { nextMonth() }
+            }
         }
     }
+
 
     fun previousPeriod() {
         changePeriod {
