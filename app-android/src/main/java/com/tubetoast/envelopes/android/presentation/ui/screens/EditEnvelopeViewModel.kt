@@ -5,13 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
+import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.id
+import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
+import com.tubetoast.envelopes.common.domain.snapshots.sum
 import kotlinx.coroutines.launch
 
 class EditEnvelopeViewModel(
-    private val envelopeInteractor: EnvelopeInteractor
+    private val envelopeInteractor: EnvelopeInteractor,
+    private val snapshotsInteractor: SnapshotsInteractor
 ) : ViewModel() {
 
     sealed interface Mode {
@@ -33,14 +37,17 @@ class EditEnvelopeViewModel(
     private var mode: Mode = CreateEnvelopeMode(envelopeInteractor)
     private val _operations = mutableStateOf(EnvelopeOperations.EMPTY)
     private val draftEnvelope = mutableStateOf(Envelope.EMPTY)
+    private val _categories = mutableStateOf(listOf<CategorySnapshot>())
 
     val operations: State<EnvelopeOperations> = _operations
+    val categories: State<List<CategorySnapshot>> = _categories
 
     fun envelope(envelopeId: Int?): State<Envelope> {
         envelopeId?.let { id ->
             viewModelScope.launch {
                 envelopeInteractor.getExactEnvelope(id.id())?.let {
                     mode = EditEnvelopeMode(envelopeInteractor, it)
+                    collectEnvelopeCategories(it)
                     updateEnvelope(it)
                 } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
             }
@@ -48,13 +55,26 @@ class EditEnvelopeViewModel(
         return draftEnvelope
     }
 
+    private fun collectEnvelopeCategories(envelope: Envelope) {
+        viewModelScope.launch {
+            snapshotsInteractor.snapshotsBySelectedPeriod().collect { set ->
+                set.find {
+                    it.envelope == envelope
+                }?.let { found ->
+                    _categories.value = found.categories
+                        .sortedByDescending { it.sum() }
+                }
+            }
+        }
+    }
+
     private fun updateEnvelope(envelope: Envelope) {
         draftEnvelope.value = envelope
         viewModelScope.launch {
             _operations.value = EnvelopeOperations(
-                    canConfirm = mode.canConfirm(envelope),
-                    canDelete = mode.canDelete()
-                )
+                canConfirm = mode.canConfirm(envelope),
+                canDelete = mode.canDelete()
+            )
         }
     }
 
@@ -82,6 +102,7 @@ class EditEnvelopeViewModel(
         mode = CreateEnvelopeMode(envelopeInteractor)
         draftEnvelope.value = Envelope.EMPTY
         _operations.value = EnvelopeOperations.EMPTY
+        _categories.value = emptyList()
     }
 }
 
