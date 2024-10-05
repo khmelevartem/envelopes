@@ -26,6 +26,7 @@ import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopesTopAppBar
 import com.tubetoast.envelopes.android.presentation.ui.views.MainListView
 import com.tubetoast.envelopes.android.presentation.ui.views.PlusView
 import com.tubetoast.envelopes.android.presentation.ui.views.TopAppBarViewModel
+import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.models.sum
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 
@@ -97,7 +98,7 @@ fun TotalView(
             .background(Color.Black)
     ) {
         Text(
-            text = "${sum.units} / ${limit.units}",
+            text = "${sum.units.formatToReadableNumber()} / ${limit.units.formatToReadableNumber()}",
             color = Color.LightGray,
             modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
         )

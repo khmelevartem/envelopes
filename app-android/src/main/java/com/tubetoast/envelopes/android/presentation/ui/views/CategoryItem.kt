@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.sum
 
@@ -45,7 +46,7 @@ fun CategoryWithSumView(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = snapshot.category.name, modifier = Modifier.padding(horizontal = 8.dp))
-        Text(text = snapshot.sum().toString(), modifier = Modifier.padding(horizontal = 8.dp))
+        Text(text = snapshot.sum().formatToReadableNumber(), modifier = Modifier.padding(horizontal = 8.dp))
     }
 }
 

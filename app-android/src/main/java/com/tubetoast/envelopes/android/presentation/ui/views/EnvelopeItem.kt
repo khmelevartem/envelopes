@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.TextUnitType.Companion.Sp
 import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.ui.screens.ItemModel
 import com.tubetoast.envelopes.android.presentation.ui.theme.darken
+import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
@@ -142,9 +143,9 @@ private fun Info(
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1
             )
-            val limit = envelope.run { if (byYear) yearLimit else limit }.units.formatNumber()
+            val limit = envelope.run { if (byYear) yearLimit else limit }.units.formatToReadableNumber()
             Text(
-                text = "${sum.units.formatNumber()} / $limit",
+                text = "${sum.units.formatToReadableNumber()} / $limit",
                 fontSize = TextUnit(value = 20f, type = Sp),
                 color = darkColor,
                 fontWeight = FontWeight.Bold,
@@ -182,16 +183,4 @@ private fun ProgressBar(percentage: Float, darkColor: Color) {
                 .height(6.dp)
         )
     }
-}
-
-private fun Int.formatNumber(): String {
-    val rev = toString().reversed()
-    val strBuilder = StringBuilder()
-    for (i in rev.indices) {
-        if (i != 0 && i.mod(3) == 0 && rev.length >= i + 1) {
-            strBuilder.append(" ")
-        }
-        strBuilder.append(rev[i])
-    }
-    return strBuilder.toString().reversed()
 }
