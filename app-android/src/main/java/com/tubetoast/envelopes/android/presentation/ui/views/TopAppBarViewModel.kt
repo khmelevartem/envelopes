@@ -1,7 +1,7 @@
 package com.tubetoast.envelopes.android.presentation.ui.views
 
 import androidx.lifecycle.ViewModel
-import com.tubetoast.envelopes.android.presentation.state.SelectedPeriodRepository
+import com.tubetoast.envelopes.common.domain.SelectedPeriodRepository
 import com.tubetoast.envelopes.common.domain.models.Date.Companion.today
 import com.tubetoast.envelopes.common.domain.models.nextMonth
 import com.tubetoast.envelopes.common.domain.models.nextYear

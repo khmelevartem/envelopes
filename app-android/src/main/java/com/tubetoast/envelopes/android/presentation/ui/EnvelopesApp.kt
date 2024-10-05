@@ -46,7 +46,7 @@ fun EnvelopesApp(
             )
         ) {
             val envelopeId = navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)
-            EditEnvelopeScreen(navController, editEnvelopeViewModel, envelopeId)
+            EditEnvelopeScreen(navController, editEnvelopeViewModel, topAppBarViewModel, envelopeId)
         }
         composable(
             route = AppNavigation.categoryScreen,

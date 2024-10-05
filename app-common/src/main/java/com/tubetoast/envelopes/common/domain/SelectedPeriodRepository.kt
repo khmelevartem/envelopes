@@ -1,4 +1,4 @@
-package com.tubetoast.envelopes.android.presentation.state
+package com.tubetoast.envelopes.common.domain
 
 import com.tubetoast.envelopes.common.domain.models.DateRange
 import kotlinx.coroutines.flow.StateFlow

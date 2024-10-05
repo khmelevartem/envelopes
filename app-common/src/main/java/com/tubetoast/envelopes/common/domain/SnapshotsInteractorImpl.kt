@@ -1,6 +1,5 @@
 package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.common.domain.models.DateRange
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.CoroutineScope
@@ -9,13 +8,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class SnapshotsInteractorImpl(
     private val spendingRepository: UpdatingSpendingRepository,
     private val categoriesRepository: UpdatingCategoriesRepository,
-    private val envelopesRepository: UpdatingEnvelopesRepository
+    private val envelopesRepository: UpdatingEnvelopesRepository,
+    private val selectedPeriodRepository: SelectedPeriodRepository
 ) : SnapshotsInteractor {
 
     private val flow = MutableStateFlow<Set<EnvelopeSnapshot>>(emptySet())
@@ -48,9 +48,9 @@ class SnapshotsInteractorImpl(
         flow.asStateFlow()
     }
 
-    override fun snapshotsByDatesFlow(dateRange: DateRange): Flow<Set<EnvelopeSnapshot>> {
+    override fun snapshotsBySelectedPeriod(): Flow<Set<EnvelopeSnapshot>> {
         updateFlow()
-        return flow.map { set ->
+        return combine(flow, selectedPeriodRepository.selectedPeriodFlow) { set, dateRange ->
             set.mapTo(mutableSetOf()) { snapshot ->
                 snapshot.copy(categories = snapshot.categories.mapTo(mutableSetOf()) { categorySnapshot ->
                     categorySnapshot.copy(transactions = categorySnapshot.transactions
@@ -60,6 +60,7 @@ class SnapshotsInteractorImpl(
                 })
             }
         }
+
     }
 
     private fun updateFlow() {

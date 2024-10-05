@@ -14,16 +14,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavHostController
+import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopesTopAppBar
+import com.tubetoast.envelopes.android.presentation.ui.views.TopAppBarViewModel
 
 @Composable
 fun EditEnvelopeScreen(
     navController: NavHostController,
     editEnvelopeViewModel: EditEnvelopeViewModel,
+    topAppBarViewModel: TopAppBarViewModel,
     envelopeId: Int? = null
 ) {
     Column {
         val draftEnvelope by remember { editEnvelopeViewModel.envelope(envelopeId) }
         val envelopeOperations by remember { editEnvelopeViewModel.operations }
+        EnvelopesTopAppBar(topAppBarViewModel, navController)
         TextField(
             value = draftEnvelope.name,
             onValueChange = { editEnvelopeViewModel.setName(it) },

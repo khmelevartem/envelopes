@@ -24,7 +24,6 @@ fun EnvelopesTopAppBar(
     viewModel: TopAppBarViewModel,
     navController: NavHostController
 ) {
-
     TopAppBar(
         backgroundColor = Color.Black,
         contentColor = Color.White,
