@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.tubetoast.envelopes.android.presentation.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -8,6 +10,7 @@ object EColor {
 
     val Emerald = Color(0xff237D62)
     val Haki = Color(0xff669672)
+    val Vanilla = Color(0xffc9d7ff)
 
     val Azure = Color(0xff6cbaff)
     val Mint = Color(0xff00e2cf)
@@ -15,7 +18,7 @@ object EColor {
     val Lemon = Color(0xffffe88b)
     val Peach = Color(0xffffc5a3)
     val Rose = Color(0xffffd7ff)
-    val Vanilla = Color(0xffc9d7ff)
+    val Plum = Color(0xffa9a7fe)
 
     @Composable
     fun ePalette(isDarkTheme: Boolean = isSystemInDarkTheme()): List<Color> {
@@ -29,7 +32,7 @@ object EColor {
         Lemon,
         Peach,
         Rose,
-        Vanilla
+        Plum
     )
 
     private val darkPalette = lightPalette.map { it.darken() }
