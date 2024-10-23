@@ -2,6 +2,7 @@ package com.tubetoast.envelopes.database.data
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.tubetoast.envelopes.common.domain.models.Root
 
@@ -11,7 +12,11 @@ abstract class DatabaseEntity {
     abstract val valueId: Int
 }
 
-@Entity
+@Entity(
+    indices = [
+        Index("valueId", orders = emptyArray(), unique = true)
+    ]
+)
 data class EnvelopeEntity(
     @PrimaryKey(autoGenerate = true) override var primaryKey: Int = 0,
     override val foreignKey: Int = Root.id.code,
@@ -28,6 +33,9 @@ data class EnvelopeEntity(
             childColumns = arrayOf("foreignKey"),
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index("valueId", orders = emptyArray(), unique = true)
     ]
 )
 data class CategoryEntity(
@@ -46,6 +54,9 @@ data class CategoryEntity(
             childColumns = arrayOf("foreignKey"),
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index("valueId", orders = emptyArray(), unique = true)
     ]
 )
 data class SpendingEntity(

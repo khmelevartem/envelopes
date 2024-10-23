@@ -37,7 +37,7 @@ abstract class EnvelopeDao : StandardDao<EnvelopeEntity> {
     @Query("SELECT * from envelopeentity WHERE valueId LIKE :valueId")
     abstract override fun get(valueId: Int): EnvelopeEntity?
 
-    @Query("SELECT * from envelopeentity WHERE valueId LIKE :primaryKey")
+    @Query("SELECT * from envelopeentity WHERE primaryKey LIKE :primaryKey")
     abstract override fun getByKey(primaryKey: Int): EnvelopeEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -65,7 +65,7 @@ abstract class CategoryDao : StandardDao<CategoryEntity> {
     @Query("SELECT * from categoryentity WHERE valueId LIKE :valueId")
     abstract override fun get(valueId: Int): CategoryEntity?
 
-    @Query("SELECT * from categoryentity WHERE valueId LIKE :primaryKey")
+    @Query("SELECT * from categoryentity WHERE primaryKey LIKE :primaryKey")
     abstract override fun getByKey(primaryKey: Int): CategoryEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -93,7 +93,7 @@ abstract class SpendingDao : StandardDao<SpendingEntity> {
     @Query("SELECT * from spendingentity WHERE valueId LIKE :valueId")
     abstract override fun get(valueId: Int): SpendingEntity?
 
-    @Query("SELECT * from spendingentity WHERE valueId LIKE :primaryKey")
+    @Query("SELECT * from spendingentity WHERE primaryKey LIKE :primaryKey")
     abstract override fun getByKey(primaryKey: Int): SpendingEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
