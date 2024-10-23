@@ -85,6 +85,7 @@ fun EnvelopesApp(
             route = AppNavigation.settings
         ) {
             SettingsScreen(
+                navController = navController,
                 viewModel = settingsViewModel
             )
         }
