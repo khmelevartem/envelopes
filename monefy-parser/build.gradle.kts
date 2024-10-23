@@ -1,11 +1,10 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    id("java-library")
+    `java-library`
+    kotlin("jvm")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+kotlin {
+    jvmToolchain(21)
 }
 
 tasks.test {
