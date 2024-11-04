@@ -12,7 +12,7 @@ import com.tubetoast.envelopes.common.settings.Setting
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class TopAppBarViewModel(
+class PeriodControlViewModel(
     private val settingsRepository: MutableSettingsRepository,
     private val selectedPeriodRepository: SelectedPeriodRepository
 ) : ViewModel() {

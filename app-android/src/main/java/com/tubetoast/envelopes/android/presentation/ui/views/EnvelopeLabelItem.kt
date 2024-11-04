@@ -32,7 +32,6 @@ fun EnvelopeLabelView(
 ) = Row(
     modifier = modifier
         .clickable(onClick = onClick)
-        .background(color = color)
         .fillMaxWidth()
         .height(48.dp)
 ) {

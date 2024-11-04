@@ -41,6 +41,7 @@ class EditEnvelopeViewModel(
 
     val operations: State<EnvelopeOperations> = _operations
     val categories: State<List<CategorySnapshot>> = _categories
+    val isNewEnvelope get() = mode is CreateEnvelopeMode
 
     fun envelope(envelopeId: Int?): State<Envelope> {
         envelopeId?.let { id ->

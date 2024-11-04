@@ -1,6 +1,7 @@
 package com.tubetoast.envelopes.android.presentation.ui
 
 import android.os.Bundle
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavType
@@ -19,7 +20,7 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListScre
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsViewModel
-import com.tubetoast.envelopes.android.presentation.ui.views.TopAppBarViewModel
+import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControlViewModel
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
@@ -31,63 +32,65 @@ fun EnvelopesApp(
     editCategoryViewModel: EditCategoryViewModel,
     chooseEnvelopeViewModel: ChooseEnvelopeViewModel,
     settingsViewModel: SettingsViewModel,
-    topAppBarViewModel: TopAppBarViewModel
+    periodControlViewModel: PeriodControlViewModel
 ) {
-    val navController = rememberNavController()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    NavHost(navController = navController, startDestination = AppNavigation.start) {
-        composable(route = AppNavigation.envelopesList) {
-            EnvelopesListScreen(navController, envelopesListViewModel, topAppBarViewModel)
-        }
-        composable(
-            route = AppNavigation.envelopeScreen,
-            arguments = listOf(
-                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
-            )
-        ) {
-            val envelopeId = navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)
-            EditEnvelopeScreen(navController, editEnvelopeViewModel, topAppBarViewModel, envelopeId)
-        }
-        composable(
-            route = AppNavigation.categoryScreen,
-            arguments = listOf(
-                navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
-                navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
-            )
-        ) {
-            navBackStackEntry?.arguments?.run {
-                val envelopeId = takeInt(AppNavigation.argEnvelopeId)
-                val categoryId = takeInt(AppNavigation.argCategoryId)
-                EditCategoryScreen(
+    MaterialTheme {
+        val navController = rememberNavController()
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        NavHost(navController = navController, startDestination = AppNavigation.start) {
+            composable(route = AppNavigation.envelopesList) {
+                EnvelopesListScreen(navController, envelopesListViewModel, periodControlViewModel)
+            }
+            composable(
+                route = AppNavigation.envelopeScreen,
+                arguments = listOf(
+                    navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
+                )
+            ) {
+                val envelopeId = navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)
+                EditEnvelopeScreen(navController, editEnvelopeViewModel, periodControlViewModel, envelopeId)
+            }
+            composable(
+                route = AppNavigation.categoryScreen,
+                arguments = listOf(
+                    navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
+                    navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
+                )
+            ) {
+                navBackStackEntry?.arguments?.run {
+                    val envelopeId = takeInt(AppNavigation.argEnvelopeId)
+                    val categoryId = takeInt(AppNavigation.argCategoryId)
+                    EditCategoryScreen(
+                        navController = navController,
+                        viewModel = editCategoryViewModel,
+                        categoryId = categoryId,
+                        envelopeId = envelopeId
+                    )
+                }
+            }
+            composable(
+                route = AppNavigation.chooseEnvelope,
+                arguments = listOf(
+                    navArgument(AppNavigation.argCategoryId) { type = NavType.IntType }
+                )
+            ) {
+                navBackStackEntry?.arguments?.run {
+                    val categoryId = takeInt(AppNavigation.argCategoryId)
+                    ChooseEnvelopeScreen(
+                        navController = navController,
+                        viewModel = chooseEnvelopeViewModel,
+                        categoryId = categoryId
+                    )
+                }
+            }
+            composable(
+                route = AppNavigation.settings
+            ) {
+                SettingsScreen(
                     navController = navController,
-                    viewModel = editCategoryViewModel,
-                    categoryId = categoryId,
-                    envelopeId = envelopeId
+                    viewModel = settingsViewModel
                 )
             }
-        }
-        composable(
-            route = AppNavigation.chooseEnvelope,
-            arguments = listOf(
-                navArgument(AppNavigation.argCategoryId) { type = NavType.IntType }
-            )
-        ) {
-            navBackStackEntry?.arguments?.run {
-                val categoryId = takeInt(AppNavigation.argCategoryId)
-                ChooseEnvelopeScreen(
-                    navController = navController,
-                    viewModel = chooseEnvelopeViewModel,
-                    categoryId = categoryId
-                )
-            }
-        }
-        composable(
-            route = AppNavigation.settings
-        ) {
-            SettingsScreen(
-                navController = navController,
-                viewModel = settingsViewModel
-            )
         }
     }
 }

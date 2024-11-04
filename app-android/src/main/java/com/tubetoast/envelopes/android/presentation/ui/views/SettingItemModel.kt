@@ -7,10 +7,9 @@ data class SettingItemModel(
     val key: Setting.Key,
     val text: String,
     var checked: MutableStateFlow<Boolean>
-)
-
-fun SettingItemModel(key: Setting.Key, text: String, checked: Boolean) =
-    SettingItemModel(key, text, MutableStateFlow(checked))
+) {
+    constructor(key: Setting.Key, text: String, checked: Boolean) : this(key, text, MutableStateFlow(checked))
+}
 
 fun SettingItemModel.toSetting() =
     Setting(key, text, checked.value)

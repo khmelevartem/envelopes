@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -48,7 +47,7 @@ fun EnvelopeView(
     onAddClick: (Envelope) -> Unit,
     onCategoryClick: (Category, Envelope) -> Unit,
     modifier: Modifier = Modifier
-) = Surface(
+) = CardItem(
     color = itemModel.color,
     modifier = modifier.clickable { onEditClick(itemModel.data.envelope) }
 ) {
@@ -115,18 +114,6 @@ private fun Categories(
             ) {
                 Icon(Icons.Rounded.Add, contentDescription = "add category")
             }
-        }
-    }
-}
-
-@Composable
-private fun Buttons(
-    itemModel: ItemModel<EnvelopeSnapshot>,
-    onDeleteClick: (Envelope) -> Unit
-) {
-    Row(horizontalArrangement = Arrangement.End) {
-        IconButton(onClick = { onDeleteClick(itemModel.data.envelope) }) {
-            Icon(Icons.Rounded.Delete, contentDescription = "delete envelope")
         }
     }
 }

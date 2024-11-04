@@ -8,11 +8,13 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun MainListView(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun CardItem(color: Color, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Surface(
+        color = color,
         modifier = modifier
             .fillMaxSize()
             .systemBarsPadding()
