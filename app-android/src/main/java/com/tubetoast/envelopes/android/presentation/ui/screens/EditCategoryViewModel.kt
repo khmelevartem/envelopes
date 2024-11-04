@@ -84,7 +84,7 @@ class EditCategoryViewModel(
     }
 
     fun setLimit(input: String) {
-        updateCategory(_draftCategory.value.copy(limit = Amount(input.toIntOrNull() ?: 0)))
+        updateCategory(_draftCategory.value.copy(limit = Amount(input.toLongOrNull() ?: 0)))
     }
 
     fun confirm() {

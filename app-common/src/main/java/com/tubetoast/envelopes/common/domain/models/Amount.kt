@@ -1,7 +1,7 @@
 package com.tubetoast.envelopes.common.domain.models
 
-data class Amount(
-    val units: Int,
+data class Amount constructor(
+    val units: Long,
     val shares: Int = 0,
     val currency: Currency = Currency.Ruble
 ) : ImmutableModel<Amount>() {
@@ -31,7 +31,7 @@ data class Amount(
         copy(units = units, shares = shares)
     }
 
-    private fun inShares(): Int = units * currency.shares + shares
+    private fun inShares(): Long = units * currency.shares + shares
 
     private fun checkCurrency(another: Amount) {
         check(this.currency == another.currency) {

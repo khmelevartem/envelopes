@@ -10,7 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
 class EnvelopeSnapshotTest {
-    private fun snapshot(limit: Int) = EnvelopeSnapshot(
+    private fun snapshot(limit: Long) = EnvelopeSnapshot(
         envelope = Envelope(name = "envelope", limit = Amount(limit)),
         categories = setOf(
             CategorySnapshot(
@@ -45,7 +45,7 @@ class EnvelopeSnapshotTest {
 
     @ParameterizedTest
     @ValueSource(ints = [100, 1000, 1_000_000, 10_000_000, 5_000_000, 3])
-    fun percent(limit: Int) {
+    fun percent(limit: Long) {
         val snapshot = snapshot(limit)
         assertThat(snapshot.sum.units).isEqualTo(120)
         assertThat(snapshot.percentage).isEqualTo(120f / limit)

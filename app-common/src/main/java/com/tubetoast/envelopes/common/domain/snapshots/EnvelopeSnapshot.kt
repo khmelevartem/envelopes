@@ -19,8 +19,8 @@ data class EnvelopeSnapshot(
         get() = transactions.sum()
 
     val percentage: Float
-        get() = if (envelope.limit.units != 0) sum / envelope.limit else 0f
+        get() = if (envelope.limit.units != 0L) sum / envelope.limit else 0f
 
     val yearPercentage: Float
-        get() = if (envelope.yearLimit.units != 0) sum / envelope.yearLimit else 0f
+        get() = if (envelope.yearLimit.units != 0L) sum / envelope.yearLimit else 0f
 }

@@ -22,7 +22,7 @@ data class EnvelopeEntity(
     override val foreignKey: Int = Root.id.code,
     override val valueId: Int,
     val name: String,
-    val limit: Int,
+    val limit: Long,
 ) : DatabaseEntity()
 
 @Entity(
@@ -43,7 +43,7 @@ data class CategoryEntity(
     override val foreignKey: Int,
     override val valueId: Int,
     val name: String,
-    val limit: Int?
+    val limit: Long?
 ) : DatabaseEntity()
 
 @Entity(
@@ -63,7 +63,7 @@ data class SpendingEntity(
     @PrimaryKey(autoGenerate = true) override var primaryKey: Int = 0,
     override val foreignKey: Int,
     override val valueId: Int,
-    val amount: Int,
+    val amount: Long,
     val date: String,
     val comment: String?
 ) : DatabaseEntity()

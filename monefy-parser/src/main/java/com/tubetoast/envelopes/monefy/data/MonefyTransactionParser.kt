@@ -12,8 +12,8 @@ class MonefyTransactionParser {
     fun parse(string: String, date: Date, comment: String?): Transaction<*> {
         val number = string.replace(" ", "")
             .split(DECIMAL_DELIMITER)
-            .map { it.toIntOrNull() ?: throwNFE("amount $string") }
-        val amount = Amount(units = abs(number.first()), number.getOrElse(1) { 0 })
+            .map { it.toLongOrNull() ?: throwNFE("amount $string") }
+        val amount = Amount(units = abs(number.first()), number.getOrElse(1) { 0 }.toInt())
         return if (number.first() > 0) {
             Earning(
                 amount = amount,

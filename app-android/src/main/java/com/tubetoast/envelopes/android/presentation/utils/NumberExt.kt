@@ -1,7 +1,6 @@
 package com.tubetoast.envelopes.android.presentation.utils
 
-
-fun Int.formatToReadableNumber(): String {
+fun Long.formatToReadableNumber(): String {
     val rev = toString().reversed()
     val strBuilder = StringBuilder()
     for (i in rev.indices) {
