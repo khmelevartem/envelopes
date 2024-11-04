@@ -64,11 +64,11 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key : ImmutableModel<Ke
 
     abstract fun addImpl(value: M, keyId: Id<Key>): Boolean
     abstract fun deleteImpl(value: M): Boolean
+
     /** Returns deleted */
     abstract fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>>
     abstract fun editImpl(oldValue: M, newValue: M): Boolean
     abstract fun moveImpl(value: M, newKyId: Id<Key>): Boolean
-
 }
 
 fun <M : ImmutableModel<M>, Key : ImmutableModel<Key>> Repository<M, Key>.put(

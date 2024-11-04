@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class EnvelopesListViewModel(
     snapshotsInteractor: SnapshotsInteractor,
     private val envelopeInteractor: EnvelopeInteractor,
-    settingsRepository: MutableSettingsRepository,
+    settingsRepository: MutableSettingsRepository
 ) : ViewModel() {
 
     private val _filterByYear = settingsRepository.getSettingFlow(Setting.Key.FILTER_BY_YEAR)

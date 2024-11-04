@@ -35,12 +35,12 @@ class EditCategoryViewModel(
 
     data class CategoryOperations(
         val canConfirm: Boolean,
-        val canDelete: Boolean,
+        val canDelete: Boolean
     ) {
         companion object {
             val EMPTY = CategoryOperations(
                 canConfirm = false,
-                canDelete = false,
+                canDelete = false
             )
         }
     }
@@ -113,7 +113,7 @@ class EditCategoryViewModel(
         viewModelScope.launch {
             _categoryOperations.value = CategoryOperations(
                 canConfirm = mode.canConfirm(category),
-                canDelete = mode.canDelete(),
+                canDelete = mode.canDelete()
             )
         }
     }

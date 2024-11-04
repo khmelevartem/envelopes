@@ -69,7 +69,7 @@ fun EnvelopesApp(
         composable(
             route = AppNavigation.chooseEnvelope,
             arguments = listOf(
-                navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
+                navArgument(AppNavigation.argCategoryId) { type = NavType.IntType }
             )
         ) {
             navBackStackEntry?.arguments?.run {

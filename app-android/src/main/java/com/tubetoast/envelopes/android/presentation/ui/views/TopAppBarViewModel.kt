@@ -50,11 +50,9 @@ class TopAppBarViewModel(
         }
     }
 
-
     fun previousPeriod() {
         selectedPeriodRepository.changePeriod {
             if (filterByYear) previousYear() else previousMonth()
         }
     }
-
 }

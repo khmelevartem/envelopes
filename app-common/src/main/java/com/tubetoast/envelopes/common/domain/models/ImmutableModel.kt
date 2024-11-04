@@ -15,7 +15,7 @@ value class Id<out T>(val code: Int) {
 fun <T> Any.id() = Id<T>(hashCode())
 fun <T> Int.id() = Id<T>(this)
 
-object Root: ImmutableModel<Root>() {
+object Root : ImmutableModel<Root>() {
     override val id: Id<Root>
         get() = Id.any
 }

@@ -49,4 +49,3 @@ fun CategoryWithSumView(
         Text(text = snapshot.sum().formatToReadableNumber(), modifier = Modifier.padding(horizontal = 8.dp))
     }
 }
-

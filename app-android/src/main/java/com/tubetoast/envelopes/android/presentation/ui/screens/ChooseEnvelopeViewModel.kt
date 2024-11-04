@@ -34,7 +34,8 @@ class ChooseEnvelopeViewModel(
                 envelopesFlow.value = snapshots.map { snapshot ->
                     ChoosableEnvelope(
                         snapshot.envelope,
-                        snapshot.categories.find { it.category == category } != null)
+                        snapshot.categories.find { it.category == category } != null
+                    )
                 }
             }.collect()
         }

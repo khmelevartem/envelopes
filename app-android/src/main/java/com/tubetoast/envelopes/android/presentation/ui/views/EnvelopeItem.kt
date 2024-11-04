@@ -50,7 +50,8 @@ fun EnvelopeView(
     modifier: Modifier = Modifier
 ) = Surface(
     color = itemModel.color,
-    modifier = modifier.clickable { onEditClick(itemModel.data.envelope) }) {
+    modifier = modifier.clickable { onEditClick(itemModel.data.envelope) }
+) {
     val percentage = itemModel.data.run { if (byYear) yearPercentage else percentage }
     val darkColor = MaterialTheme.colors.onSurface.copy(alpha = 0.3f)
     ProgressBar(percentage, darkColor)
@@ -110,7 +111,8 @@ private fun Categories(
         item {
             IconButton(
                 modifier = categoriesModifier.size(44.dp),
-                onClick = { onAddClick(itemModel.data.envelope) }) {
+                onClick = { onAddClick(itemModel.data.envelope) }
+            ) {
                 Icon(Icons.Rounded.Add, contentDescription = "add category")
             }
         }
@@ -148,7 +150,7 @@ private fun Info(
                 text = "${sum.units.formatToReadableNumber()} / $limit",
                 fontSize = TextUnit(value = 20f, type = Sp),
                 color = darkColor,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Bold
             )
         }
     }
@@ -165,7 +167,7 @@ private fun Percentage(percentage: Float, darkColor: Color) {
             fontWeight = FontWeight.Bold,
             fontSize = TextUnit(value = 96f, type = Sp),
             color = darkColor,
-            maxLines = 1,
+            maxLines = 1
         )
     }
 }

@@ -23,7 +23,7 @@ import com.tubetoast.envelopes.android.presentation.ui.views.CheckboxSettingItem
 @Composable
 fun SettingsScreen(
     navController: NavHostController,
-    viewModel: SettingsViewModel,
+    viewModel: SettingsViewModel
 ) {
     Surface(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)

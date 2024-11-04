@@ -17,5 +17,4 @@ class DateRangeTest {
         val dateNotInRange = Date(1, 2, 2)
         Assertions.assertFalse(dateNotInRange !in dateRange)
     }
-
 }

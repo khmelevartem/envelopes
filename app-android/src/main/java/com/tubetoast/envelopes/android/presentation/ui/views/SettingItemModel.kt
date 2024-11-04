@@ -17,4 +17,3 @@ fun SettingItemModel.toSetting() =
 
 fun Setting.toItemModel() =
     SettingItemModel(key, text, checked)
-

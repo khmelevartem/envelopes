@@ -22,7 +22,7 @@ data class EnvelopeEntity(
     override val foreignKey: Int = Root.id.code,
     override val valueId: Int,
     val name: String,
-    val limit: Long,
+    val limit: Long
 ) : DatabaseEntity()
 
 @Entity(

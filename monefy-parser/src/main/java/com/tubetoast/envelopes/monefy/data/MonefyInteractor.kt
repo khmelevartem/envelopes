@@ -13,7 +13,7 @@ class MonefyInteractor(
     private val monefyDataParser: MonefyDataParser,
     private val envelopesRepository: UpdatingEnvelopesRepository,
     private val categoriesRepository: UpdatingCategoriesRepository,
-    private val spendingRepository: UpdatingSpendingRepository,
+    private val spendingRepository: UpdatingSpendingRepository
 ) {
     @JvmOverloads
     suspend fun import(inputStream: InputStream, startFrom: Date? = null): Date? {

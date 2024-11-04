@@ -52,15 +52,18 @@ class SnapshotsInteractorImpl(
         updateFlow()
         return combine(flow, selectedPeriodRepository.selectedPeriodFlow) { set, dateRange ->
             set.mapTo(mutableSetOf()) { snapshot ->
-                snapshot.copy(categories = snapshot.categories.mapTo(mutableSetOf()) { categorySnapshot ->
-                    categorySnapshot.copy(transactions = categorySnapshot.transactions
-                        .filterTo(mutableSetOf()) { transaction ->
-                            transaction.date in dateRange
-                        })
-                })
+                snapshot.copy(
+                    categories = snapshot.categories.mapTo(mutableSetOf()) { categorySnapshot ->
+                        categorySnapshot.copy(
+                            transactions = categorySnapshot.transactions
+                                .filterTo(mutableSetOf()) { transaction ->
+                                    transaction.date in dateRange
+                                }
+                        )
+                    }
+                )
             }
         }
-
     }
 
     private fun updateFlow() {

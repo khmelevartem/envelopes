@@ -61,5 +61,4 @@ class SpendingConverter : Converter<Spending, SpendingEntity> {
             date = domainModel.date.fromDate(),
             comment = domainModel.comment
         )
-
 }

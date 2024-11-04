@@ -8,5 +8,4 @@ interface SelectedPeriodRepository {
     val selectedPeriodFlow: StateFlow<DateRange>
 
     fun changePeriod(change: DateRange.() -> DateRange)
-
 }

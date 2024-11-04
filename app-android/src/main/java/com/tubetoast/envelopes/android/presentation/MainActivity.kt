@@ -57,11 +57,12 @@ class MainActivity : ComponentActivity() {
         readIntent(intent)
     }
 
+    @Suppress("DEPRECATION")
     private fun readIntent(intent: Intent?) = intent?.run {
         val uri: Uri? = data ?: if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             extras?.getParcelable(Intent.EXTRA_STREAM, Uri::class.java)
         } else {
-            @Suppress("DEPRECATION") extras?.get(Intent.EXTRA_STREAM) as Uri?
+            extras?.get(Intent.EXTRA_STREAM) as Uri?
         }
 
         uri?.let { contentResolver.openInputStream(it) }

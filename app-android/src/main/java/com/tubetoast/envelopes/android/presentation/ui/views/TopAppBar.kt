@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
 
-
 @Composable
 fun EnvelopesTopAppBar(
     viewModel: TopAppBarViewModel,

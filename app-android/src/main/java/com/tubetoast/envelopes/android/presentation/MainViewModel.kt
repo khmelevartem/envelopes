@@ -16,7 +16,7 @@ import java.io.InputStream
 class MainViewModel(
     private val settingsRepository: SettingsRepository,
     private val monefyInteractor: MonefyInteractor,
-    private val sharedPrefs: SharedPreferences,
+    private val sharedPrefs: SharedPreferences
 ) : ViewModel() {
 
     constructor(

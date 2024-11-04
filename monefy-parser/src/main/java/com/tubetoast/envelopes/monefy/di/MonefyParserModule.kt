@@ -19,7 +19,7 @@ val monefyParserModule = module {
             ),
             envelopesRepository = get(named(ENVELOPES_REPO)),
             categoriesRepository = get(named(CATEGORIES_REPO)),
-            spendingRepository = get(named(SPENDING_REPO)),
+            spendingRepository = get(named(SPENDING_REPO))
         )
     }
 }

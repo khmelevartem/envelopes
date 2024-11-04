@@ -8,10 +8,12 @@ data class Date(
     val year: Int
 ) : ImmutableModel<Date>(), Comparable<Date> {
     init {
-        if (month !in 1..12)
+        if (month !in 1..12) {
             throw IllegalArgumentException("month $month")
-        if (daysInThisMonth() < day)
+        }
+        if (daysInThisMonth() < day) {
             throw IllegalArgumentException("year $year month $month day $day")
+        }
     }
 
     override fun compareTo(other: Date): Int =
@@ -29,7 +31,7 @@ data class Date(
                 Date(
                     day = get(Calendar.DAY_OF_MONTH),
                     month = get(Calendar.MONTH) + 1,
-                    year = get(Calendar.YEAR),
+                    year = get(Calendar.YEAR)
                 )
             }
 

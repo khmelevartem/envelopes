@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 fun ChooseEnvelopeScreen(
     navController: NavController,
     viewModel: ChooseEnvelopeViewModel,
-    categoryId: Int? = null,
+    categoryId: Int? = null
 ) {
     Column {
         val category = viewModel.category(categoryId).collectAsState(initial = Category.EMPTY)
@@ -44,7 +44,7 @@ fun ChooseEnvelopeScreen(
                     EnvelopeLabelView(
                         isChosen = it.data.isChosen,
                         envelope = it.data.envelope,
-                        color = it.color,
+                        color = it.color
                     ) {
                         viewModel.setNewChosenEnvelope(it.data.envelope)
                         scope.launch {
