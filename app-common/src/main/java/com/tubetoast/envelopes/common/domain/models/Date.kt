@@ -27,13 +27,13 @@ data class Date(
 
     companion object {
         fun today(): Date =
-            Calendar.getInstance().run {
-                Date(
-                    day = get(Calendar.DAY_OF_MONTH),
-                    month = get(Calendar.MONTH) + 1,
-                    year = get(Calendar.YEAR)
-                )
-            }
+            Calendar.getInstance().toDate()
+
+        fun Calendar.toDate() = Date(
+            day = get(Calendar.DAY_OF_MONTH),
+            month = get(Calendar.MONTH) + 1,
+            year = get(Calendar.YEAR)
+        )
 
         fun currentMonth() = today().monthAsRange()
 

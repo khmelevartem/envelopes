@@ -1,6 +1,7 @@
 package com.tubetoast.envelopes.android.di
 
 import com.tubetoast.envelopes.android.presentation.MainViewModel
+import com.tubetoast.envelopes.android.presentation.ui.screens.AverageCalculator
 import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
@@ -16,7 +17,7 @@ import org.koin.dsl.module
 
 val appModule = module {
     viewModel { EnvelopesListViewModel(get(), get(), get()) }
-    viewModel { EditEnvelopeViewModel(get(), get()) }
+    viewModel { EditEnvelopeViewModel(get(), get(), get()) }
     viewModel { EditCategoryViewModel(get(), get(), get()) }
     viewModel { ChooseEnvelopeViewModel(get(), get()) }
     viewModel { SettingsViewModel(get()) }
@@ -27,5 +28,8 @@ val appModule = module {
             androidContext(),
             SettingsRepositoryDefaultImpl()
         )
+    }
+    single() {
+        AverageCalculator(get())
     }
 }

@@ -15,7 +15,8 @@ import kotlinx.coroutines.launch
 
 class EditEnvelopeViewModel(
     private val envelopeInteractor: EnvelopeInteractor,
-    private val snapshotsInteractor: SnapshotsInteractor
+    private val snapshotsInteractor: SnapshotsInteractor,
+    private val averageCalculator: AverageCalculator
 ) : ViewModel() {
 
     sealed interface Mode {
@@ -56,6 +57,30 @@ class EditEnvelopeViewModel(
         return draftEnvelope
     }
 
+    fun averageFor(months: Int): String {
+        return averageCalculator.calculateAverageFor(months, draftEnvelope.value)
+    }
+
+    fun setName(input: String) {
+        updateEnvelope(draftEnvelope.value.copy(name = input))
+    }
+
+    fun setLimit(input: String) {
+        val limit = input.toLongOrNull() ?: 0
+        require(limit >= 0) { "seems that u need Long for that" }
+        updateEnvelope(draftEnvelope.value.copy(limit = Amount(limit)))
+    }
+
+    fun confirm() {
+        viewModelScope.launch { mode.confirm(draftEnvelope.value) }
+        reset()
+    }
+
+    fun delete() {
+        viewModelScope.launch { mode.delete() }
+        reset()
+    }
+
     private fun collectEnvelopeCategories(envelope: Envelope) {
         viewModelScope.launch {
             snapshotsInteractor.snapshotsBySelectedPeriod().collect { set ->
@@ -77,26 +102,6 @@ class EditEnvelopeViewModel(
                 canDelete = mode.canDelete()
             )
         }
-    }
-
-    fun setName(input: String) {
-        updateEnvelope(draftEnvelope.value.copy(name = input))
-    }
-
-    fun setLimit(input: String) {
-        val limit = input.toLongOrNull() ?: 0
-        require(limit >= 0) { "seems that u need Long for that" }
-        updateEnvelope(draftEnvelope.value.copy(limit = Amount(limit)))
-    }
-
-    fun confirm() {
-        viewModelScope.launch { mode.confirm(draftEnvelope.value) }
-        reset()
-    }
-
-    fun delete() {
-        viewModelScope.launch { mode.delete() }
-        reset()
     }
 
     private fun reset() {
