@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
@@ -31,6 +33,8 @@ import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.CategoryWithSumView
 import com.tubetoast.envelopes.android.presentation.ui.views.EditEnvelopeTopAppBar
 import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControlViewModel
+import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -46,42 +50,84 @@ fun EditEnvelopeScreen(
         val categories by remember { editEnvelopeViewModel.categories }
         Column {
             EditEnvelopeTopAppBar(periodControlViewModel, editEnvelopeViewModel, navController)
-            OutlinedTextField(
-                value = draftEnvelope.name,
-                onValueChange = { editEnvelopeViewModel.setName(it) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, end = 8.dp, start = 8.dp),
-                label = { Text("Name") },
-                maxLines = 1
-            )
-            OutlinedTextField(
-                value = draftEnvelope.limit.units.takeIf { it > 0 }?.toString().orEmpty(),
-                onValueChange = { editEnvelopeViewModel.setLimit(it) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, end = 8.dp, start = 8.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                label = { Text("Limit") },
-                maxLines = 1
-            )
-            LazyColumn(
-                modifier = Modifier.padding(top = 8.dp, end = 8.dp, start = 8.dp)
-            ) {
-                items(categories) { categorySnapshot ->
-                    CategoryWithSumView(
-                        snapshot = categorySnapshot,
-                        modifier = Modifier.padding(vertical = 4.dp)
-                    ) {
-                        navController.navigate(
-                            AppNavigation.editCategory(categorySnapshot.category, draftEnvelope)
-                        )
-                    }
-                }
-            }
+            EnvelopeInfo(draftEnvelope, editEnvelopeViewModel)
+            Average(editEnvelopeViewModel)
+            Categories(categories, navController, draftEnvelope)
         }
 
         Buttons(navController, envelopeOperations, editEnvelopeViewModel)
+    }
+}
+
+@Composable
+private fun EnvelopeInfo(
+    draftEnvelope: Envelope,
+    editEnvelopeViewModel: EditEnvelopeViewModel
+) {
+    OutlinedTextField(
+        value = draftEnvelope.name,
+        onValueChange = { editEnvelopeViewModel.setName(it) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, end = 8.dp, start = 8.dp),
+        label = { Text("Name") },
+        maxLines = 1
+    )
+    OutlinedTextField(
+        value = draftEnvelope.limit.units.takeIf { it > 0 }?.toString().orEmpty(),
+        onValueChange = { editEnvelopeViewModel.setLimit(it) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, end = 8.dp, start = 8.dp),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        label = { Text("Limit") },
+        maxLines = 1
+    )
+}
+
+@Composable
+fun Average(editEnvelopeViewModel: EditEnvelopeViewModel) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier.fillMaxWidth()
+            .padding(top = 8.dp, end = 8.dp, start = 8.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        item {
+            Column {
+                Text("Average for 6m")
+                Text(editEnvelopeViewModel.averageFor(6))
+            }
+        }
+
+        item {
+            Column {
+                Text("Average for 12m")
+                Text(editEnvelopeViewModel.averageFor(12))
+            }
+        }
+    }
+}
+
+@Composable
+private fun Categories(
+    categories: List<CategorySnapshot>,
+    navController: NavHostController,
+    draftEnvelope: Envelope
+) {
+    LazyColumn(
+        modifier = Modifier.padding(top = 8.dp, end = 8.dp, start = 8.dp)
+    ) {
+        items(categories) { categorySnapshot ->
+            CategoryWithSumView(
+                snapshot = categorySnapshot,
+                modifier = Modifier.padding(vertical = 4.dp)
+            ) {
+                navController.navigate(
+                    AppNavigation.editCategory(categorySnapshot.category, draftEnvelope)
+                )
+            }
+        }
     }
 }
 
