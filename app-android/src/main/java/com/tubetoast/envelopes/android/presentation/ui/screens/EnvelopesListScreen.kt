@@ -34,12 +34,13 @@ import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControlViewMo
 import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.models.sum
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EnvelopesListScreen(
     navController: NavHostController,
-    envelopesListViewModel: EnvelopesListViewModel,
-    periodControlViewModel: PeriodControlViewModel
+    envelopesListViewModel: EnvelopesListViewModel = koinViewModel(),
+    periodControlViewModel: PeriodControlViewModel = koinViewModel()
 ) {
     val envelopesState =
         envelopesListViewModel.itemModels.collectAsState(initial = emptyList())

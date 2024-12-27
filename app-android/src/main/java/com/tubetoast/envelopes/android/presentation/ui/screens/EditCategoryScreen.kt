@@ -15,11 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
 import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EditCategoryScreen(
     navController: NavController,
-    viewModel: EditCategoryViewModel,
+    viewModel: EditCategoryViewModel = koinViewModel(),
     categoryId: Int? = null,
     envelopeId: Int? = null
 ) {

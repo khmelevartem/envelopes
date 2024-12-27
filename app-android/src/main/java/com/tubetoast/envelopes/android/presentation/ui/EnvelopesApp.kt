@@ -11,35 +11,24 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeScreen
-import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryScreen
-import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeScreen
-import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListScreen
-import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsScreen
-import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsViewModel
-import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControlViewModel
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 
 @Composable
-fun EnvelopesApp(
-    envelopesListViewModel: EnvelopesListViewModel,
-    editEnvelopeViewModel: EditEnvelopeViewModel,
-    editCategoryViewModel: EditCategoryViewModel,
-    chooseEnvelopeViewModel: ChooseEnvelopeViewModel,
-    settingsViewModel: SettingsViewModel,
-    periodControlViewModel: PeriodControlViewModel
-) {
+fun EnvelopesApp() {
     MaterialTheme {
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         NavHost(navController = navController, startDestination = AppNavigation.start) {
             composable(route = AppNavigation.envelopesList) {
-                EnvelopesListScreen(navController, envelopesListViewModel, periodControlViewModel)
+                EnvelopesListScreen(
+                    navController = navController
+                )
             }
             composable(
                 route = AppNavigation.envelopeScreen,
@@ -48,7 +37,10 @@ fun EnvelopesApp(
                 )
             ) {
                 val envelopeId = navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)
-                EditEnvelopeScreen(navController, editEnvelopeViewModel, periodControlViewModel, envelopeId)
+                EditEnvelopeScreen(
+                    navController = navController,
+                    envelopeId = envelopeId
+                )
             }
             composable(
                 route = AppNavigation.categoryScreen,
@@ -62,7 +54,6 @@ fun EnvelopesApp(
                     val categoryId = takeInt(AppNavigation.argCategoryId)
                     EditCategoryScreen(
                         navController = navController,
-                        viewModel = editCategoryViewModel,
                         categoryId = categoryId,
                         envelopeId = envelopeId
                     )
@@ -78,7 +69,6 @@ fun EnvelopesApp(
                     val categoryId = takeInt(AppNavigation.argCategoryId)
                     ChooseEnvelopeScreen(
                         navController = navController,
-                        viewModel = chooseEnvelopeViewModel,
                         categoryId = categoryId
                     )
                 }
@@ -87,8 +77,7 @@ fun EnvelopesApp(
                 route = AppNavigation.settings
             ) {
                 SettingsScreen(
-                    navController = navController,
-                    viewModel = settingsViewModel
+                    navController = navController
                 )
             }
         }
@@ -101,6 +90,7 @@ private fun Bundle.takeInt(key: String): Int? {
     return getInt(key, NO_VALUE).takeUnless { it == NO_VALUE }
 }
 
+@Suppress("ConstPropertyName")
 object AppNavigation {
     const val envelopesList = "envelopesListScreen"
     const val argEnvelopeId = "envelopeId"

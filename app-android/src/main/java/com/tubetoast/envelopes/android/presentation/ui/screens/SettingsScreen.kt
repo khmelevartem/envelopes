@@ -19,11 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.tubetoast.envelopes.android.presentation.ui.views.CheckboxSettingItem
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SettingsScreen(
     navController: NavHostController,
-    viewModel: SettingsViewModel
+    viewModel: SettingsViewModel = koinViewModel()
 ) {
     Surface(
         modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)

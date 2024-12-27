@@ -31,12 +31,13 @@ import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.CategoryWithSumView
 import com.tubetoast.envelopes.android.presentation.ui.views.EditEnvelopeTopAppBar
 import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControlViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EditEnvelopeScreen(
     navController: NavHostController,
-    editEnvelopeViewModel: EditEnvelopeViewModel,
-    periodControlViewModel: PeriodControlViewModel,
+    editEnvelopeViewModel: EditEnvelopeViewModel = koinViewModel(),
+    periodControlViewModel: PeriodControlViewModel = koinViewModel(),
     envelopeId: Int? = null
 ) {
     Column(verticalArrangement = Arrangement.SpaceBetween) {

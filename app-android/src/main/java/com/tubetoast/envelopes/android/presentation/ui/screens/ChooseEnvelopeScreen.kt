@@ -25,11 +25,12 @@ import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeLabelView
 import com.tubetoast.envelopes.common.domain.models.Category
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ChooseEnvelopeScreen(
     navController: NavController,
-    viewModel: ChooseEnvelopeViewModel,
+    viewModel: ChooseEnvelopeViewModel = koinViewModel(),
     categoryId: Int? = null
 ) {
     Column {

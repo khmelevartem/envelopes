@@ -4,7 +4,7 @@ composeVersion = "1.5.4"
 composeCompilerVersion = "1.5.7"
 junitJupiterVersion = "5.9.3"
 junitPlatformLauncherVersion = "1.9.3"
-koinVersion = "3.5.0"
+koinVersion = "4.0.0"
 kotlinVersion = "1.9.21"
 kspVersion = "1.9.21-1.0.16"
 kotlinxCoroutinesVersion = "1.7.3"
@@ -37,6 +37,8 @@ compose-ui = { module = "androidx.compose.ui:ui", version.ref = "composeVersion"
 
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinVersion" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinVersion" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTestVersion" }
