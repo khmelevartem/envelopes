@@ -15,8 +15,7 @@ import kotlinx.coroutines.launch
 
 class EditEnvelopeViewModel(
     private val envelopeInteractor: EnvelopeInteractor,
-    private val snapshotsInteractor: SnapshotsInteractor,
-    private val averageCalculator: AverageCalculator
+    private val snapshotsInteractor: SnapshotsInteractor
 ) : ViewModel() {
 
     sealed interface Mode {
@@ -55,10 +54,6 @@ class EditEnvelopeViewModel(
             }
         } ?: reset()
         return draftEnvelope
-    }
-
-    fun averageFor(months: Int): String {
-        return averageCalculator.calculateAverageFor(months, draftEnvelope.value)
     }
 
     fun setName(input: String) {

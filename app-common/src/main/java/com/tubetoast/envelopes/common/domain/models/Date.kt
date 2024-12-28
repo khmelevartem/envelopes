@@ -35,6 +35,13 @@ data class Date(
             year = get(Calendar.YEAR)
         )
 
+        fun Date.toCalendar() =
+            Calendar.getInstance().apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, month)
+                set(Calendar.DAY_OF_MONTH, day)
+            }
+
         fun currentMonth() = today().monthAsRange()
 
         fun currentYear() = today().yearAsRange()

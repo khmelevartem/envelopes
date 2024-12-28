@@ -1,5 +1,6 @@
 package com.tubetoast.envelopes.common.di
 
+import com.tubetoast.envelopes.common.domain.AverageCalculator
 import com.tubetoast.envelopes.common.domain.CategoryInteractor
 import com.tubetoast.envelopes.common.domain.CategoryInteractorImpl
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
@@ -8,6 +9,8 @@ import com.tubetoast.envelopes.common.domain.SelectedPeriodRepository
 import com.tubetoast.envelopes.common.domain.SelectedPeriodRepositoryImpl
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractorImpl
+import com.tubetoast.envelopes.common.domain.SpendingInteractor
+import com.tubetoast.envelopes.common.domain.SpendingInteractorImpl
 import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
 import com.tubetoast.envelopes.common.settings.SettingsRepository
 import org.koin.core.qualifier.named
@@ -24,8 +27,10 @@ val domainModule = module {
     }
     single<EnvelopeInteractor> { EnvelopeInteractorImpl(repository = get(named(ENVELOPES_REPO))) }
     single<CategoryInteractor> { CategoryInteractorImpl(repository = get(named(CATEGORIES_REPO))) }
+    single<SpendingInteractor> { SpendingInteractorImpl(repository = get(named(SPENDING_REPO))) }
     single<SettingsRepository> { get<MutableSettingsRepository>() }
     single<SelectedPeriodRepository> { SelectedPeriodRepositoryImpl(get()) }
+    single { AverageCalculator(get()) }
 }
 
 const val SPENDING_REPO = "spending repo"

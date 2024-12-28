@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
@@ -51,7 +49,6 @@ fun EditEnvelopeScreen(
         Column {
             EditEnvelopeTopAppBar(periodControlViewModel, editEnvelopeViewModel, navController)
             EnvelopeInfo(draftEnvelope, editEnvelopeViewModel)
-            Average(editEnvelopeViewModel)
             Categories(categories, navController, draftEnvelope)
         }
 
@@ -83,30 +80,6 @@ private fun EnvelopeInfo(
         label = { Text("Limit") },
         maxLines = 1
     )
-}
-
-@Composable
-fun Average(editEnvelopeViewModel: EditEnvelopeViewModel) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxWidth()
-            .padding(top = 8.dp, end = 8.dp, start = 8.dp),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        item {
-            Column {
-                Text("Average for 6m")
-                Text(editEnvelopeViewModel.averageFor(6))
-            }
-        }
-
-        item {
-            Column {
-                Text("Average for 12m")
-                Text(editEnvelopeViewModel.averageFor(12))
-            }
-        }
-    }
 }
 
 @Composable
