@@ -33,7 +33,7 @@ class StatisticsScreenViewModel(
                     val years = periodInMonths.value / 12
                     if (years > 1) "last $years years" else "last year"
                 }
-                displayedAverageInMonth.value = averageCalculator.calculateAverageForAll(periodInMonths.value).units
+                displayedAverageInMonth.value = averageCalculator.calculateAverage(periodInMonths.value).units
                 displayedAverageInYear.value = displayedAverageInMonth.value * 12
             }
         }
