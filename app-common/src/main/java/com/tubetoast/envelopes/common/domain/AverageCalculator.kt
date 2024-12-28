@@ -2,7 +2,6 @@ package com.tubetoast.envelopes.common.domain
 
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Date.Companion.toDate
-import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.sum
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.Dispatchers
@@ -29,10 +28,5 @@ class AverageCalculator(
                 .units
                 .div(months)
                 .let { Amount(it) }
-        }
-
-    suspend fun calculateAverageForEnvelope(months: Int, envelope: Envelope): Amount =
-        calculateAverage(months) {
-            it.envelope == envelope
         }
 }

@@ -1,12 +1,16 @@
 package com.tubetoast.envelopes.android.presentation.ui.screens
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -30,65 +34,103 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun StatisticsScreen(
     navController: NavHostController,
-    viewModel: StatisticsScreenViewModel = koinViewModel()
+    inflationViewModel: InflationViewModel = koinViewModel(),
+    averageViewModel: AverageViewViewModel = koinViewModel(),
+    filterViewModel: EnvelopesFilterViewModel = koinViewModel()
 ) {
-    Column {
-        Average(viewModel)
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Average(averageViewModel)
+        Inflation(inflationViewModel)
+        FilterByEnvelopes(filterViewModel)
+    }
+}
 
-        val envelopes by viewModel.envelopesFilter.collectAsState()
-        val itemModels = envelopes.asItemModels()
-        LazyColumn(modifier = Modifier.padding(top = 16.dp)) {
-            item {
-                CardItem(color = MaterialTheme.colors.secondary) {
-                    IconButton(onClick = { viewModel.toggleShowFilter() }) {
-                        Icon(imageVector = Icons.Default.List, contentDescription = "Filter envelopes")
+@Composable
+fun Average(viewModel: AverageViewViewModel) {
+    Box(
+        Modifier
+            .border(1.dp, color = MaterialTheme.colors.secondary, shape = RoundedCornerShape(16.dp))
+            .padding(16.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            val period by viewModel.displayedPeriod.collectAsState()
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(
+                    onClick = { viewModel.minusPeriod() }
+                ) {
+                    Icon(
+                        Icons.Default.KeyboardArrowDown,
+                        contentDescription = "minus month"
+                    )
+                }
+                Text(
+                    text = "Average for $period",
+                    modifier = Modifier.clickable {
+                        viewModel.changePeriodType()
                     }
+                )
+                IconButton(
+                    onClick = { viewModel.plusPeriod() }
+                ) {
+                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "plus month")
                 }
             }
-            items(itemModels) {
-                CardItem(color = it.color) {
-                    EnvelopeLabelView(
-                        isChosen = it.data.isChosen,
-                        envelope = it.data.envelope,
-                        color = it.color
-                    ) {
-                        viewModel.toggleEnvelopesFilter(it.data.envelope)
-                    }
-                }
-            }
+            val averageInMonth by viewModel.displayedAverageInMonth.collectAsState()
+            Text("${averageInMonth.formatToReadableNumber()} / month")
+
+            val averageInYear by viewModel.displayedAverageInYear.collectAsState()
+            Text("${averageInYear.formatToReadableNumber()} / year")
         }
     }
 }
 
 @Composable
-fun Average(viewModel: StatisticsScreenViewModel) {
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        val period by viewModel.displayedPeriod.collectAsState()
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(
-                onClick = { viewModel.minusPeriod() }
-            ) {
-                Icon(
-                    Icons.Default.KeyboardArrowDown,
-                    contentDescription = "minus month"
-                )
-            }
+fun Inflation(viewModel: InflationViewModel) {
+    Box(
+        Modifier
+            .border(1.dp, color = MaterialTheme.colors.secondary, shape = RoundedCornerShape(16.dp))
+            .padding(16.dp)
+            .fillMaxWidth()
+    ) {
+        Column {
+            val yy by viewModel.yearlyInflation.collectAsState()
             Text(
-                text = "Average for $period",
-                modifier = Modifier.clickable {
-                    viewModel.changePeriodType()
-                }
+                text = "Inflation y/y $yy%"
             )
-            IconButton(
-                onClick = { viewModel.plusPeriod() }
-            ) {
-                Icon(Icons.Default.KeyboardArrowUp, contentDescription = "plus month")
+
+            val mm by viewModel.monthlyInflation.collectAsState()
+            Text(
+                text = "Inflation m/m $mm%"
+            )
+        }
+    }
+}
+
+@Composable
+private fun FilterByEnvelopes(viewModel: EnvelopesFilterViewModel) {
+    val envelopes by viewModel.displayedEnvelopes.collectAsState()
+    val itemModels = envelopes.asItemModels()
+    LazyColumn(modifier = Modifier.padding(vertical = 16.dp)) {
+        items(itemModels) {
+            CardItem(color = it.color) {
+                EnvelopeLabelView(
+                    isChosen = it.data.isChosen,
+                    envelope = it.data.envelope,
+                    color = it.color
+                ) {
+                    viewModel.toggleEnvelopesFilter(it.data.envelope)
+                }
             }
         }
-        val averageInMonth by viewModel.displayedAverageInMonth.collectAsState()
-        Text("${averageInMonth.formatToReadableNumber()} / month")
-
-        val averageInYear by viewModel.displayedAverageInYear.collectAsState()
-        Text("${averageInYear.formatToReadableNumber()} / year")
+        item {
+            CardItem(color = MaterialTheme.colors.secondary) {
+                IconButton(onClick = { viewModel.toggleShowFilter() }) {
+                    Icon(imageVector = Icons.Default.List, contentDescription = "Filter envelopes")
+                }
+            }
+        }
     }
 }
