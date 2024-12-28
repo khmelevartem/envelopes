@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tubetoast.envelopes.android.presentation.models.ChoosableEnvelope
 import com.tubetoast.envelopes.common.domain.CategoryInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Category
@@ -22,11 +23,6 @@ class ChooseEnvelopeViewModel(
 
     private val categoryFlow = MutableStateFlow(Category.EMPTY)
     private val envelopesFlow = mutableStateOf(emptyList<ChoosableEnvelope>())
-
-    data class ChoosableEnvelope(
-        val envelope: Envelope,
-        val isChosen: Boolean
-    )
 
     init {
         viewModelScope.launch {

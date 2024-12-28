@@ -11,8 +11,13 @@ class EnvelopeInteractorImpl(
 
     private val dispatcher = Dispatchers.IO
 
-    override suspend fun getEnvelopeByName(name: String) =
-        withContext(dispatcher) { repository.getAll().singleOrNull { it.name == name } }
+    override suspend fun getAll(): Set<Envelope> = withContext(dispatcher) {
+        repository.getAll()
+    }
+
+    override suspend fun getEnvelopeByName(name: String) = withContext(dispatcher) {
+        repository.getAll().singleOrNull { it.name == name }
+    }
 
     override suspend fun getExactEnvelope(id: Id<Envelope>): Envelope? = withContext(dispatcher) {
         repository.get(id)

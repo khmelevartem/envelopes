@@ -23,7 +23,7 @@ val appModule = module {
     viewModel { SettingsViewModel(get()) }
     viewModel { MainViewModel(get(), get(), androidContext()) }
     viewModel { PeriodControlViewModel(get(), get()) }
-    viewModel { StatisticsScreenViewModel(get(), get()) }
+    viewModel { StatisticsScreenViewModel(get(), get(), get()) }
     single<MutableSettingsRepository> {
         SettingsRepositorySharedPrefsImpl(
             androidContext(),
