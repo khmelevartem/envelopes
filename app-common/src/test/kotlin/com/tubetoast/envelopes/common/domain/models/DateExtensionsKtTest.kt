@@ -10,7 +10,7 @@ class DateExtensionsKtTest {
     @ParameterizedTest
     @MethodSource("provideDataForTestDaysOfYear")
     fun testDaysOfYear(day: Int, date: Date) {
-        Assertions.assertEquals(day, date.inDaysOfYear())
+        Assertions.assertEquals(day, date.inDayOfYear())
     }
 
     @ParameterizedTest(name = "{2} from {0} to {1}")

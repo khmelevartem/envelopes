@@ -1,5 +1,7 @@
 package com.tubetoast.envelopes.common.domain.models
 
+import kotlin.math.min
+
 fun Date.monthAsRange() =
     copy(day = 1)..copy(day = daysInThisMonth())
 
@@ -15,7 +17,7 @@ fun Date.daysInThisYear() =
 fun Date.daysInThisMonth() =
     Calendar.daysByMonths(year)[month] ?: throw IllegalArgumentException("month $month")
 
-fun Date.inDaysOfYear(): Int {
+fun Date.inDayOfYear(): Int {
     return Calendar.daysByMonths(year).entries.fold(0) { acc, (monthNumber, daysInIt) ->
         acc + when {
             (monthNumber < month) -> daysInIt
@@ -37,31 +39,31 @@ fun Date.previousDay() = when {
     else -> copy(day = day - 1)
 }
 
-fun Date.minusMonth(day: (month: Int, year: Int) -> Int) =
+fun Date.minusMonth() =
     when (month) {
         1 -> Date(
-            day = day(12, year - 1),
+            day = min(day, 31),
             month = 12,
             year = year - 1
         )
 
         else -> Date(
-            day = day(month - 1, year),
+            day = min(day, Calendar.daysByMonths(year)[month - 1]!!),
             month = month - 1,
             year = year
         )
     }
 
-fun Date.plusMonth(day: (month: Int, year: Int) -> Int) =
+fun Date.plusMonth() =
     when (month) {
         12 -> Date(
-            day = day(1, year + 1),
+            day = min(day, Calendar.daysByMonths(year + 1)[1]!!),
             month = 1,
             year = year + 1
         )
 
         else -> Date(
-            day = day(month + 1, year),
+            day = min(day, Calendar.daysByMonths(year)[month + 1]!!),
             month = month + 1,
             year = year
         )
