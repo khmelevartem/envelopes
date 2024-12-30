@@ -2,7 +2,6 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,12 +19,23 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeLabelView
 import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
@@ -39,11 +49,10 @@ fun StatisticsScreen(
     filterViewModel: EnvelopesFilterViewModel = koinViewModel()
 ) {
     Column(
-        verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.padding(16.dp)
     ) {
-        Average(averageViewModel)
         Inflation(inflationViewModel)
+        Average(averageViewModel)
         FilterByEnvelopes(filterViewModel)
     }
 }
@@ -89,24 +98,37 @@ fun Average(viewModel: AverageViewViewModel) {
 
 @Composable
 fun Inflation(viewModel: InflationViewModel) {
-    Box(
-        Modifier
-            .border(1.dp, color = MaterialTheme.colors.secondary, shape = RoundedCornerShape(16.dp))
-            .padding(16.dp)
-            .fillMaxWidth()
-    ) {
-        Column {
-            val yy by viewModel.yearlyInflation.collectAsState()
-            Text(
-                text = "Inflation y/y $yy%"
-            )
+    val yearlyData by viewModel.inflationByYearsData.collectAsState()
+    val years by viewModel.years.collectAsState()
+    val yearlyAverage by viewModel.inflationAverageByYears.collectAsState()
+    InflationPlot(years, yearlyData, yearlyAverage)
 
-            val mm by viewModel.monthlyInflation.collectAsState()
-            Text(
-                text = "Inflation m/m $mm%"
-            )
+    val monthlyData by viewModel.inflationByMonthsData.collectAsState()
+    monthlyData.ifEmpty { return }
+    val months by viewModel.months.collectAsState()
+    val monthlyAverage by viewModel.inflationAverageByMonths.collectAsState()
+    InflationPlot(months, monthlyData, monthlyAverage)
+}
+
+@Composable
+private fun InflationPlot(x: List<Int>, y: List<Int>, average: Int) {
+    val modelProducer = remember { CartesianChartModelProducer() }
+    LaunchedEffect(y) {
+        modelProducer.runTransaction {
+            lineSeries {
+                series(x, y)
+                series(x, x.map { average })
+            }
         }
     }
+    CartesianChartHost(
+        rememberCartesianChart(
+            rememberLineCartesianLayer(),
+            startAxis = VerticalAxis.rememberStart(guideline = null),
+            bottomAxis = HorizontalAxis.rememberBottom(guideline = null)
+        ),
+        modelProducer
+    )
 }
 
 @Composable
@@ -114,6 +136,13 @@ private fun FilterByEnvelopes(viewModel: EnvelopesFilterViewModel) {
     val envelopes by viewModel.displayedEnvelopes.collectAsState()
     val itemModels = envelopes.asItemModels()
     LazyColumn(modifier = Modifier.padding(vertical = 16.dp)) {
+        item {
+            CardItem(color = MaterialTheme.colors.secondary) {
+                IconButton(onClick = { viewModel.toggleShowFilter() }) {
+                    Icon(imageVector = Icons.Default.List, contentDescription = "Filter envelopes")
+                }
+            }
+        }
         items(itemModels) {
             CardItem(color = it.color) {
                 EnvelopeLabelView(
@@ -122,13 +151,6 @@ private fun FilterByEnvelopes(viewModel: EnvelopesFilterViewModel) {
                     color = it.color
                 ) {
                     viewModel.toggleEnvelopesFilter(it.data.envelope)
-                }
-            }
-        }
-        item {
-            CardItem(color = MaterialTheme.colors.secondary) {
-                IconButton(onClick = { viewModel.toggleShowFilter() }) {
-                    Icon(imageVector = Icons.Default.List, contentDescription = "Filter envelopes")
                 }
             }
         }

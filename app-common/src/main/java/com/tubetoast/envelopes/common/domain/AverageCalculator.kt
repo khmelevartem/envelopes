@@ -1,6 +1,8 @@
 package com.tubetoast.envelopes.common.domain
 
 import com.tubetoast.envelopes.common.domain.models.Amount
+import com.tubetoast.envelopes.common.domain.models.Date
+import com.tubetoast.envelopes.common.domain.models.Date.Companion.toCalendar
 import com.tubetoast.envelopes.common.domain.models.Date.Companion.toDate
 import com.tubetoast.envelopes.common.domain.models.sum
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
@@ -12,9 +14,13 @@ class AverageCalculator(
     private val snapshotsInteractor: SnapshotsInteractor
 ) {
 
-    suspend fun calculateAverage(months: Int, filter: (EnvelopeSnapshot) -> Boolean = { true }): Amount =
+    suspend fun calculateAverage(
+        months: Int,
+        filter: (EnvelopeSnapshot) -> Boolean = { true },
+        today: Date = Date.today()
+    ): Amount =
         withContext(Dispatchers.IO) {
-            val startDate = Calendar.getInstance().apply {
+            val startDate = today.toCalendar().apply {
                 add(Calendar.MONTH, -months)
             }.toDate()
 

@@ -10,6 +10,7 @@ kspVersion = "2.1.0-1.0.29"
 kotlinxCoroutinesVersion = "1.10.1"
 androidVersion = "8.7.3"
 roomVersion = "2.6.1"
+vico = "2.0.0-beta.5"
 
 [plugins]
 
@@ -43,6 +44,8 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", ver
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesVersion" }
+
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
 
 test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiterVersion" }
 test-junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitPlatformLauncherVersion" }

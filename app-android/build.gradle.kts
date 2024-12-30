@@ -63,6 +63,8 @@ dependencies {
     debugImplementation(libs.compose.tooling)
     debugImplementation(libs.compose.test.manifest)
 
+    implementation(libs.vico.compose.m3)
+
     // test
     testImplementation(libs.test.junit.jupiter)
     testImplementation(libs.kotlinx.coroutines.test)

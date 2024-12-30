@@ -9,12 +9,8 @@ import com.tubetoast.envelopes.common.domain.SpendingInteractor
 import com.tubetoast.envelopes.common.domain.models.Date.Companion.today
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.inMonths
-import com.tubetoast.envelopes.common.domain.models.monthAsRange
-import com.tubetoast.envelopes.common.domain.models.previousMonth
-import com.tubetoast.envelopes.common.domain.models.previousYear
 import com.tubetoast.envelopes.common.domain.models.rangeTo
-import com.tubetoast.envelopes.common.domain.models.yearAsRange
-import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
@@ -23,32 +19,41 @@ class InflationViewModel(
     private val selectedEnvelopesRepository: SelectedEnvelopesRepository,
     private val inflationCalculator: InflationCalculator
 ) : ViewModel() {
-    var yearlyInflation = MutableStateFlow(0)
-    var monthlyInflation = MutableStateFlow(0)
+
+    private val defaultInflationData = listOf(0)
+    val years = MutableStateFlow(listOf(today().year))
+    val months = MutableStateFlow(listOf(today().month))
+    val inflationByYearsData = MutableStateFlow(defaultInflationData)
+    val inflationAverageByYears = MutableStateFlow(0)
+    val inflationAverageByMonths = MutableStateFlow(0)
+    val inflationByMonthsData = MutableStateFlow(defaultInflationData)
 
     init {
         viewModelScope.launch {
             selectedEnvelopesRepository.selectedEnvelopes.collect {
-                today().let { today ->
-                    today.monthAsRange().let { thisMonth ->
-                        monthlyInflation.value = (
-                            inflationCalculator.calculateInflation(
-                                baseRange = thisMonth.previousMonth(),
-                                newRange = thisMonth,
-                                filter = selectedEnvelopesRepository::isChosen
-                            ) * 100
-                            ).toInt()
-                    }
+                launch(Dispatchers.IO) {
+                    val data = inflationCalculator.calculateInflationByYears(
+                        filter = selectedEnvelopesRepository::isChosen
+                    )
+                    inflationByYearsData.value = data
+                        .map { (it.second * 100).toInt() }.ifEmpty { defaultInflationData }
+                    years.value = data
+                        .map { it.first.start.year }
 
-                    today.yearAsRange().let { thisYear ->
-                        yearlyInflation.value = (
-                            inflationCalculator.calculateInflation(
-                                baseRange = thisYear.previousYear(),
-                                newRange = thisYear,
-                                filter = selectedEnvelopesRepository::isChosen
-                            ) * 100
-                            ).toInt()
-                    }
+                    inflationAverageByYears.value = inflationByYearsData.value.average().toInt()
+                }
+                launch(Dispatchers.IO) {
+
+                    val data = inflationCalculator.calculateInflationByMonths(
+                        filter = selectedEnvelopesRepository::isChosen
+                    )
+                    inflationByMonthsData.value = data
+                        .map { (it.second * 100).toInt() }
+
+                    months.value = data
+                        .map { it.first.start.month }
+
+                    inflationAverageByMonths.value = inflationByMonthsData.value.average().toInt()
                 }
             }
         }
@@ -152,7 +157,3 @@ class AverageViewViewModel(
         isPeriodInMonths.value = !isPeriodInMonths.value
     }
 }
-
-private fun SelectedEnvelopesRepository.isChosen(snapshot: EnvelopeSnapshot) =
-    selectedEnvelopes.value.find { it.envelope == snapshot.envelope }
-        ?.isChosen ?: false

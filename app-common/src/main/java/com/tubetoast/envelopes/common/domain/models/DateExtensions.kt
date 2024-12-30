@@ -39,6 +39,22 @@ fun Date.previousDay() = when {
     else -> copy(day = day - 1)
 }
 
+fun Date.plusYear() =
+    changeYear(year + 1)
+
+fun Date.minusYear() =
+    changeYear(year - 1)
+
+fun Date.changeYear(newYear: Int) =
+    when {
+        month == 2 && day == 29 -> copy(
+            day = min(day, Calendar.daysByMonths(newYear)[month]!!),
+            year = newYear
+        )
+
+        else -> copy(year = newYear)
+    }
+
 fun Date.minusMonth() =
     when (month) {
         1 -> Date(
