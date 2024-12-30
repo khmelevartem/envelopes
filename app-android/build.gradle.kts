@@ -1,10 +1,11 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.tubetoast.envelopes"
@@ -56,6 +57,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.ui)
     implementation(libs.compose.material)
+    implementation(libs.compose.icons)
     implementation(libs.compose.preview)
     implementation(libs.compose.navigation)
     debugImplementation(libs.compose.tooling)
