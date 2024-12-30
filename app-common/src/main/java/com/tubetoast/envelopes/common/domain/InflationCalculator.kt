@@ -14,24 +14,21 @@ class InflationCalculator(
         newRange: DateRange,
         filter: (EnvelopeSnapshot) -> Boolean = { true }
     ): Float = withContext(Dispatchers.IO) {
-        val baseSum = snapshotsInteractor.allSnapshots
-            .filter(filter)
-            .flatMap { it.categories }
-            .flatMap { it.transactions }
-            .filter { it.date in baseRange }
-            .map { it.amount }
-            .sum()
-            .units
-
-        val newSum = snapshotsInteractor.allSnapshots
-            .filter(filter)
-            .flatMap { it.categories }
-            .flatMap { it.transactions }
-            .filter { it.date in newRange }
-            .map { it.amount }
-            .sum()
-            .units
+        val baseSum = getSum(filter, baseRange)
+        val newSum = getSum(filter, newRange)
 
         (newSum - baseSum) / baseSum.toFloat()
     }
+
+    private fun getSum(
+        filter: (EnvelopeSnapshot) -> Boolean,
+        baseRange: DateRange
+    ) = snapshotsInteractor.allSnapshots
+        .filter(filter)
+        .flatMap { it.categories }
+        .flatMap { it.transactions }
+        .filter { it.date in baseRange }
+        .map { it.amount }
+        .sum()
+        .units
 }

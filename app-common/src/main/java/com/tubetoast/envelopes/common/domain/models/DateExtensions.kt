@@ -1,7 +1,16 @@
 package com.tubetoast.envelopes.common.domain.models
 
+fun Date.monthAsRange() =
+    copy(day = 1)..copy(day = daysInThisMonth())
+
+fun Date.yearAsRange() =
+    copy(day = 1, month = 1)..copy(day = 31, month = 12)
+
 infix operator fun Date.rangeTo(other: Date): DateRange =
     DateRange(other, this)
+
+fun Date.daysInThisYear() =
+    Calendar.daysOfYear(year)
 
 fun Date.daysInThisMonth() =
     Calendar.daysByMonths(year)[month] ?: throw IllegalArgumentException("month $month")
@@ -16,19 +25,47 @@ fun Date.inDaysOfYear(): Int {
     }
 }
 
-fun DateRange.inMonths(): Int {
-    require(endInclusive > start)
-    val yearDiffers = endInclusive.year - start.year != 0
-    val startYearDays = if (yearDiffers) {
-        (start.year until endInclusive.year).fold(0) { acc, year ->
-            acc + Calendar.daysOfYear(year)
-        }
-    } else {
-        0
-    }
-    val diffInDays = endInclusive.inDaysOfYear() + startYearDays - start.inDaysOfYear()
-    return diffInDays.div(365 / 12)
+fun Date.nextDay() = when (day) {
+    daysInThisYear() -> copy(day = 1, month = 1, year = year + 1)
+    daysInThisMonth() -> copy(day = 1, month = month + 1)
+    else -> copy(day = day + 1)
 }
+
+fun Date.previousDay() = when {
+    day == 1 && month == 1 -> copy(day = 31, month = 12, year = year - 1)
+    day == 1 -> copy(day = Calendar.daysByMonths(year)[month - 1]!!, month = month - 1, year = year)
+    else -> copy(day = day - 1)
+}
+
+fun Date.minusMonth(day: (month: Int, year: Int) -> Int) =
+    when (month) {
+        1 -> Date(
+            day = day(12, year - 1),
+            month = 12,
+            year = year - 1
+        )
+
+        else -> Date(
+            day = day(month - 1, year),
+            month = month - 1,
+            year = year
+        )
+    }
+
+fun Date.plusMonth(day: (month: Int, year: Int) -> Int) =
+    when (month) {
+        12 -> Date(
+            day = day(1, year + 1),
+            month = 1,
+            year = year + 1
+        )
+
+        else -> Date(
+            day = day(month + 1, year),
+            month = month + 1,
+            year = year
+        )
+    }
 
 object DateConverter {
     private const val DELIMITER = "/"
@@ -41,18 +78,20 @@ object DateConverter {
 object Calendar {
 
     fun daysOfYear(year: Int) =
-        if (year.mod(4) == 0) 366 else 365
+        if (year.isLeapYear()) 366 else 365
 
     fun daysByMonths(year: Int) =
-        if (year.mod(4) == 0) vYear else oYear
+        if (year.isLeapYear()) vYear else oYear
 
-    private val vYear = createMap(isVisokosniy = true)
+    private fun Int.isLeapYear() = mod(4) == 0
+
+    private val vYear = createMap(isLeapYear = true)
 
     private val oYear = createMap()
 
-    private fun createMap(isVisokosniy: Boolean = false) = mutableMapOf<Int, Int>().apply {
+    private fun createMap(isLeapYear: Boolean = false) = mutableMapOf<Int, Int>().apply {
         arrayOf(1, 3, 5, 7, 8, 10, 12).forEach { put(it, 31) }
         arrayOf(4, 6, 9, 11).forEach { put(it, 30) }
-        put(2, if (isVisokosniy) 29 else 28)
+        put(2, if (isLeapYear) 29 else 28)
     }
 }

@@ -1,14 +1,14 @@
 package com.tubetoast.envelopes.common.domain.models
 
 fun DateRange.previousMonth() = run {
-    changeMonth(Date::minusMonth)
+    anotherMonth(Date::minusMonth)
 }
 
 fun DateRange.nextMonth() = run {
-    changeMonth(Date::plusMonth)
+    anotherMonth(Date::plusMonth)
 }
 
-private fun DateRange.changeMonth(change: Date.((month: Int, year: Int) -> Int) -> Date): DateRange {
+private fun DateRange.anotherMonth(change: Date.((newMonth: Int, newYear: Int) -> /* newDay: */ Int) -> Date): DateRange {
     require(start.month == endInclusive.month && start.year == endInclusive.year) {
         this.toString()
     }
@@ -30,32 +30,16 @@ private fun DateRange.changeYear(year: Int): DateRange {
     return Date(1, 1, year)..Date(day = 31, month = 12, year = year)
 }
 
-private fun Date.minusMonth(day: (month: Int, year: Int) -> Int) =
-    when (month) {
-        1 -> Date(
-            day = day(12, year - 1),
-            month = 12,
-            year = year - 1
-        )
-
-        else -> Date(
-            day = day(month - 1, year),
-            month = month - 1,
-            year = year
-        )
+fun DateRange.inMonths(): Int {
+    require(endInclusive > start)
+    val yearDiffers = endInclusive.year - start.year != 0
+    val startYearDays = if (yearDiffers) {
+        (start.year until endInclusive.year).fold(0) { acc, year ->
+            acc + Calendar.daysOfYear(year)
+        }
+    } else {
+        0
     }
-
-private fun Date.plusMonth(day: (month: Int, year: Int) -> Int) =
-    when (month) {
-        12 -> Date(
-            day = day(1, year + 1),
-            month = 1,
-            year = year + 1
-        )
-
-        else -> Date(
-            day = day(month + 1, year),
-            month = month + 1,
-            year = year
-        )
-    }
+    val diffInDays = endInclusive.inDaysOfYear() + startYearDays - start.inDaysOfYear()
+    return diffInDays.div(365 / 12)
+}

@@ -47,9 +47,3 @@ data class Date(
         fun currentYear() = today().yearAsRange()
     }
 }
-
-fun Date.monthAsRange() =
-    copy(day = 1)..copy(day = daysInThisMonth())
-
-fun Date.yearAsRange() =
-    copy(day = 1, month = 1)..copy(day = 31, month = 12)
