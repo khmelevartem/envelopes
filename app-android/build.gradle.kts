@@ -18,6 +18,7 @@ android {
     buildTypes.getByName("release") {
         minifyEnabled(false)
         proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+        signingConfig = signingConfigs.getByName("debug")
     }
     buildTypes {
         create("benchmark") {

@@ -8,6 +8,7 @@
 
 package com.ncloudtech.cloudoffice.benchmark
 
+import android.net.Uri
 import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.benchmark.macro.StartupMode
@@ -26,13 +27,33 @@ class ExampleBenchmark {
     private val packageName = "com.tubetoast.envelopes"
 
     @Test
-    fun launchApp() = benchmarkRule.measureRepeated(
+    fun launchApp() = startApp()
+
+    @Test
+    fun launchAppWithFull() = startApp("data.csv")
+
+    @Test
+    fun launchAppWithHalf() = startApp("data.2.csv")
+
+    @Test
+    fun launchAppWithQuarter() = startApp("data.4.csv")
+
+    @Test
+    fun launchAppWithEights() = startApp("data.8.csv")
+
+    private fun startApp(uri: String? = null) = benchmarkRule.measureRepeated(
         packageName = packageName,
         metrics = listOf(StartupTimingMetric(), FrameTimingMetric()),
         iterations = 5,
         startupMode = StartupMode.COLD,
         setupBlock = MacrobenchmarkScope::pressHome
     ) {
-        startActivityAndWait()
+        uri?.let {
+            startActivityAndWait {
+                it.data = Uri.fromFile(useAssetFile(uri))
+            }
+        } ?: startActivityAndWait()
+
     }
+
 }
