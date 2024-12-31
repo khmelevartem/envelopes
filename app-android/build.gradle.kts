@@ -19,6 +19,14 @@ android {
         minifyEnabled(false)
         proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
     }
+    buildTypes {
+        create("benchmark") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+        }
+    }
     kotlin {
         jvmToolchain(21)
     }
