@@ -9,7 +9,7 @@ import com.tubetoast.envelopes.common.domain.InflationCalculator
 import com.tubetoast.envelopes.common.domain.SelectedPeriodRepository
 import com.tubetoast.envelopes.common.domain.SelectedPeriodRepositoryImpl
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
-import com.tubetoast.envelopes.common.domain.SnapshotsInteractorImpl
+import com.tubetoast.envelopes.common.domain.SnapshotsInteractorCachingImpl
 import com.tubetoast.envelopes.common.domain.SpendingInteractor
 import com.tubetoast.envelopes.common.domain.SpendingInteractorImpl
 import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
@@ -19,7 +19,7 @@ import org.koin.dsl.module
 
 val domainModule = module {
     single<SnapshotsInteractor> {
-        SnapshotsInteractorImpl(
+        SnapshotsInteractorCachingImpl(
             spendingRepository = get(named(SPENDING_REPO)),
             categoriesRepository = get(named(CATEGORIES_REPO)),
             envelopesRepository = get(named(ENVELOPES_REPO)),
