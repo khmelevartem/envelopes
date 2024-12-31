@@ -58,16 +58,16 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key : Immutable
 }
 
 /** [UpdatingEnvelopesRepository] */
-open class EnvelopesRepositoryDatabaseBase(
+class EnvelopesRepositoryDatabaseImpl(
     dataSource: EnvelopeDataSource
 ) : UpdatingRepositoryDatabaseImpl<Envelope, Root>(dataSource)
 
 /** [UpdatingCategoriesRepository] */
-open class CategoriesRepositoryDatabaseBase(
+class CategoriesRepositoryDatabaseImpl(
     dataSource: CategoryDataSource
 ) : UpdatingRepositoryDatabaseImpl<Category, Envelope>(dataSource)
 
 /** [UpdatingSpendingRepository] */
-open class SpendingRepositoryDatabaseBase(
+class SpendingRepositoryDatabaseImpl(
     dataSource: SpendingDataSource
 ) : UpdatingRepositoryDatabaseImpl<Spending, Category>(dataSource)

@@ -4,19 +4,19 @@ import com.tubetoast.envelopes.common.di.Api
 import com.tubetoast.envelopes.common.domain.UpdatingCategoriesRepository
 import com.tubetoast.envelopes.common.domain.UpdatingEnvelopesRepository
 import com.tubetoast.envelopes.common.domain.UpdatingSpendingRepository
-import com.tubetoast.envelopes.database.data.CategoriesRepositoryDatabaseBase
-import com.tubetoast.envelopes.database.data.EnvelopesRepositoryDatabaseBase
-import com.tubetoast.envelopes.database.data.SpendingRepositoryDatabaseBase
+import com.tubetoast.envelopes.database.data.CategoriesRepositoryDatabaseImpl
+import com.tubetoast.envelopes.database.data.EnvelopesRepositoryDatabaseImpl
+import com.tubetoast.envelopes.database.data.SpendingRepositoryDatabaseImpl
 import org.koin.java.KoinJavaComponent.inject
 
 class DatabaseApi : Api {
     val categoriesRepository: UpdatingCategoriesRepository by inject(
-        CategoriesRepositoryDatabaseBase::class.java
+        CategoriesRepositoryDatabaseImpl::class.java
     )
     val spendingRepository: UpdatingSpendingRepository by inject(
-        SpendingRepositoryDatabaseBase::class.java
+        SpendingRepositoryDatabaseImpl::class.java
     )
     val envelopesRepository: UpdatingEnvelopesRepository by inject(
-        EnvelopesRepositoryDatabaseBase::class.java
+        EnvelopesRepositoryDatabaseImpl::class.java
     )
 }
