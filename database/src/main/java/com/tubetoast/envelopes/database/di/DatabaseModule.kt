@@ -33,7 +33,8 @@ fun databaseModule(context: Context) = module {
     }
     single {
         SpendingRepositoryDatabaseImpl(
-            SpendingDataSource(spendingDao, spendingConverter, categoryDao, categoryConverter)
+            SpendingDataSource(spendingDao, spendingConverter, categoryDao, categoryConverter),
+            get()
         )
     }
 }

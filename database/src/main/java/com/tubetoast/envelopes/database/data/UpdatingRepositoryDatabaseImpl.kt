@@ -10,6 +10,11 @@ import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Root
 import com.tubetoast.envelopes.common.domain.models.Spending
+import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
+import com.tubetoast.envelopes.common.settings.Setting
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key : ImmutableModel<Key>>(
     private val dataSource: DataSource<M, Key, *, *>
@@ -74,5 +79,28 @@ class CategoriesRepositoryDatabaseImpl(
 
 /** [UpdatingSpendingRepository] */
 class SpendingRepositoryDatabaseImpl(
-    dataSource: SpendingDataSource
-) : UpdatingRepositoryDatabaseImpl<Spending, Category>(dataSource)
+    dataSource: SpendingDataSource,
+    private val settingsRepository: MutableSettingsRepository
+) : UpdatingRepositoryDatabaseImpl<Spending, Category>(dataSource) {
+
+    private val scope = CoroutineScope(Job())
+
+    init {
+        scope.launch {
+            settingsRepository.getSettingFlow(Setting.Key.DELETE_SPENDING).collect {
+                if (it.checked) deleteAll()
+            }
+        }
+    }
+
+    override fun addImpl(value: Spending, keyId: Id<Category>): Boolean {
+        val added = super.addImpl(value, keyId)
+        if (added) settingsRepository.run {
+            val setting = getSetting(Setting.Key.DELETE_SPENDING)
+            if (setting.checked) saveChanges(
+                setting.copy(checked = false)
+            )
+        }
+        return added
+    }
+}
