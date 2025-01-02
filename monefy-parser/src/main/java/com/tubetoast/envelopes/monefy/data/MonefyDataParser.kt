@@ -38,7 +38,7 @@ class MonefyDataParser(
             ?: throw IllegalArgumentException("wtf? $this")
         val category = values[columns.category]
         val date = dateParser.parseDate(values[columns.date])
-        if (startFrom != null && date < startFrom) return
+        if (startFrom != null && date <= startFrom) return
         snapshots.getOrPut(category) { mutableSetOf() }.add(
             operationParser.parse(
                 string = values[columns.amount],
