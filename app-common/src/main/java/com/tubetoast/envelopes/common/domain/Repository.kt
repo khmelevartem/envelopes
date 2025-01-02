@@ -17,6 +17,7 @@ interface Repository<M : ImmutableModel<M>, Key : ImmutableModel<Key>> {
     fun add(vararg values: Pair<Id<Key>, M>)
     fun delete(value: M)
     fun deleteCollection(keyId: Id<Key>)
+    fun deleteAll()
     fun move(value: M, newKey: Id<Key>)
     fun edit(oldValue: M, newValue: M)
 }
@@ -57,9 +58,15 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key : ImmutableModel<Ke
     }
 
     final override fun deleteCollection(keyId: Id<Key>) {
-        deleteCollectionImpl(keyId).forEach {
-            deleteListener?.invoke(it)
-        }
+        val deleted = deleteCollectionImpl(keyId)
+        deleted.onEach { deleteListener?.invoke(it) }
+        update?.invoke()
+    }
+
+    final override fun deleteAll() {
+        val deleted = deleteAllImpl()
+        deleted.onEach { deleteListener?.invoke(it) }
+        update?.invoke()
     }
 
     abstract fun addImpl(value: M, keyId: Id<Key>): Boolean
@@ -67,6 +74,7 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key : ImmutableModel<Ke
 
     /** Returns deleted */
     abstract fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>>
+    abstract fun deleteAllImpl(): Set<Id<M>>
     abstract fun editImpl(oldValue: M, newValue: M): Boolean
     abstract fun moveImpl(value: M, newKyId: Id<Key>): Boolean
 }

@@ -67,6 +67,12 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key : Immutable
     override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {
         return sets.remove(keyId)?.mapTo(mutableSetOf()) { it.id }.orEmpty()
     }
+
+    override fun deleteAllImpl(): Set<Id<M>> {
+        val deleted = sets.values.flatten().mapTo(mutableSetOf()) { it.id }
+        sets.clear()
+        return deleted
+    }
 }
 
 /** [UpdatingEnvelopesRepository] */

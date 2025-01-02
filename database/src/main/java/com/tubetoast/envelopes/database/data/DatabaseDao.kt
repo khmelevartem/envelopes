@@ -22,6 +22,8 @@ interface StandardDao<DE : DatabaseEntity> {
 
     fun deleteCollection(foreignKey: Int): Int
 
+    fun deleteAll(): Int
+
     fun update(newValue: DE): Int
 }
 
@@ -48,6 +50,9 @@ abstract class EnvelopeDao : StandardDao<EnvelopeEntity> {
 
     @Query("DELETE from envelopeentity WHERE foreignKey LIKE :foreignKey")
     abstract override fun deleteCollection(foreignKey: Int): Int
+
+    @Query("DELETE from envelopeentity")
+    abstract override fun deleteAll(): Int
 
     @Update
     abstract override fun update(newValue: EnvelopeEntity): Int
@@ -77,6 +82,9 @@ abstract class CategoryDao : StandardDao<CategoryEntity> {
     @Query("DELETE from categoryentity WHERE foreignKey LIKE :foreignKey")
     abstract override fun deleteCollection(foreignKey: Int): Int
 
+    @Query("DELETE from categoryentity")
+    abstract override fun deleteAll(): Int
+
     @Update
     abstract override fun update(newValue: CategoryEntity): Int
 }
@@ -104,6 +112,9 @@ abstract class SpendingDao : StandardDao<SpendingEntity> {
 
     @Query("DELETE from spendingentity WHERE foreignKey LIKE :foreignKey")
     abstract override fun deleteCollection(foreignKey: Int): Int
+
+    @Query("DELETE from spendingentity")
+    abstract override fun deleteAll(): Int
 
     @Update
     abstract override fun update(newValue: SpendingEntity): Int

@@ -55,6 +55,11 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key : Immutable
         dataSource.deleteCollection(keyId)
         return emptySet() // deleting recursive with foreign key
     }
+
+    override fun deleteAllImpl(): Set<Id<M>> {
+        dataSource.deleteAll()
+        return emptySet() // deleting recursive with foreign key
+    }
 }
 
 /** [UpdatingEnvelopesRepository] */

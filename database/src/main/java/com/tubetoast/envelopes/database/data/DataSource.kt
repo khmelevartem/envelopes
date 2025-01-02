@@ -73,6 +73,9 @@ abstract class DataSource<M, K, MDE, KDE>(
             dao.deleteCollection(foreignKey) != 0
         }
 
+    fun deleteAll() =
+        dao.deleteAll() != 0
+
     fun update(oldValueId: Id<M>, value: M): Boolean {
         val oldMDE = dao.get(oldValueId.code) ?: return false
         val newMDE = converter.toDatabaseEntity(value, oldMDE.foreignKey, oldMDE.primaryKey)

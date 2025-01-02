@@ -91,6 +91,13 @@ open class CompositeUpdatingRepository<M : ImmutableModel<M>, Key : ImmutableMod
                 set.apply { addAll(repo.deleteCollectionImpl(keyId)) }
             }
         }
+
+    override fun deleteAllImpl(): Set<Id<M>> =
+        lock.withLock {
+            repositories.fold(mutableSetOf()) { set, repo ->
+                set.apply { addAll(repo.deleteAllImpl()) }
+            }
+        }
 }
 
 /** [UpdatingEnvelopesRepository] */
