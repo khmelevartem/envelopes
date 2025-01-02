@@ -10,4 +10,5 @@ interface SettingsRepository {
 
 interface MutableSettingsRepository : SettingsRepository {
     fun saveChanges(settings: List<Setting>)
+    fun saveChanges(vararg settings: Setting)
 }

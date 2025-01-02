@@ -36,6 +36,10 @@ class SettingsRepositorySharedPrefsImpl(
     }.asStateFlow()
 
     override fun saveChanges(settings: List<Setting>) {
+        saveChanges(*settings.toTypedArray())
+    }
+
+    override fun saveChanges(vararg settings: Setting) {
         val editor = sharedPrefs.edit()
         settings.forEach {
             editor.putBoolean(it.key.name, it.checked)

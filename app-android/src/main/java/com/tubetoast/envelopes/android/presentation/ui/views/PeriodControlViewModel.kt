@@ -33,9 +33,7 @@ class PeriodControlViewModel(
 
     fun changePeriodType() {
         settingsRepository.saveChanges(
-            listOf(
-                _filterByYear.value.run { copy(checked = !checked) }
-            )
+            _filterByYear.value.run { copy(checked = !checked) }
         )
     }
 

@@ -15,6 +15,6 @@ class SettingsViewModel(
 
     fun toggle(item: SettingItemModel, isChecked: Boolean) {
         item.checked.value = isChecked
-        settingsRepository.saveChanges(listOf(item.toSetting()))
+        settingsRepository.saveChanges(item.toSetting())
     }
 }
