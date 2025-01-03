@@ -25,7 +25,6 @@ class SpendingInteractorImplTest {
     }
     private val interactor = SpendingInteractorImpl(repository)
 
-
     @Test
     fun testEarliest() = runBlocking {
         val spending = interactor.getEarliestSpending()

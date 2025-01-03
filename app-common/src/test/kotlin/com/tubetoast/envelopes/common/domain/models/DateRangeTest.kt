@@ -55,9 +55,8 @@ class DateRangeTest {
                 Arguments.of(
                     Date(1, 1, 1)..Date(2, 2, 2),
                     Date(1, 2, 1)..Date(3, 3, 3)
-                ),
+                )
             )
         }
     }
-
 }

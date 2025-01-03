@@ -19,8 +19,12 @@ import org.junit.jupiter.params.provider.MethodSource
 
 class InflationCalculatorTest {
     private val snapshotsInteractor = mockk<SnapshotsInteractor>()
-    private val calculator =
-        InflationCalculator(snapshotsInteractor, SpendingInteractorImpl(SpendingRepositoryInMemoryImpl()))
+    private val calculator = InflationCalculator(
+        SpendingCalculator(
+            snapshotsInteractor,
+            SpendingInteractorImpl(SpendingRepositoryInMemoryImpl())
+        )
+    )
 
     @ParameterizedTest(name = "{1}")
     @MethodSource("provideData")

@@ -95,11 +95,15 @@ class SpendingRepositoryDatabaseImpl(
 
     override fun addImpl(value: Spending, keyId: Id<Category>): Boolean {
         val added = super.addImpl(value, keyId)
-        if (added) settingsRepository.run {
-            val setting = getSetting(Setting.Key.DELETE_SPENDING)
-            if (setting.checked) saveChanges(
-                setting.copy(checked = false)
-            )
+        if (added) {
+            settingsRepository.run {
+                val setting = getSetting(Setting.Key.DELETE_SPENDING)
+                if (setting.checked) {
+                    saveChanges(
+                        setting.copy(checked = false)
+                    )
+                }
+            }
         }
         return added
     }

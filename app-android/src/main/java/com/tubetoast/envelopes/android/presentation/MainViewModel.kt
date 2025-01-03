@@ -44,7 +44,7 @@ class MainViewModel(
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            settingsRepository.getSettingFlow(Setting.Key.DELETE_SPENDING).collect{
+            settingsRepository.getSettingFlow(Setting.Key.DELETE_SPENDING).collect {
                 if (it.checked) sharedPrefs.edit().putString(LAST_IMPORT, null).apply()
             }
         }

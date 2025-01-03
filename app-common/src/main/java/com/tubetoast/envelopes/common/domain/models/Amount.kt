@@ -45,8 +45,17 @@ data class Amount constructor(
 }
 
 fun Iterable<Amount>.sum(): Amount = sumOf { it }
+fun Sequence<Amount>.sum(): Amount = sumOf { it }
 
 inline fun Iterable<Amount>.sumOf(selector: (Amount) -> Amount): Amount {
+    var sum = Amount.ZERO
+    for (element in this) {
+        sum += selector(element)
+    }
+    return sum
+}
+
+inline fun Sequence<Amount>.sumOf(selector: (Amount) -> Amount): Amount {
     var sum = Amount.ZERO
     for (element in this) {
         sum += selector(element)

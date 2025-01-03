@@ -32,7 +32,7 @@ val domainModule = module {
     single<SettingsRepository> { get<MutableSettingsRepository>() }
     single<SelectedPeriodRepository> { SelectedPeriodRepositoryImpl(get()) }
     single { AverageCalculator(get()) }
-    single { InflationCalculator(get(), get()) }
+    single { InflationCalculator(get()) }
 }
 
 const val SPENDING_REPO = "spending repo"

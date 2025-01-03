@@ -10,5 +10,4 @@ data class DateRange(
         other.start > start && other.endInclusive > endInclusive -> -1
         else -> throw IllegalStateException("Cannot compare $this to $other")
     }
-
 }

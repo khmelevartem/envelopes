@@ -131,15 +131,15 @@ private fun InflationPlot(x: List<Int>, y: List<Int>, average: Int) {
                 lineProvider = LineCartesianLayer.LineProvider.series(
                     EColor.ePalette().map { color ->
                         LineCartesianLayer.rememberLine(
-                            fill = LineCartesianLayer.LineFill.single(fill(color)),
+                            fill = LineCartesianLayer.LineFill.single(fill(color))
                         )
                     }
-                ),
+                )
             ),
             startAxis = VerticalAxis.rememberStart(),
             bottomAxis = HorizontalAxis.rememberBottom(guideline = null)
         ),
-        modelProducer = modelProducer,
+        modelProducer = modelProducer
     )
 }
 
