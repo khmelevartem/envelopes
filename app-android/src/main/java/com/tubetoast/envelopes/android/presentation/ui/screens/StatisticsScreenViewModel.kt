@@ -10,6 +10,8 @@ import com.tubetoast.envelopes.common.domain.models.Date.Companion.today
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.inMonths
 import com.tubetoast.envelopes.common.domain.models.rangeTo
+import com.tubetoast.envelopes.common.settings.Setting
+import com.tubetoast.envelopes.common.settings.SettingsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.merge
@@ -17,43 +19,32 @@ import kotlinx.coroutines.launch
 
 class InflationViewModel(
     private val selectedEnvelopesRepository: SelectedEnvelopesRepository,
-    private val inflationCalculator: InflationCalculator
+    private val inflationCalculator: InflationCalculator,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val defaultInflationData = listOf(0)
     val years = MutableStateFlow(listOf(today().year))
-    val months = MutableStateFlow(listOf(today().month))
     val inflationByYearsData = MutableStateFlow(defaultInflationData)
     val inflationAverageByYears = MutableStateFlow(0)
-    val inflationAverageByMonths = MutableStateFlow(0)
-    val inflationByMonthsData = MutableStateFlow(defaultInflationData)
 
     init {
+        val percentCeiling = 500
         viewModelScope.launch {
             selectedEnvelopesRepository.selectedEnvelopes.collect {
+                val limitInflation = settingsRepository.getSetting(Setting.Key.LIMIT_INFLATION).checked
                 launch(Dispatchers.IO) {
                     val data = inflationCalculator.calculateInflationByYears(
                         filter = selectedEnvelopesRepository::isChosen
                     )
                     inflationByYearsData.value = data
-                        .map { (it.second * 100).toInt() }.ifEmpty { defaultInflationData }
+                        .map { (it.second * 100).toInt() }
+                        .map { if (limitInflation) it.coerceIn(-percentCeiling, percentCeiling) else it }
+                        .ifEmpty { defaultInflationData }
                     years.value = data
                         .map { it.first.start.year }
 
                     inflationAverageByYears.value = inflationByYearsData.value.average().toInt()
-                }
-                launch(Dispatchers.IO) {
-
-                    val data = inflationCalculator.calculateInflationByMonths(
-                        filter = selectedEnvelopesRepository::isChosen
-                    )
-                    inflationByMonthsData.value = data
-                        .map { (it.second * 100).toInt() }
-
-                    months.value = data
-                        .map { it.first.start.month }
-
-                    inflationAverageByMonths.value = inflationByMonthsData.value.average().toInt()
                 }
             }
         }
@@ -101,7 +92,7 @@ class AverageViewViewModel(
     val displayedAverageInMonth = MutableStateFlow(0L)
     val displayedAverageInYear = MutableStateFlow(0L)
     private val isPeriodInMonths = MutableStateFlow(true)
-    private val periodInMonths = MutableStateFlow(6)
+    private val periodInMonths = MutableStateFlow(12)
     private var maxMonths: Int = 0
 
     init {

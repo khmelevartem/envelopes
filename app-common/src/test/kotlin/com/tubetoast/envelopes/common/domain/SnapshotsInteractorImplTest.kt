@@ -1,9 +1,9 @@
 package com.tubetoast.envelopes.common.domain
 
 import com.google.common.truth.Truth.assertThat
-import com.tubetoast.envelopes.common.data.CategoriesRepositoryInMemoryBase
-import com.tubetoast.envelopes.common.data.EnvelopesRepositoryInMemoryBase
-import com.tubetoast.envelopes.common.data.SpendingRepositoryInMemoryBase
+import com.tubetoast.envelopes.common.data.CategoriesRepositoryInMemoryImpl
+import com.tubetoast.envelopes.common.data.EnvelopesRepositoryInMemoryImpl
+import com.tubetoast.envelopes.common.data.SpendingRepositoryInMemoryImpl
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.settings.SettingsRepositoryDefaultImpl
@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test
 
 class SnapshotsInteractorImplTest {
 
-    private val spendingRepositoryImpl = SpendingRepositoryInMemoryBase()
-    private val categoriesRepositoryImpl = CategoriesRepositoryInMemoryBase()
-    private val envelopesRepositoryImpl = EnvelopesRepositoryInMemoryBase()
+    private val spendingRepositoryImpl = SpendingRepositoryInMemoryImpl()
+    private val categoriesRepositoryImpl = CategoriesRepositoryInMemoryImpl()
+    private val envelopesRepositoryImpl = EnvelopesRepositoryInMemoryImpl()
     private val selectedPeriodRepository = SelectedPeriodRepositoryImpl(
         SettingsRepositoryDefaultImpl()
     )

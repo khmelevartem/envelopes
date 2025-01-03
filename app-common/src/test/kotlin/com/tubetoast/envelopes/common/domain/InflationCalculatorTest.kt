@@ -1,5 +1,6 @@
 package com.tubetoast.envelopes.common.domain
 
+import com.tubetoast.envelopes.common.data.SpendingRepositoryInMemoryImpl
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Date
@@ -12,30 +13,29 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 class InflationCalculatorTest {
-
-    @BeforeEach
-    fun prepare() {
-        Assertions.assertTrue(baseDate in baseRange)
-        Assertions.assertTrue(newDate in newRange)
-    }
+    private val snapshotsInteractor = mockk<SnapshotsInteractor>()
+    private val calculator =
+        InflationCalculator(snapshotsInteractor, SpendingInteractorImpl(SpendingRepositoryInMemoryImpl()))
 
     @ParameterizedTest(name = "{1}")
     @MethodSource("provideData")
     fun `test calculate`(snapshots: Set<EnvelopeSnapshot>, expectedInflation: Float) = run {
-        val snapshotsInteractor = mockk<SnapshotsInteractor> {
+        Assertions.assertTrue(baseDate in baseRange)
+        Assertions.assertTrue(newDate in newRange)
+
+        snapshotsInteractor.apply {
             every { allSnapshots } returns snapshots
         }
 
         runBlocking {
             Assertions.assertEquals(
                 expectedInflation,
-                InflationCalculator(snapshotsInteractor).calculateInflation(
+                calculator.calculateInflation(
                     baseRange = baseRange,
                     newRange = newRange
                 ) { it.envelope.name != EXCLUDED }

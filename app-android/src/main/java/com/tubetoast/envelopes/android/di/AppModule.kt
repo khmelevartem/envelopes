@@ -28,7 +28,7 @@ val appModule = module {
     viewModel { MainViewModel(get(), get(), androidContext()) }
     viewModel { PeriodControlViewModel(get(), get()) }
     viewModel { AverageViewViewModel(get(), get(), get()) }
-    viewModel { InflationViewModel(get(), get()) }
+    viewModel { InflationViewModel(get(), get(), get()) }
     viewModel { EnvelopesFilterViewModel(get()) }
     single<SelectedEnvelopesRepository> { SelectedEnvelopesRepositoryImpl(get()) }
     single<MutableSettingsRepository> {

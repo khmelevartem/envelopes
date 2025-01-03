@@ -14,8 +14,8 @@ import com.tubetoast.envelopes.common.domain.models.Spending
 open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key : ImmutableModel<Key>> :
     UpdatingRepository<M, Key>() {
 
-    protected val sets = mutableMapOf<Id<Key>, MutableSet<M>>()
-    protected val keys = mutableMapOf<Id<M>, Id<Key>>()
+    private val sets = mutableMapOf<Id<Key>, MutableSet<M>>()
+    private val keys = mutableMapOf<Id<M>, Id<Key>>()
 
     override fun get(valueId: Id<M>): M? {
         val key = keys[valueId]
@@ -76,10 +76,10 @@ open class UpdatingRepositoryInMemoryImpl<M : ImmutableModel<M>, Key : Immutable
 }
 
 /** [UpdatingEnvelopesRepository] */
-open class EnvelopesRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Envelope, Root>()
+class EnvelopesRepositoryInMemoryImpl : UpdatingRepositoryInMemoryImpl<Envelope, Root>()
 
 /** [UpdatingCategoriesRepository] */
-open class CategoriesRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Category, Envelope>()
+class CategoriesRepositoryInMemoryImpl : UpdatingRepositoryInMemoryImpl<Category, Envelope>()
 
 /** [UpdatingSpendingRepository] */
-open class SpendingRepositoryInMemoryBase : UpdatingRepositoryInMemoryImpl<Spending, Category>()
+class SpendingRepositoryInMemoryImpl : UpdatingRepositoryInMemoryImpl<Spending, Category>()

@@ -30,12 +30,16 @@ import androidx.navigation.NavHostController
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
+import com.tubetoast.envelopes.android.presentation.ui.theme.EColor
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeLabelView
 import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
@@ -98,16 +102,16 @@ fun Average(viewModel: AverageViewViewModel) {
 
 @Composable
 fun Inflation(viewModel: InflationViewModel) {
+    YearlyInflation(viewModel)
+}
+
+@Composable
+private fun YearlyInflation(viewModel: InflationViewModel) {
     val yearlyData by viewModel.inflationByYearsData.collectAsState()
+    yearlyData.ifEmpty { return }
     val years by viewModel.years.collectAsState()
     val yearlyAverage by viewModel.inflationAverageByYears.collectAsState()
     InflationPlot(years, yearlyData, yearlyAverage)
-
-    val monthlyData by viewModel.inflationByMonthsData.collectAsState()
-    monthlyData.ifEmpty { return }
-    val months by viewModel.months.collectAsState()
-    val monthlyAverage by viewModel.inflationAverageByMonths.collectAsState()
-    InflationPlot(months, monthlyData, monthlyAverage)
 }
 
 @Composable
@@ -122,12 +126,20 @@ private fun InflationPlot(x: List<Int>, y: List<Int>, average: Int) {
         }
     }
     CartesianChartHost(
-        rememberCartesianChart(
-            rememberLineCartesianLayer(),
-            startAxis = VerticalAxis.rememberStart(guideline = null),
+        chart = rememberCartesianChart(
+            rememberLineCartesianLayer(
+                lineProvider = LineCartesianLayer.LineProvider.series(
+                    EColor.ePalette().map { color ->
+                        LineCartesianLayer.rememberLine(
+                            fill = LineCartesianLayer.LineFill.single(fill(color)),
+                        )
+                    }
+                ),
+            ),
+            startAxis = VerticalAxis.rememberStart(),
             bottomAxis = HorizontalAxis.rememberBottom(guideline = null)
         ),
-        modelProducer
+        modelProducer = modelProducer,
     )
 }
 
