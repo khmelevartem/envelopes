@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,6 +16,7 @@ import androidx.navigation.navArgument
 import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeScreen
+import com.tubetoast.envelopes.android.presentation.ui.screens.EditGoalScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.GoalsListScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsScreen
@@ -27,76 +31,124 @@ fun EnvelopesApp() {
         val navController = rememberNavController()
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         NavHost(navController = navController, startDestination = AppNavigation.start) {
-            composable(route = AppNavigation.envelopesList) {
-                EnvelopesListScreen(
-                    navController = navController
-                )
-            }
-            composable(
-                route = AppNavigation.envelopeScreen,
-                arguments = listOf(
-                    navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
-                )
-            ) {
-                val envelopeId = navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)
-                EditEnvelopeScreen(
-                    navController = navController,
-                    envelopeId = envelopeId
-                )
-            }
-            composable(
-                route = AppNavigation.categoryScreen,
-                arguments = listOf(
-                    navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
-                    navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
-                )
-            ) {
-                navBackStackEntry?.arguments?.run {
-                    val envelopeId = takeInt(AppNavigation.argEnvelopeId)
-                    val categoryId = takeInt(AppNavigation.argCategoryId)
-                    EditCategoryScreen(
-                        navController = navController,
-                        categoryId = categoryId,
-                        envelopeId = envelopeId
-                    )
-                }
-            }
-            composable(
-                route = AppNavigation.chooseEnvelope,
-                arguments = listOf(
-                    navArgument(AppNavigation.argCategoryId) { type = NavType.IntType }
-                )
-            ) {
-                navBackStackEntry?.arguments?.run {
-                    val categoryId = takeInt(AppNavigation.argCategoryId)
-                    ChooseEnvelopeScreen(
-                        navController = navController,
-                        categoryId = categoryId
-                    )
-                }
-            }
-            composable(
-                route = AppNavigation.settings
-            ) {
-                SettingsScreen(
-                    navController = navController
-                )
-            }
-            composable(
-                route = AppNavigation.statistics
-            ) {
-                StatisticsScreen(
-                    navController = navController
-                )
-            }
-            composable(
-                route = AppNavigation.goalsList
-            ) {
-                GoalsListScreen(
-                    navController = navController
-                )
-            }
+            EnvelopesList(navController)
+            EnvelopeScreen(navBackStackEntry, navController)
+            CategoryScreen(navBackStackEntry, navController)
+            ChooseEnvelopeScreen(navBackStackEntry, navController)
+            Settings(navController)
+            Statistics(navController)
+            GoalsList(navController)
+            GoalScreen(navController)
         }
+    }
+}
+
+private fun NavGraphBuilder.GoalScreen(navController: NavHostController) {
+    composable(
+        route = AppNavigation.editGoal
+    ) {
+        EditGoalScreen(
+            navController = navController
+        )
+    }
+}
+
+private fun NavGraphBuilder.GoalsList(navController: NavHostController) {
+    composable(
+        route = AppNavigation.goalsList
+    ) {
+        GoalsListScreen(
+            navController = navController
+        )
+    }
+}
+
+private fun NavGraphBuilder.Statistics(navController: NavHostController) {
+    composable(
+        route = AppNavigation.statistics
+    ) {
+        StatisticsScreen(
+            navController = navController
+        )
+    }
+}
+
+private fun NavGraphBuilder.Settings(navController: NavHostController) {
+    composable(
+        route = AppNavigation.settings
+    ) {
+        SettingsScreen(
+            navController = navController
+        )
+    }
+}
+
+private fun NavGraphBuilder.ChooseEnvelopeScreen(
+    navBackStackEntry: NavBackStackEntry?,
+    navController: NavHostController
+) {
+    composable(
+        route = AppNavigation.chooseEnvelope,
+        arguments = listOf(
+            navArgument(AppNavigation.argCategoryId) { type = NavType.IntType }
+        )
+    ) {
+        navBackStackEntry?.arguments?.run {
+            val categoryId = takeInt(AppNavigation.argCategoryId)
+            ChooseEnvelopeScreen(
+                navController = navController,
+                categoryId = categoryId
+            )
+        }
+    }
+}
+
+private fun NavGraphBuilder.CategoryScreen(
+    navBackStackEntry: NavBackStackEntry?,
+    navController: NavHostController
+) {
+    composable(
+        route = AppNavigation.categoryScreen,
+        arguments = listOf(
+            navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
+            navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
+        )
+    ) {
+        navBackStackEntry?.arguments?.run {
+            val envelopeId = takeInt(AppNavigation.argEnvelopeId)
+            val categoryId = takeInt(AppNavigation.argCategoryId)
+            EditCategoryScreen(
+                navController = navController,
+                categoryId = categoryId,
+                envelopeId = envelopeId
+            )
+        }
+    }
+}
+
+private fun NavGraphBuilder.EnvelopeScreen(
+    navBackStackEntry: NavBackStackEntry?,
+    navController: NavHostController
+) {
+    composable(
+        route = AppNavigation.envelopeScreen,
+        arguments = listOf(
+            navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
+        )
+    ) {
+        val envelopeId = navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)
+        EditEnvelopeScreen(
+            navController = navController,
+            envelopeId = envelopeId
+        )
+    }
+}
+
+private fun NavGraphBuilder.EnvelopesList(navController: NavHostController) {
+    composable(route = AppNavigation.envelopesList) {
+        EnvelopesListScreen(
+            navController = navController
+        )
     }
 }
 
