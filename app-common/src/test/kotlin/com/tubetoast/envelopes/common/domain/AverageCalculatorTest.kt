@@ -79,6 +79,15 @@ class AverageCalculatorTest {
         fun provideData(): Array<Arguments> =
             arrayOf(
                 Arguments.of(
+                    1,
+                    mapOf(
+                        range1 to Amount(1),
+                        range2 to Amount(1),
+                        range3 to Amount(2),
+                        range4 to Amount(3)
+                    )
+                ),
+                Arguments.of(
                     2,
                     mapOf(
                         range2 to Amount(2),

@@ -91,6 +91,7 @@ class AverageViewViewModel(
     val displayedPeriod = MutableStateFlow("")
     val displayedAverageInMonth = MutableStateFlow(0L)
     val displayedAverageInYear = MutableStateFlow(0L)
+    val movingAverage = MutableStateFlow(listOf(0L))
     private val isPeriodInMonths = MutableStateFlow(true)
     private val periodInMonths = MutableStateFlow(12)
     private var maxMonths: Int = 0
@@ -115,7 +116,15 @@ class AverageViewViewModel(
                     displayedAverageInMonth.value =
                         averageCalculator.calculateAverage(periodInMonths.value, selectedEnvelopes::isChosen).units
                     displayedAverageInYear.value = displayedAverageInMonth.value * 12
+
+                    movingAverage.value = averageCalculator.calculateMovingAverage(
+                        months = periodInMonths.value,
+                        filter = selectedEnvelopes::isChosen
+                    ).map { it.value.units }
                 }
+            }
+
+            launch {
             }
         }
     }

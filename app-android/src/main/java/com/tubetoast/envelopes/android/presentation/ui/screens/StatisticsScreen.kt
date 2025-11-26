@@ -69,6 +69,8 @@ fun Average(viewModel: AverageViewViewModel) {
             .padding(16.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            val yearlyData by viewModel.movingAverage.collectAsState()
+            Plot(y = yearlyData)
             val period by viewModel.displayedPeriod.collectAsState()
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
@@ -111,17 +113,21 @@ private fun YearlyInflation(viewModel: InflationViewModel) {
     yearlyData.ifEmpty { return }
     val years by viewModel.years.collectAsState()
     val yearlyAverage by viewModel.inflationAverageByYears.collectAsState()
-    InflationPlot(years, yearlyData, yearlyAverage)
+    Plot(years, yearlyData, yearlyAverage)
 }
 
 @Composable
-private fun InflationPlot(x: List<Int>, y: List<Int>, average: Int) {
+private fun Plot(x: List<Number>? = null, y: List<Number>, average: Int? = null) {
     val modelProducer = remember { CartesianChartModelProducer() }
     LaunchedEffect(y) {
         modelProducer.runTransaction {
             lineSeries {
-                series(x, y)
-                series(x, x.map { average })
+                x?.let {
+                    series(x, y)
+                    average?.let {
+                        series(x, x.map { average })
+                    }
+                } ?: series(y)
             }
         }
     }

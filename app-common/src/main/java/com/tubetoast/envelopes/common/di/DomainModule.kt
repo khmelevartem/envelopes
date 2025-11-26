@@ -10,6 +10,7 @@ import com.tubetoast.envelopes.common.domain.SelectedPeriodRepository
 import com.tubetoast.envelopes.common.domain.SelectedPeriodRepositoryImpl
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractorCachingImpl
+import com.tubetoast.envelopes.common.domain.SpendingCalculator
 import com.tubetoast.envelopes.common.domain.SpendingInteractor
 import com.tubetoast.envelopes.common.domain.SpendingInteractorImpl
 import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
@@ -33,6 +34,7 @@ val domainModule = module {
     single<SelectedPeriodRepository> { SelectedPeriodRepositoryImpl(get()) }
     single { AverageCalculator(get()) }
     single { InflationCalculator(get()) }
+    single { SpendingCalculator(get(), get()) }
 }
 
 const val SPENDING_REPO = "spending repo"
