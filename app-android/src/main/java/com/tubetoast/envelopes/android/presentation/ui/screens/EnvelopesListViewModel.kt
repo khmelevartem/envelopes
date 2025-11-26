@@ -10,6 +10,9 @@ import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
 import com.tubetoast.envelopes.common.settings.Setting
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class EnvelopesListViewModel(
@@ -19,9 +22,13 @@ class EnvelopesListViewModel(
     selectedPeriodRepository: SelectedPeriodRepository
 ) : ViewModel() {
 
-    private val _filterByYear = settingsRepository.getSettingFlow(Setting.Key.FILTER_BY_YEAR)
-
-    val filterByYear get() = _filterByYear.value.checked
+    val filterByYear = settingsRepository.getSettingFlow(Setting.Key.FILTER_BY_YEAR)
+        .map { it.checked }
+        .stateIn(
+            viewModelScope,
+            started = Eagerly,
+            initialValue = settingsRepository.getSetting(Setting.Key.FILTER_BY_YEAR).checked
+        )
 
     val itemModels: Flow<Iterable<EnvelopeSnapshot>> = snapshotsInteractor
         .envelopeSnapshots(selectedPeriodRepository.selectedPeriodFlow)

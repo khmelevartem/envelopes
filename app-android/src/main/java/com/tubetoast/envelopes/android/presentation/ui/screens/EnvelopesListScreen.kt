@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,15 +43,14 @@ fun EnvelopesListScreen(
     envelopesListViewModel: EnvelopesListViewModel = koinViewModel(),
     periodControlViewModel: PeriodControlViewModel = koinViewModel()
 ) {
-    val envelopesState =
-        envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
-    val envelopes by remember { envelopesState }
+    val envelopes by envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
     val itemModels = envelopes.asItemModels()
     val listState = rememberLazyListState()
+    val filterByYear by envelopesListViewModel.filterByYear.collectAsState()
     Column {
         EnvelopesListTopAppBar(periodControlViewModel, navController)
-        TotalView(navController, envelopes, envelopesListViewModel.filterByYear)
-        ListOfEnvelopes(listState, itemModels, envelopesListViewModel, navController)
+        TotalView(navController, envelopes, filterByYear)
+        ListOfEnvelopes(listState, itemModels, envelopesListViewModel, navController, filterByYear)
     }
 }
 
@@ -62,7 +60,8 @@ private fun ListOfEnvelopes(
     listState: LazyListState,
     itemModels: List<ItemModel<EnvelopeSnapshot>>,
     envelopesListViewModel: EnvelopesListViewModel,
-    navController: NavController
+    navController: NavController,
+    filterByYear: Boolean
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.SpaceAround,
@@ -72,7 +71,7 @@ private fun ListOfEnvelopes(
         items(itemModels, key = { item -> item.data.envelope.id.code }) { itemModel ->
             EnvelopeView(
                 itemModel,
-                envelopesListViewModel.filterByYear,
+                filterByYear,
                 onEditClick = { navController.navigate(AppNavigation.editEnvelope(it)) },
                 onDeleteClick = { envelopesListViewModel.delete(it) },
                 onAddClick = { navController.navigate(AppNavigation.addCategory(it)) },
