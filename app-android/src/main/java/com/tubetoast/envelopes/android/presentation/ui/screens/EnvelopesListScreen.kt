@@ -27,7 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeView
@@ -40,7 +40,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EnvelopesListScreen(
-    navController: NavHostController,
+    navController: NavController,
     envelopesListViewModel: EnvelopesListViewModel = koinViewModel(),
     periodControlViewModel: PeriodControlViewModel = koinViewModel()
 ) {
@@ -62,7 +62,7 @@ private fun ListOfEnvelopes(
     listState: LazyListState,
     itemModels: List<ItemModel<EnvelopeSnapshot>>,
     envelopesListViewModel: EnvelopesListViewModel,
-    navController: NavHostController
+    navController: NavController
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.SpaceAround,
@@ -104,7 +104,7 @@ private fun ListOfEnvelopes(
 
 @Composable
 fun TotalView(
-    navController: NavHostController,
+    navController: NavController,
     envelopes: Iterable<EnvelopeSnapshot>,
     filterByYear: Boolean,
     modifier: Modifier = Modifier

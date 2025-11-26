@@ -7,6 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SelectedEnvelopesRepositoryImpl(
@@ -31,6 +32,6 @@ class SelectedEnvelopesRepositoryImpl(
         get() = _selectedEnvelopes.asStateFlow()
 
     override fun changeSelection(change: Set<ChoosableEnvelope>.() -> Set<ChoosableEnvelope>) {
-        _selectedEnvelopes.value = _selectedEnvelopes.value.change()
+        _selectedEnvelopes.update { it.change() }
     }
 }

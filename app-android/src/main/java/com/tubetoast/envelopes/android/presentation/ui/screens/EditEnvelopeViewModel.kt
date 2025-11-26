@@ -35,13 +35,17 @@ class EditEnvelopeViewModel(
     }
 
     private var mode: Mode = CreateEnvelopeMode(envelopeInteractor)
+        set(value) {
+            field = value
+            isNewEnvelope.value = value is CreateEnvelopeMode
+        }
     private val _operations = mutableStateOf(EnvelopeOperations.EMPTY)
     private val draftEnvelope = mutableStateOf(Envelope.EMPTY)
     private val _categories = mutableStateOf(listOf<CategorySnapshot>())
 
     val operations: State<EnvelopeOperations> = _operations
     val categories: State<List<CategorySnapshot>> = _categories
-    val isNewEnvelope get() = mode is CreateEnvelopeMode
+    val isNewEnvelope = mutableStateOf(true)
 
     fun envelope(envelopeId: Int?): State<Envelope> {
         envelopeId?.let { id ->

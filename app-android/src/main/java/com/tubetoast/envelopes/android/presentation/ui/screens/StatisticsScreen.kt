@@ -26,7 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
@@ -47,7 +47,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun StatisticsScreen(
-    navController: NavHostController,
+    navController: NavController,
     inflationViewModel: InflationViewModel = koinViewModel(),
     averageViewModel: AverageViewViewModel = koinViewModel(),
     filterViewModel: EnvelopesFilterViewModel = koinViewModel()

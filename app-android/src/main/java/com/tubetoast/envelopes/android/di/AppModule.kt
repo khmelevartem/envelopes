@@ -7,6 +7,7 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewM
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesFilterViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
+import com.tubetoast.envelopes.android.presentation.ui.screens.GoalsListViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.InflationViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.SelectedEnvelopesRepository
 import com.tubetoast.envelopes.android.presentation.ui.screens.SelectedEnvelopesRepositoryImpl
@@ -30,6 +31,7 @@ val appModule = module {
     viewModel { AverageViewViewModel(get(), get(), get()) }
     viewModel { InflationViewModel(get(), get(), get()) }
     viewModel { EnvelopesFilterViewModel(get()) }
+    viewModel { GoalsListViewModel() }
     single<SelectedEnvelopesRepository> { SelectedEnvelopesRepositoryImpl(get()) }
     single<MutableSettingsRepository> {
         SettingsRepositorySharedPrefsImpl(

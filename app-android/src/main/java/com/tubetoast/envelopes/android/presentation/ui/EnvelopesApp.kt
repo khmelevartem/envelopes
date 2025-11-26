@@ -14,6 +14,7 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeScr
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListScreen
+import com.tubetoast.envelopes.android.presentation.ui.screens.GoalsListScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.StatisticsScreen
 import com.tubetoast.envelopes.common.domain.models.Category
@@ -88,6 +89,13 @@ fun EnvelopesApp() {
                     navController = navController
                 )
             }
+            composable(
+                route = AppNavigation.goalsList
+            ) {
+                GoalsListScreen(
+                    navController = navController
+                )
+            }
         }
     }
 }
@@ -108,6 +116,8 @@ object AppNavigation {
     const val chooseEnvelope = "chooseEnvelopeScreen/{$argCategoryId}"
     const val settings = "settings"
     const val statistics = "statistics"
+    const val goalsList = "goalsList"
+    const val editGoal = "editGoal"
 
     fun addEnvelope() = envelopeScreen.putArg(argEnvelopeId, null)
 

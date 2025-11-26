@@ -25,7 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.CategoryWithSumView
@@ -37,7 +37,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EditEnvelopeScreen(
-    navController: NavHostController,
+    navController: NavController,
     editEnvelopeViewModel: EditEnvelopeViewModel = koinViewModel(),
     periodControlViewModel: PeriodControlViewModel = koinViewModel(),
     envelopeId: Int? = null
@@ -85,7 +85,7 @@ private fun EnvelopeInfo(
 @Composable
 private fun Categories(
     categories: List<CategorySnapshot>,
-    navController: NavHostController,
+    navController: NavController,
     draftEnvelope: Envelope
 ) {
     LazyColumn(
@@ -106,7 +106,7 @@ private fun Categories(
 
 @Composable
 private fun Buttons(
-    navController: NavHostController,
+    navController: NavController,
     envelopeOperations: EditEnvelopeViewModel.EnvelopeOperations,
     editEnvelopeViewModel: EditEnvelopeViewModel
 ) {
