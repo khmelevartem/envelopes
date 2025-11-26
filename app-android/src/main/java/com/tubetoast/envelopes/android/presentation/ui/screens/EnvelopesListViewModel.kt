@@ -3,6 +3,7 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
+import com.tubetoast.envelopes.common.domain.SelectedPeriodRepository
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
@@ -14,14 +15,16 @@ import kotlinx.coroutines.launch
 class EnvelopesListViewModel(
     snapshotsInteractor: SnapshotsInteractor,
     private val envelopeInteractor: EnvelopeInteractor,
-    settingsRepository: MutableSettingsRepository
+    settingsRepository: MutableSettingsRepository,
+    selectedPeriodRepository: SelectedPeriodRepository
 ) : ViewModel() {
 
     private val _filterByYear = settingsRepository.getSettingFlow(Setting.Key.FILTER_BY_YEAR)
 
     val filterByYear get() = _filterByYear.value.checked
 
-    val itemModels: Flow<Iterable<EnvelopeSnapshot>> = snapshotsInteractor.snapshotsBySelectedPeriod()
+    val itemModels: Flow<Iterable<EnvelopeSnapshot>> = snapshotsInteractor
+        .envelopeSnapshots(selectedPeriodRepository.selectedPeriodFlow)
 
     fun delete(envelope: Envelope) {
         viewModelScope.launch {

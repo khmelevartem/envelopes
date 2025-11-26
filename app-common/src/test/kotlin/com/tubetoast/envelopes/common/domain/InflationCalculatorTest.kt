@@ -33,7 +33,7 @@ class InflationCalculatorTest {
         Assertions.assertTrue(newDate in newRange)
 
         snapshotsInteractor.apply {
-            every { allSnapshots } returns snapshots
+            every { allEnvelopeSnapshots } returns snapshots
         }
 
         runBlocking {

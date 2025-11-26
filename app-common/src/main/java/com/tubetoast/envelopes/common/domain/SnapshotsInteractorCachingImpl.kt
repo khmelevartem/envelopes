@@ -18,12 +18,12 @@ class SnapshotsInteractorCachingImpl(
     private var snapshotsCache: Set<EnvelopeSnapshot>? = null
 
     @Suppress("RecursivePropertyAccessor")
-    override val allSnapshots: Set<EnvelopeSnapshot>
+    override val allEnvelopeSnapshots: Set<EnvelopeSnapshot>
         get() {
             if (isOutdated) {
-                snapshotsCache = super.allSnapshots
+                snapshotsCache = super.allEnvelopeSnapshots
             }
-            return snapshotsCache ?: allSnapshots
+            return snapshotsCache ?: allEnvelopeSnapshots
         }
 
     init {

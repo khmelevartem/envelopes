@@ -1,5 +1,6 @@
 package com.tubetoast.envelopes.common.domain
 
+import com.tubetoast.envelopes.common.domain.models.DateRange
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +30,7 @@ open class SnapshotsInteractorImpl(
         categoriesRepository.deleteListener = spendingRepository.deleteListenerImpl
     }
 
-    override val allSnapshots: Set<EnvelopeSnapshot>
+    override val allEnvelopeSnapshots: Set<EnvelopeSnapshot>
         get() = envelopesRepository.getAll().mapTo(mutableSetOf()) { envelope ->
             EnvelopeSnapshot(
                 envelope,
@@ -43,14 +44,14 @@ open class SnapshotsInteractorImpl(
             )
         }
 
-    override val allSnapshotsFlow: StateFlow<Set<EnvelopeSnapshot>> by lazy {
+    override val allEnvelopeSnapshotsFlow: StateFlow<Set<EnvelopeSnapshot>> by lazy {
         updateFlow()
         flow.asStateFlow()
     }
 
-    override fun snapshotsBySelectedPeriod(): Flow<Set<EnvelopeSnapshot>> {
+    override fun envelopeSnapshots(period: Flow<DateRange>): Flow<Set<EnvelopeSnapshot>> {
         updateFlow()
-        return combine(flow, selectedPeriodRepository.selectedPeriodFlow) { set, dateRange ->
+        return combine(flow, period) { set, dateRange ->
             set.mapTo(mutableSetOf()) { snapshot ->
                 snapshot.copy(
                     categories = snapshot.categories.mapTo(mutableSetOf()) { categorySnapshot ->
@@ -68,7 +69,7 @@ open class SnapshotsInteractorImpl(
 
     private fun updateFlow() {
         scope.launch {
-            flow.emit(allSnapshots)
+            flow.emit(allEnvelopeSnapshots)
         }
     }
 }

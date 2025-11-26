@@ -26,15 +26,15 @@ class SnapshotsInteractorImplTest {
 
     @Test
     fun testInitial() {
-        assertThat(interactor.allSnapshots).isEmpty()
+        assertThat(interactor.allEnvelopeSnapshots).isEmpty()
     }
 
     @Test
     fun testAdd() {
-        assertThat(interactor.allSnapshots).isEmpty()
+        assertThat(interactor.allEnvelopeSnapshots).isEmpty()
         envelopesRepositoryImpl.put(Envelope("empty", Amount.ZERO))
         envelopesRepositoryImpl.put(Envelope("empty", Amount.ZERO))
         envelopesRepositoryImpl.put(Envelope("not empty", Amount(5)))
-        assertThat(interactor.allSnapshots).hasSize(2)
+        assertThat(interactor.allEnvelopeSnapshots).hasSize(2)
     }
 }

@@ -30,7 +30,7 @@ class AverageCalculatorTest {
     )
 
     private val snapshotsInteractor: SnapshotsInteractor = mockk {
-        every { allSnapshots } returns setOf(
+        every { allEnvelopeSnapshots } returns setOf(
             snapshotOf(*spending)
         )
     }

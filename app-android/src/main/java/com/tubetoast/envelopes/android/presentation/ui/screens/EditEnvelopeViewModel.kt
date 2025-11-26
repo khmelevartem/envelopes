@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
+import com.tubetoast.envelopes.common.domain.SelectedPeriodRepository
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 
 class EditEnvelopeViewModel(
     private val envelopeInteractor: EnvelopeInteractor,
-    private val snapshotsInteractor: SnapshotsInteractor
+    private val snapshotsInteractor: SnapshotsInteractor,
+    private val selectedPeriodRepository: SelectedPeriodRepository
 ) : ViewModel() {
 
     sealed interface Mode {
@@ -82,14 +84,15 @@ class EditEnvelopeViewModel(
 
     private fun collectEnvelopeCategories(envelope: Envelope) {
         viewModelScope.launch {
-            snapshotsInteractor.snapshotsBySelectedPeriod().collect { set ->
-                set.find {
-                    it.envelope == envelope
-                }?.let { found ->
-                    _categories.value = found.categories
-                        .sortedByDescending { it.sum() }
+            snapshotsInteractor.envelopeSnapshots(selectedPeriodRepository.selectedPeriodFlow)
+                .collect { set ->
+                    set.find {
+                        it.envelope == envelope
+                    }?.let { found ->
+                        _categories.value = found.categories
+                            .sortedByDescending { it.sum() }
+                    }
                 }
-            }
         }
     }
 

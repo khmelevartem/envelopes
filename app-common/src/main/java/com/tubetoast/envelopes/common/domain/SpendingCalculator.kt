@@ -17,7 +17,7 @@ class SpendingCalculator(
         envelopeFilter: (EnvelopeSnapshot) -> Boolean = { true },
         transactionFilter: (Transaction<*>) -> Boolean = { true }
     ): Amount = withContext(Dispatchers.Default) {
-        snapshotsInteractor.allSnapshots
+        snapshotsInteractor.allEnvelopeSnapshots
             .calculateSum(envelopeFilter, transactionFilter)
     }
 
@@ -26,7 +26,7 @@ class SpendingCalculator(
         today: Date = Date.today()
     ): Map<DateRange, Amount> = withContext(Dispatchers.Default) {
         spendingInteractor.getMonthsOfSpending(today).associateWith {
-            snapshotsInteractor.allSnapshots
+            snapshotsInteractor.allEnvelopeSnapshots
                 .calculateSum(it, envelopeFilter)
         }
     }

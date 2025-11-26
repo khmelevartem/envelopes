@@ -26,7 +26,7 @@ class ChooseEnvelopeViewModel(
 
     init {
         viewModelScope.launch {
-            snapshotsInteractor.allSnapshotsFlow.combine(categoryFlow) { snapshots, category ->
+            snapshotsInteractor.allEnvelopeSnapshotsFlow.combine(categoryFlow) { snapshots, category ->
                 envelopesFlow.value = snapshots.map { snapshot ->
                     ChoosableEnvelope(
                         snapshot.envelope,

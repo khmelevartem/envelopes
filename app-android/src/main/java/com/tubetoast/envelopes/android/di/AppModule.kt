@@ -21,8 +21,8 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    viewModel { EnvelopesListViewModel(get(), get(), get()) }
-    viewModel { EditEnvelopeViewModel(get(), get()) }
+    viewModel { EnvelopesListViewModel(get(), get(), get(), get()) }
+    viewModel { EditEnvelopeViewModel(get(), get(), get()) }
     viewModel { EditCategoryViewModel(get(), get(), get()) }
     viewModel { ChooseEnvelopeViewModel(get(), get()) }
     viewModel { SettingsViewModel(get()) }
