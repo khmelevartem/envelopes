@@ -15,21 +15,25 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
+import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.CategoryWithSumView
-import com.tubetoast.envelopes.android.presentation.ui.views.EditEnvelopeTopAppBar
+import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControl
 import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControlViewModel
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
@@ -54,6 +58,34 @@ fun EditEnvelopeScreen(
 
         Buttons(navController, envelopeOperations, editEnvelopeViewModel)
     }
+}
+
+@Composable
+private fun EditEnvelopeTopAppBar(
+    periodControlViewModel: PeriodControlViewModel,
+    editEnvelopeViewModel: EditEnvelopeViewModel,
+    navController: NavController
+) {
+    val isNewEnvelope by remember { editEnvelopeViewModel.isNewEnvelope }
+    TopAppBar(
+        backgroundColor = Color.Black,
+        contentColor = Color.White,
+        title = { Text(text = if (isNewEnvelope) "Add envelope" else "Edit envelope") },
+        navigationIcon = { BackButton(navController) },
+        actions = {
+            PeriodControl(periodControlViewModel)
+            val operations by remember { editEnvelopeViewModel.operations }
+            IconButton(
+                onClick = {
+                    editEnvelopeViewModel.delete()
+                    navController.popBackStack()
+                },
+                enabled = operations.canDelete
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete")
+            }
+        }
+    )
 }
 
 @Composable

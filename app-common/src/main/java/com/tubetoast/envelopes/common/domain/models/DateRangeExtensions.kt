@@ -15,7 +15,7 @@ private fun DateRange.anotherMonth(change: Date.() -> Date): DateRange {
     val aDayInOtherMonth = start.change()
     val newStart = aDayInOtherMonth.copy(day = 1)
     val newEnd = aDayInOtherMonth.copy(day = aDayInOtherMonth.daysInThisMonth())
-    return copy(endInclusive = newEnd, start = newStart)
+    return copy(start = newStart, endInclusive = newEnd)
 }
 
 fun DateRange.previousYear() = run {

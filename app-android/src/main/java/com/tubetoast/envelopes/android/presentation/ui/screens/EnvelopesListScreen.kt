@@ -2,6 +2,7 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
@@ -30,8 +32,9 @@ import androidx.navigation.NavController
 import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeView
-import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopesListTopAppBar
+import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControl
 import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControlViewModel
+import com.tubetoast.envelopes.android.presentation.ui.views.SettingsButton
 import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.models.sum
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
@@ -52,6 +55,29 @@ fun EnvelopesListScreen(
         TotalView(navController, envelopes, filterByYear)
         ListOfEnvelopes(listState, itemModels, envelopesListViewModel, navController, filterByYear)
     }
+}
+
+@Composable
+private fun EnvelopesListTopAppBar(
+    periodControlViewModel: PeriodControlViewModel,
+    navController: NavController
+) {
+    TopAppBar(
+        backgroundColor = Color.Black,
+        contentColor = Color.White,
+        title = {
+            Text(
+                text = "Envelopes",
+                modifier = Modifier.clickable {
+                    navController.navigate(AppNavigation.goalsList)
+                }
+            )
+        },
+        actions = {
+            PeriodControl(periodControlViewModel)
+            SettingsButton(navController)
+        }
+    )
 }
 
 @Composable

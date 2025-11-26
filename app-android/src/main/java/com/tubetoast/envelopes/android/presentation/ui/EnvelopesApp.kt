@@ -23,6 +23,7 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.StatisticsScreen
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.Goal
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 
 @Composable
@@ -38,17 +39,24 @@ fun EnvelopesApp() {
             Settings(navController)
             Statistics(navController)
             GoalsList(navController)
-            GoalScreen(navController)
+            GoalScreen(navBackStackEntry, navController)
         }
     }
 }
 
-private fun NavGraphBuilder.GoalScreen(navController: NavHostController) {
+private fun NavGraphBuilder.GoalScreen(navBackStackEntry: NavBackStackEntry?, navController: NavHostController) {
     composable(
-        route = AppNavigation.editGoal
+        route = AppNavigation.editGoal,
+        arguments = listOf(
+            navArgument(AppNavigation.argGoalId) { type = NavType.IntType }
+        )
     ) {
+        val goalId = navBackStackEntry?.arguments?.run {
+            takeInt(AppNavigation.argGoalId)
+        }
         EditGoalScreen(
-            navController = navController
+            navController = navController,
+            goalId = goalId
         )
     }
 }
@@ -163,13 +171,15 @@ object AppNavigation {
     const val envelopesList = "envelopesListScreen"
     const val argEnvelopeId = "envelopeId"
     const val argCategoryId = "categoryId"
+    const val argGoalId = "goalId"
+
     const val envelopeScreen = "envelopeScreen/{$argEnvelopeId}"
     const val categoryScreen = "categoryScreen/{$argCategoryId}/{$argEnvelopeId}"
     const val chooseEnvelope = "chooseEnvelopeScreen/{$argCategoryId}"
     const val settings = "settings"
     const val statistics = "statistics"
     const val goalsList = "goalsList"
-    const val editGoal = "editGoal"
+    const val editGoal = "editGoal/{$argGoalId}"
 
     fun addEnvelope() = envelopeScreen.putArg(argEnvelopeId, null)
 
@@ -181,11 +191,15 @@ object AppNavigation {
     fun editCategory(category: Category, envelope: Envelope) =
         categoryScreen.putArg(argCategoryId, category).putArg(argEnvelopeId, envelope)
 
-    private fun String.putArg(argName: String, argValue: ImmutableModel<*>?) =
-        this.replace("{$argName}", "${argValue?.id?.code ?: NO_VALUE}")
-
     fun chooseEnvelope(category: Category) =
         chooseEnvelope.putArg(argCategoryId, category)
 
+    fun addGoal() = editGoal.putArg(argGoalId, null)
+
+    fun editGoal(goal: Goal) = editGoal.putArg(argGoalId, goal)
+
     const val start = envelopesList
+
+    private fun String.putArg(argName: String, argValue: ImmutableModel<*>?) =
+        this.replace("{$argName}", "${argValue?.id?.code ?: NO_VALUE}")
 }

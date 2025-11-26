@@ -10,15 +10,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.android.presentation.ui.views.CheckboxSettingItem
-import com.tubetoast.envelopes.android.presentation.ui.views.SettingsTopAppBar
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -53,4 +55,16 @@ fun SettingsScreen(
             Text(text = "OK")
         }
     }
+}
+
+@Composable
+private fun SettingsTopAppBar(
+    navController: NavController
+) {
+    TopAppBar(
+        backgroundColor = Color.Black,
+        contentColor = Color.White,
+        title = { Text(text = "Settings") },
+        navigationIcon = { BackButton(navController) }
+    )
 }

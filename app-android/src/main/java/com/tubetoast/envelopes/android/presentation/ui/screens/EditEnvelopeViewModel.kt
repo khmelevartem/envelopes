@@ -39,15 +39,16 @@ class EditEnvelopeViewModel(
     private var mode: Mode = CreateEnvelopeMode(envelopeInteractor)
         set(value) {
             field = value
-            isNewEnvelope.value = value is CreateEnvelopeMode
+            _isNewEnvelope.value = value is CreateEnvelopeMode
         }
     private val _operations = mutableStateOf(EnvelopeOperations.EMPTY)
     private val draftEnvelope = mutableStateOf(Envelope.EMPTY)
     private val _categories = mutableStateOf(listOf<CategorySnapshot>())
+    private val _isNewEnvelope = mutableStateOf(true)
 
     val operations: State<EnvelopeOperations> = _operations
     val categories: State<List<CategorySnapshot>> = _categories
-    val isNewEnvelope = mutableStateOf(true)
+    val isNewEnvelope: State<Boolean> = _isNewEnvelope
 
     fun envelope(envelopeId: Int?): State<Envelope> {
         envelopeId?.let { id ->
@@ -114,7 +115,7 @@ class EditEnvelopeViewModel(
     }
 }
 
-class CreateEnvelopeMode(
+private class CreateEnvelopeMode(
     private val envelopeInteractor: EnvelopeInteractor
 ) : EditEnvelopeViewModel.Mode {
     override suspend fun canConfirm(envelope: Envelope?) = envelope?.run {
@@ -126,7 +127,7 @@ class CreateEnvelopeMode(
     override suspend fun confirm(envelope: Envelope) = envelopeInteractor.addEnvelope(envelope)
 }
 
-class EditEnvelopeMode(
+private class EditEnvelopeMode(
     private val envelopeInteractor: EnvelopeInteractor,
     private val editedEnvelope: Envelope
 ) : EditEnvelopeViewModel.Mode {
