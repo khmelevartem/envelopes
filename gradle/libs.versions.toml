@@ -11,6 +11,8 @@ kotlinxCoroutinesVersion = "1.10.1"
 androidVersion = "8.7.3"
 roomVersion = "2.6.1"
 vico = "2.0.0-beta.5"
+kotlinxSerialazationVersion = "1.9.0"
+ktlint = "11.4.0"
 
 [plugins]
 
@@ -18,6 +20,7 @@ android-application = { id = "com.android.application", version.ref = "androidVe
 android-library = { id = "com.android.library", version.ref = "androidVersion" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinVersion" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "11.4.0" }
@@ -36,6 +39,8 @@ compose-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.r
 compose-material = { module = "androidx.compose.material:material", version.ref = "composeVersion" }
 compose-icons = { module = "androidx.compose.material:material-icons-core", version.ref = "composeVersion" }
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "composeVersion" }
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+ktlint-compose-ruleset = { module = "io.nlopez.compose.rules:ktlint", version = "0.4.28" }
 
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
@@ -44,8 +49,7 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", ver
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesVersion" }
-
-vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialazationVersion" }
 
 test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiterVersion" }
 test-junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitPlatformLauncherVersion" }
