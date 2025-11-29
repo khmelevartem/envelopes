@@ -69,7 +69,7 @@ private fun EnvelopesListTopAppBar(
             Text(
                 text = "Envelopes",
                 modifier = Modifier.clickable {
-                    navController.navigate(AppNavigation.goalsList)
+                    navController.navigate(AppNavigation.goalsList())
                 }
             )
         },
@@ -154,7 +154,7 @@ fun TotalView(
             modifier = Modifier.padding(bottom = 8.dp)
         )
         IconButton(
-            onClick = { navController.navigate(AppNavigation.statistics) },
+            onClick = { navController.navigate(AppNavigation.statistics()) },
             modifier = Modifier.padding(end = 16.dp, bottom = 8.dp)
         ) {
             Icon(

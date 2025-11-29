@@ -2,10 +2,11 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.tubetoast.envelopes"
@@ -64,6 +65,9 @@ dependencies {
     debugImplementation(libs.compose.test.manifest)
 
     implementation(libs.vico.compose.m3)
+
+    // Kotlinx
+    implementation(libs.kotlinx.serialization)
 
     // test
     testImplementation(libs.test.junit.jupiter)

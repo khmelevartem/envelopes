@@ -19,7 +19,7 @@ fun BackButton(navController: NavController) {
 @Composable
 fun SettingsButton(navController: NavController) {
     IconButton(
-        onClick = { navController.navigate(AppNavigation.settings) }
+        onClick = { navController.navigate(AppNavigation.settings()) }
     ) {
         Icon(Icons.Default.Settings, contentDescription = "Settings")
     }

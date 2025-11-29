@@ -1,18 +1,13 @@
 package com.tubetoast.envelopes.android.presentation.ui
 
-import android.os.Bundle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryScreen
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeScreen
@@ -24,127 +19,109 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.StatisticsScreen
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Goal
-import com.tubetoast.envelopes.common.domain.models.ImmutableModel
+import kotlinx.serialization.Serializable
 
 @Composable
 fun EnvelopesApp() {
     MaterialTheme {
         val navController = rememberNavController()
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
         NavHost(navController = navController, startDestination = AppNavigation.start) {
             EnvelopesList(navController)
-            EnvelopeScreen(navBackStackEntry, navController)
-            CategoryScreen(navBackStackEntry, navController)
-            ChooseEnvelopeScreen(navBackStackEntry, navController)
+            EnvelopeDetails(navController)
+            CategoryDetails(navController)
+            ChooseEnvelope(navController)
             Settings(navController)
             Statistics(navController)
             GoalsList(navController)
-            GoalScreen(navBackStackEntry, navController)
+            GoalDetails(navController)
         }
     }
 }
 
-private fun NavGraphBuilder.GoalScreen(navBackStackEntry: NavBackStackEntry?, navController: NavHostController) {
-    composable(
-        route = AppNavigation.editGoal,
-        arguments = listOf(
-            navArgument(AppNavigation.argGoalId) { type = NavType.IntType }
-        )
-    ) {
-        val goalId = navBackStackEntry?.arguments?.run {
-            takeInt(AppNavigation.argGoalId)
-        }
+@Serializable
+data class GoalDetails(
+    val goalId: Int? = null
+)
+
+private fun NavGraphBuilder.GoalDetails(navController: NavHostController) {
+    composable<GoalDetails> {
         EditGoalScreen(
             navController = navController,
-            goalId = goalId
+            goalId = it.toRoute<GoalDetails>().goalId
         )
     }
 }
+
+@Serializable
+object GoalsList
 
 private fun NavGraphBuilder.GoalsList(navController: NavHostController) {
-    composable(
-        route = AppNavigation.goalsList
-    ) {
-        GoalsListScreen(
-            navController = navController
-        )
+    composable<GoalsList> {
+        GoalsListScreen(navController = navController)
     }
 }
+
+@Serializable
+object Statistics
 
 private fun NavGraphBuilder.Statistics(navController: NavHostController) {
-    composable(
-        route = AppNavigation.statistics
-    ) {
-        StatisticsScreen(
-            navController = navController
-        )
+    composable<Statistics> {
+        StatisticsScreen(navController = navController)
     }
 }
+
+@Serializable
+object Settings
 
 private fun NavGraphBuilder.Settings(navController: NavHostController) {
-    composable(
-        route = AppNavigation.settings
-    ) {
-        SettingsScreen(
-            navController = navController
+    composable<Settings> {
+        SettingsScreen(navController = navController)
+    }
+}
+
+@Serializable
+data class ChooseEnvelope(
+    val categoryId: Int
+)
+
+private fun NavGraphBuilder.ChooseEnvelope(
+    navController: NavHostController
+) {
+    composable<ChooseEnvelope> {
+        ChooseEnvelopeScreen(
+            navController = navController,
+            categoryId = it.toRoute<ChooseEnvelope>().categoryId
         )
     }
 }
 
-private fun NavGraphBuilder.ChooseEnvelopeScreen(
-    navBackStackEntry: NavBackStackEntry?,
+@Serializable
+data class CategoryDetails(
+    val envelopeId: Int,
+    val categoryId: Int? = null
+)
+
+private fun NavGraphBuilder.CategoryDetails(
     navController: NavHostController
 ) {
-    composable(
-        route = AppNavigation.chooseEnvelope,
-        arguments = listOf(
-            navArgument(AppNavigation.argCategoryId) { type = NavType.IntType }
+    composable<CategoryDetails> {
+        val (envelopeId, categoryId) = it.toRoute<CategoryDetails>()
+        EditCategoryScreen(
+            navController = navController,
+            categoryId = categoryId,
+            envelopeId = envelopeId
         )
-    ) {
-        navBackStackEntry?.arguments?.run {
-            val categoryId = takeInt(AppNavigation.argCategoryId)
-            ChooseEnvelopeScreen(
-                navController = navController,
-                categoryId = categoryId
-            )
-        }
     }
 }
 
-private fun NavGraphBuilder.CategoryScreen(
-    navBackStackEntry: NavBackStackEntry?,
-    navController: NavHostController
-) {
-    composable(
-        route = AppNavigation.categoryScreen,
-        arguments = listOf(
-            navArgument(AppNavigation.argCategoryId) { type = NavType.IntType },
-            navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
-        )
-    ) {
-        navBackStackEntry?.arguments?.run {
-            val envelopeId = takeInt(AppNavigation.argEnvelopeId)
-            val categoryId = takeInt(AppNavigation.argCategoryId)
-            EditCategoryScreen(
-                navController = navController,
-                categoryId = categoryId,
-                envelopeId = envelopeId
-            )
-        }
-    }
-}
+@Serializable
+data class EnvelopeDetails(
+    val envelopeId: Int? = null
+)
 
-private fun NavGraphBuilder.EnvelopeScreen(
-    navBackStackEntry: NavBackStackEntry?,
-    navController: NavHostController
-) {
-    composable(
-        route = AppNavigation.envelopeScreen,
-        arguments = listOf(
-            navArgument(AppNavigation.argEnvelopeId) { type = NavType.IntType }
-        )
-    ) {
-        val envelopeId = navBackStackEntry?.arguments?.takeInt(AppNavigation.argEnvelopeId)
+private fun NavGraphBuilder.EnvelopeDetails(navController: NavHostController) {
+    composable<EnvelopeDetails> {
+        val envelopeId = it.toRoute<EnvelopeDetails>().envelopeId
         EditEnvelopeScreen(
             navController = navController,
             envelopeId = envelopeId
@@ -152,54 +129,42 @@ private fun NavGraphBuilder.EnvelopeScreen(
     }
 }
 
+@Serializable
+object EnvelopesList
+
 private fun NavGraphBuilder.EnvelopesList(navController: NavHostController) {
-    composable(route = AppNavigation.envelopesList) {
+    composable<EnvelopesList> {
         EnvelopesListScreen(
             navController = navController
         )
     }
 }
 
-private const val NO_VALUE = -1
-
-private fun Bundle.takeInt(key: String): Int? {
-    return getInt(key, NO_VALUE).takeUnless { it == NO_VALUE }
-}
-
-@Suppress("ConstPropertyName")
 object AppNavigation {
-    const val envelopesList = "envelopesListScreen"
-    const val argEnvelopeId = "envelopeId"
-    const val argCategoryId = "categoryId"
-    const val argGoalId = "goalId"
+    val start = EnvelopesList
 
-    const val envelopeScreen = "envelopeScreen/{$argEnvelopeId}"
-    const val categoryScreen = "categoryScreen/{$argCategoryId}/{$argEnvelopeId}"
-    const val chooseEnvelope = "chooseEnvelopeScreen/{$argCategoryId}"
-    const val settings = "settings"
-    const val statistics = "statistics"
-    const val goalsList = "goalsList"
-    const val editGoal = "editGoal/{$argGoalId}"
+    fun addEnvelope() =
+        EnvelopeDetails()
 
-    fun addEnvelope() = envelopeScreen.putArg(argEnvelopeId, null)
-
-    fun editEnvelope(envelope: Envelope) = envelopeScreen.putArg(argEnvelopeId, envelope)
+    fun editEnvelope(envelope: Envelope) =
+        EnvelopeDetails(envelope.id.code)
 
     fun addCategory(envelope: Envelope) =
-        categoryScreen.putArg(argCategoryId, null).putArg(argEnvelopeId, envelope)
+        CategoryDetails(envelopeId = envelope.id.code)
 
     fun editCategory(category: Category, envelope: Envelope) =
-        categoryScreen.putArg(argCategoryId, category).putArg(argEnvelopeId, envelope)
+        CategoryDetails(envelopeId = envelope.id.code, categoryId = category.id.code)
 
     fun chooseEnvelope(category: Category) =
-        chooseEnvelope.putArg(argCategoryId, category)
+        ChooseEnvelope(category.id.code)
 
-    fun addGoal() = editGoal.putArg(argGoalId, null)
+    fun settings() = Settings
 
-    fun editGoal(goal: Goal) = editGoal.putArg(argGoalId, goal)
+    fun statistics() = Statistics
 
-    const val start = envelopesList
+    fun goalsList() = GoalsList
 
-    private fun String.putArg(argName: String, argValue: ImmutableModel<*>?) =
-        this.replace("{$argName}", "${argValue?.id?.code ?: NO_VALUE}")
+    fun addGoal() = GoalDetails()
+
+    fun editGoal(goal: Goal) = GoalDetails(goal.id.code)
 }
