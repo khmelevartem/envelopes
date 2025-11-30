@@ -14,6 +14,7 @@ tasks.test {
 dependencies {
     api(libs.koin.core)
     api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.datetime)
 
     testImplementation(libs.test.junit.jupiter)
     testRuntimeOnly(libs.test.junit.platform)

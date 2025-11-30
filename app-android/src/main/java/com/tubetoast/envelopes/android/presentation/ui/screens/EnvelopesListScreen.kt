@@ -111,8 +111,7 @@ private fun ListOfEnvelopes(
                 onCategoryClick = { category, envelope ->
                     navigate(AppNavigation.editCategory(category, envelope))
                 },
-                modifier = Modifier
-                    .animateItemPlacement()
+                modifier = Modifier.animateItem()
             )
         }
         item {

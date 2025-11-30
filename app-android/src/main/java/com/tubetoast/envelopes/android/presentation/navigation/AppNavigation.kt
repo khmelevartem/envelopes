@@ -5,7 +5,10 @@ import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Goal
 
 object AppNavigation {
-    val start = EnvelopesList.Args
+    val start = envelopesList()
+
+    fun envelopesList() =
+        EnvelopesList.Args
 
     fun addEnvelope() =
         EnvelopeDetails.Args()

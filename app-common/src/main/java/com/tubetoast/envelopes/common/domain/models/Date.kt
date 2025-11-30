@@ -1,6 +1,11 @@
 package com.tubetoast.envelopes.common.domain.models
 
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
+import kotlinx.datetime.toLocalDateTime
 import java.util.Calendar
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 data class Date(
     val day: Int,
@@ -25,7 +30,21 @@ data class Date(
             else -> -1
         }
 
+    override fun toString(): String {
+        return "$day.$month.$year"
+    }
+
     companion object {
+        @OptIn(ExperimentalTime::class)
+        fun fromMillis(millis: Long): Date =
+            Instant.fromEpochMilliseconds(millis).toLocalDateTime(TimeZone.UTC).run {
+                Date(
+                    day = day,
+                    month = month.number,
+                    year = year
+                )
+            }
+
         fun today(): Date =
             Calendar.getInstance().toDate()
 

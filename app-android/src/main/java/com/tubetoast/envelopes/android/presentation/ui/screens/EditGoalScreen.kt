@@ -1,6 +1,7 @@
 package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,6 +19,7 @@ import com.tubetoast.envelopes.android.presentation.navigation.Back
 import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import com.tubetoast.envelopes.android.presentation.ui.views.ApplyOrCloseButtons
 import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
+import com.tubetoast.envelopes.android.presentation.ui.views.DatePickerFieldToModal
 import com.tubetoast.envelopes.common.domain.models.Goal
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -30,7 +32,9 @@ fun EditGoalScreen(
     val draftGoal by remember { editGoalViewModel.goal(goalId) }
     val isNewGoal by remember { editGoalViewModel.isNewGoal }
     val operations by remember { editGoalViewModel.operations }
-    Column {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
         EditGoalTopAppBar(navigate, isNewGoal)
         GoalInfo(draftGoal, editGoalViewModel)
         ApplyOrCloseButtons(
@@ -49,25 +53,31 @@ fun GoalInfo(
     draftGoal: Goal,
     editGoalViewModel: EditGoalViewModel
 ) {
-    OutlinedTextField(
-        value = draftGoal.name,
-        onValueChange = { editGoalViewModel.setName(it) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp, end = 8.dp, start = 8.dp),
-        label = { Text("Name") },
-        maxLines = 1
-    )
-    OutlinedTextField(
-        value = draftGoal.target.units.takeIf { it > 0 }?.toString().orEmpty(),
-        onValueChange = { editGoalViewModel.setTarget(it) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp, end = 8.dp, start = 8.dp),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        label = { Text("Target") },
-        maxLines = 1
-    )
+    Column(
+        modifier = Modifier.padding(top = 8.dp, end = 8.dp, start = 8.dp)
+    ) {
+        OutlinedTextField(
+            value = draftGoal.name,
+            onValueChange = { editGoalViewModel.setName(it) },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Name") },
+            maxLines = 1
+        )
+        OutlinedTextField(
+            value = draftGoal.target.units.takeIf { it > 0 }?.toString().orEmpty(),
+            onValueChange = { editGoalViewModel.setTarget(it) },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            label = { Text("Target") },
+            maxLines = 1
+        )
+        DatePickerFieldToModal(label = "Start date", selectedDate = draftGoal.start) {
+            editGoalViewModel.setStart(it)
+        }
+        DatePickerFieldToModal(label = "End date", selectedDate = draftGoal.finish) {
+            editGoalViewModel.setFinish(it)
+        }
+    }
 }
 
 @Composable

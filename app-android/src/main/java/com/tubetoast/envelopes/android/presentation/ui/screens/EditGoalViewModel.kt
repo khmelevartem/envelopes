@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.common.domain.models.Amount
+import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Goal
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import kotlinx.coroutines.launch
@@ -55,13 +56,13 @@ class EditGoalViewModel() : ViewModel() {
     }
 
     fun setName(input: String) {
-        updateGoal(draftGoal.value.copy(name = input))
+        updateGoal { copy(name = input) }
     }
 
     fun setTarget(input: String) {
         val target = input.toLongOrNull() ?: 0
         require(target >= 0) { "seems that u need Long for that" }
-        updateGoal(draftGoal.value.copy(target = Amount(target)))
+        updateGoal { copy(target = Amount(target)) }
     }
 
     fun confirm() {
@@ -88,11 +89,12 @@ class EditGoalViewModel() : ViewModel() {
         }
     }
 
-    private fun updateGoal(goal: Goal) {
-        draftGoal.value = goal
+    private fun updateGoal(update: Goal.() -> Goal) {
+        val newValue = draftGoal.value.update()
+        draftGoal.value = newValue
         viewModelScope.launch {
             _operations.value = GoalOperations(
-                canConfirm = mode.canConfirm(goal),
+                canConfirm = mode.canConfirm(newValue),
                 canDelete = mode.canDelete()
             )
         }
@@ -104,11 +106,19 @@ class EditGoalViewModel() : ViewModel() {
         _operations.value = GoalOperations.EMPTY
         _categories.value = emptyList()
     }
+
+    fun setStart(start: Date?) {
+        updateGoal { copy(start = start) }
+    }
+
+    fun setFinish(finish: Date?) {
+        updateGoal { copy(finish = finish) }
+    }
 }
 
 private class CreateGoalMode() : EditGoalViewModel.Mode {
     override suspend fun canConfirm(goal: Goal?) = goal?.run {
-        name.isNotBlank() // && envelopeInteractor.getEnvelopeByName(name) == null
+        isNotEmpty() && hasValidDateRange() // && envelopeInteractor.getEnvelopeByName(name) == null
     } ?: false
 
     override suspend fun canDelete() = false
@@ -119,15 +129,19 @@ private class CreateGoalMode() : EditGoalViewModel.Mode {
 private class EditGoalMode(
     private val editedGoal: Goal
 ) : EditGoalViewModel.Mode {
-
     override suspend fun canConfirm(goal: Goal?) = goal?.run {
-        name.isNotBlank() && this != editedGoal && notSameNameAsOtherExisting()
+        isNotEmpty() && hasValidDateRange() && this != editedGoal && notSameNameAsOtherExisting()
     } ?: false
 
     private suspend fun Goal.notSameNameAsOtherExisting() =
         name == editedGoal.name // || envelopeInteractor.getEnvelopeByName(name) == null
 
     override suspend fun canDelete() = true
+
     override suspend fun delete() = Unit // envelopeInteractor.deleteEnvelope(editedGoal)
     override suspend fun confirm(goal: Goal) = Unit // envelopeInteractor.editEnvelope(editedGoal, goal)
 }
+
+private fun Goal.isNotEmpty(): Boolean = name.isNotBlank() && target != Amount.ZERO // && categories.isNotEmpty()
+
+private fun Goal.hasValidDateRange(): Boolean = start == null || finish == null || start!! < finish!!

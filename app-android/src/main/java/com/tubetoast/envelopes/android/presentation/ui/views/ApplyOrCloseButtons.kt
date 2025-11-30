@@ -27,7 +27,7 @@ fun ApplyOrCloseButtons(
         modifier = Modifier
             .fillMaxWidth()
             .height(72.dp)
-            .padding(8.dp)
+            .padding(vertical = 8.dp)
     ) {
         CardItem(
             color = MaterialTheme.colors.secondary,

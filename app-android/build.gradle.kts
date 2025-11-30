@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.compose.icons)
     implementation(libs.compose.preview)
     implementation(libs.compose.navigation)
+    implementation(libs.compose.material3)
     debugImplementation(libs.compose.tooling)
     debugImplementation(libs.compose.test.manifest)
 

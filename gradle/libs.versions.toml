@@ -13,6 +13,7 @@ roomVersion = "2.6.1"
 vico = "2.0.0-beta.5"
 kotlinxSerialazationVersion = "1.9.0"
 ktlint = "11.4.0"
+material3Version = "1.4.0"
 
 [plugins]
 
@@ -37,6 +38,7 @@ compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", versi
 compose-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "composeVersion" }
 compose-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "composeVersion" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "composeVersion" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3Version" }
 compose-icons = { module = "androidx.compose.material:material-icons-core", version.ref = "composeVersion" }
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "composeVersion" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
@@ -50,6 +52,7 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", ver
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesVersion" }
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialazationVersion" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.7.1" }
 
 test-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiterVersion" }
 test-junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitPlatformLauncherVersion" }
