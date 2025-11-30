@@ -18,21 +18,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import com.tubetoast.envelopes.android.presentation.navigation.Back
+import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.android.presentation.ui.views.CheckboxSettingItem
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SettingsScreen(
-    navController: NavController,
+    navigate: Navigate,
     viewModel: SettingsViewModel = koinViewModel()
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxHeight()
     ) {
-        SettingsTopAppBar(navController)
+        SettingsTopAppBar(navigate)
         val items = viewModel.items
         LazyColumn(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp).weight(1f)
@@ -50,7 +51,7 @@ fun SettingsScreen(
         }
         Button(
             modifier = Modifier.fillMaxWidth().height(48.dp),
-            onClick = { navController.popBackStack() }
+            onClick = { navigate(Back) }
         ) {
             Text(text = "OK")
         }
@@ -59,12 +60,12 @@ fun SettingsScreen(
 
 @Composable
 private fun SettingsTopAppBar(
-    navController: NavController
+    navigate: Navigate
 ) {
     TopAppBar(
         backgroundColor = Color.Black,
         contentColor = Color.White,
         title = { Text(text = "Settings") },
-        navigationIcon = { BackButton(navController) }
+        navigationIcon = { BackButton(navigate) }
     )
 }

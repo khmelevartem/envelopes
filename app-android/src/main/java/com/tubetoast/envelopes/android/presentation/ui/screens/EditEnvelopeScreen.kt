@@ -28,8 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
+import com.tubetoast.envelopes.android.presentation.navigation.AppNavigation
+import com.tubetoast.envelopes.android.presentation.navigation.Back
+import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.CategoryWithSumView
@@ -41,7 +42,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EditEnvelopeScreen(
-    navController: NavController,
+    navigate: Navigate,
     editEnvelopeViewModel: EditEnvelopeViewModel = koinViewModel(),
     periodControlViewModel: PeriodControlViewModel = koinViewModel(),
     envelopeId: Int? = null
@@ -51,12 +52,12 @@ fun EditEnvelopeScreen(
         val envelopeOperations by remember { editEnvelopeViewModel.operations }
         val categories by remember { editEnvelopeViewModel.categories }
         Column {
-            EditEnvelopeTopAppBar(periodControlViewModel, editEnvelopeViewModel, navController)
+            EditEnvelopeTopAppBar(periodControlViewModel, editEnvelopeViewModel, navigate)
             EnvelopeInfo(draftEnvelope, editEnvelopeViewModel)
-            Categories(categories, navController, draftEnvelope)
+            Categories(categories, draftEnvelope, navigate)
         }
 
-        Buttons(navController, envelopeOperations, editEnvelopeViewModel)
+        Buttons(navigate, envelopeOperations, editEnvelopeViewModel)
     }
 }
 
@@ -64,21 +65,21 @@ fun EditEnvelopeScreen(
 private fun EditEnvelopeTopAppBar(
     periodControlViewModel: PeriodControlViewModel,
     editEnvelopeViewModel: EditEnvelopeViewModel,
-    navController: NavController
+    navigate: Navigate
 ) {
     val isNewEnvelope by remember { editEnvelopeViewModel.isNewEnvelope }
     TopAppBar(
         backgroundColor = Color.Black,
         contentColor = Color.White,
         title = { Text(text = if (isNewEnvelope) "Add envelope" else "Edit envelope") },
-        navigationIcon = { BackButton(navController) },
+        navigationIcon = { BackButton(navigate) },
         actions = {
             PeriodControl(periodControlViewModel)
             val operations by remember { editEnvelopeViewModel.operations }
             IconButton(
                 onClick = {
                     editEnvelopeViewModel.delete()
-                    navController.popBackStack()
+                    navigate(Back)
                 },
                 enabled = operations.canDelete
             ) {
@@ -117,8 +118,8 @@ private fun EnvelopeInfo(
 @Composable
 private fun Categories(
     categories: List<CategorySnapshot>,
-    navController: NavController,
-    draftEnvelope: Envelope
+    draftEnvelope: Envelope,
+    navigate: Navigate
 ) {
     LazyColumn(
         modifier = Modifier.padding(top = 8.dp, end = 8.dp, start = 8.dp)
@@ -128,7 +129,7 @@ private fun Categories(
                 snapshot = categorySnapshot,
                 modifier = Modifier.padding(vertical = 4.dp)
             ) {
-                navController.navigate(
+                navigate(
                     AppNavigation.editCategory(categorySnapshot.category, draftEnvelope)
                 )
             }
@@ -138,7 +139,7 @@ private fun Categories(
 
 @Composable
 private fun Buttons(
-    navController: NavController,
+    navigate: Navigate,
     envelopeOperations: EditEnvelopeViewModel.EnvelopeOperations,
     editEnvelopeViewModel: EditEnvelopeViewModel
 ) {
@@ -154,7 +155,7 @@ private fun Buttons(
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(onClick = { navigate(Back) }) {
                 Icon(
                     tint = contentColorFor(MaterialTheme.colors.secondary),
                     imageVector = Icons.Default.Close,
@@ -176,7 +177,7 @@ private fun Buttons(
             IconButton(
                 onClick = {
                     editEnvelopeViewModel.confirm()
-                    navController.popBackStack()
+                    navigate(Back)
                 },
                 enabled = envelopeOperations.canConfirm
             ) {

@@ -14,27 +14,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
+import com.tubetoast.envelopes.android.presentation.navigation.AppNavigation
+import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun GoalsListScreen(
-    navController: NavController,
+    navigate: Navigate,
     modifier: Modifier = Modifier,
     viewModel: GoalsListViewModel = koinViewModel()
 ) {
     Column {
-        GoalsListTopAppBar(navController)
+        GoalsListTopAppBar(navigate)
         LazyColumn {
             item {
                 CardItem(
                     color = MaterialTheme.colors.secondary,
                     modifier = Modifier.height(64.dp)
                 ) {
-                    IconButton(onClick = { navController.navigate(AppNavigation.addGoal()) }) {
+                    IconButton(onClick = { navigate(AppNavigation.addGoal()) }) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             tint = MaterialTheme.colors.onSecondary,
@@ -49,7 +49,7 @@ fun GoalsListScreen(
 
 @Composable
 private fun GoalsListTopAppBar(
-    navController: NavController
+    navController: Navigate
 ) {
     TopAppBar(
         backgroundColor = Color.Black,

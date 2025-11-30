@@ -14,21 +14,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.common.domain.models.Goal
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EditGoalScreen(
-    navController: NavController,
+    navigate: Navigate,
     editGoalViewModel: EditGoalViewModel = koinViewModel(),
     goalId: Int? = null
 ) {
     val draftGoal by remember { editGoalViewModel.goal(goalId) }
     val isNewGoal by remember { editGoalViewModel.isNewGoal }
     Column {
-        EditGoalTopAppBar(navController, isNewGoal)
+        EditGoalTopAppBar(navigate, isNewGoal)
         GoalInfo(draftGoal, editGoalViewModel)
     }
 }
@@ -61,13 +61,13 @@ fun GoalInfo(
 
 @Composable
 private fun EditGoalTopAppBar(
-    navController: NavController,
+    navigate: Navigate,
     isNewGoal: Boolean
 ) {
     TopAppBar(
         backgroundColor = Color.Black,
         contentColor = Color.White,
         title = { Text(text = if (isNewGoal) "Add goal" else "Edit goal") },
-        navigationIcon = { BackButton(navController) }
+        navigationIcon = { BackButton(navigate) }
     )
 }

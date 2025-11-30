@@ -18,8 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
+import com.tubetoast.envelopes.android.presentation.navigation.AppNavigation
+import com.tubetoast.envelopes.android.presentation.navigation.BackTo
+import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeLabelView
 import com.tubetoast.envelopes.common.domain.models.Category
@@ -29,7 +30,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ChooseEnvelopeScreen(
-    navController: NavController,
+    navigate: Navigate,
     viewModel: ChooseEnvelopeViewModel = koinViewModel(),
     categoryId: Int? = null
 ) {
@@ -54,14 +55,14 @@ fun ChooseEnvelopeScreen(
                         viewModel.setNewChosenEnvelope(it.data.envelope)
                         scope.launch {
                             delay(500)
-                            navController.popBackStack(AppNavigation.start, false)
+                            navigate(BackTo(AppNavigation.start))
                         }
                     }
                 }
             }
             item {
                 CardItem(color = MaterialTheme.colors.secondary) {
-                    IconButton(onClick = { navController.navigate(AppNavigation.addEnvelope()) }) {
+                    IconButton(onClick = { navigate(AppNavigation.addEnvelope()) }) {
                         Icon(imageVector = Icons.Default.Add, contentDescription = "Add envelope")
                     }
                 }

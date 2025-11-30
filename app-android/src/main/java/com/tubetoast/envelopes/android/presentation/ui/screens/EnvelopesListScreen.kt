@@ -28,8 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
+import com.tubetoast.envelopes.android.presentation.navigation.AppNavigation
+import com.tubetoast.envelopes.android.presentation.navigation.Navigate
+import com.tubetoast.envelopes.android.presentation.navigation.NavigationRouteArgs
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeView
 import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControl
@@ -42,7 +43,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EnvelopesListScreen(
-    navController: NavController,
+    navigate: Navigate,
     envelopesListViewModel: EnvelopesListViewModel = koinViewModel(),
     periodControlViewModel: PeriodControlViewModel = koinViewModel()
 ) {
@@ -51,16 +52,22 @@ fun EnvelopesListScreen(
     val listState = rememberLazyListState()
     val filterByYear by envelopesListViewModel.filterByYear.collectAsState()
     Column {
-        EnvelopesListTopAppBar(periodControlViewModel, navController)
-        TotalView(navController, envelopes, filterByYear)
-        ListOfEnvelopes(listState, itemModels, envelopesListViewModel, navController, filterByYear)
+        EnvelopesListTopAppBar(periodControlViewModel, navigate)
+        TotalView(navigate, envelopes, filterByYear)
+        ListOfEnvelopes(
+            listState = listState,
+            itemModels = itemModels,
+            envelopesListViewModel = envelopesListViewModel,
+            navigate = navigate,
+            filterByYear = filterByYear
+        )
     }
 }
 
 @Composable
 private fun EnvelopesListTopAppBar(
     periodControlViewModel: PeriodControlViewModel,
-    navController: NavController
+    navigate: Navigate
 ) {
     TopAppBar(
         backgroundColor = Color.Black,
@@ -69,13 +76,13 @@ private fun EnvelopesListTopAppBar(
             Text(
                 text = "Envelopes",
                 modifier = Modifier.clickable {
-                    navController.navigate(AppNavigation.goalsList())
+                    navigate(AppNavigation.goalsList())
                 }
             )
         },
         actions = {
             PeriodControl(periodControlViewModel)
-            SettingsButton(navController)
+            SettingsButton(navigate)
         }
     )
 }
@@ -86,7 +93,7 @@ private fun ListOfEnvelopes(
     listState: LazyListState,
     itemModels: List<ItemModel<EnvelopeSnapshot>>,
     envelopesListViewModel: EnvelopesListViewModel,
-    navController: NavController,
+    navigate: (NavigationRouteArgs) -> Unit,
     filterByYear: Boolean
 ) {
     LazyColumn(
@@ -98,13 +105,11 @@ private fun ListOfEnvelopes(
             EnvelopeView(
                 itemModel,
                 filterByYear,
-                onEditClick = { navController.navigate(AppNavigation.editEnvelope(it)) },
+                onEditClick = { navigate(AppNavigation.editEnvelope(it)) },
                 onDeleteClick = { envelopesListViewModel.delete(it) },
-                onAddClick = { navController.navigate(AppNavigation.addCategory(it)) },
+                onAddClick = { navigate(AppNavigation.addCategory(it)) },
                 onCategoryClick = { category, envelope ->
-                    navController.navigate(
-                        AppNavigation.editCategory(category, envelope)
-                    )
+                    navigate(AppNavigation.editCategory(category, envelope))
                 },
                 modifier = Modifier
                     .animateItemPlacement()
@@ -115,7 +120,7 @@ private fun ListOfEnvelopes(
                 color = MaterialTheme.colors.secondary,
                 modifier = Modifier.height(64.dp)
             ) {
-                IconButton(onClick = { navController.navigate(AppNavigation.addEnvelope()) }) {
+                IconButton(onClick = { navigate(AppNavigation.addEnvelope()) }) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         tint = MaterialTheme.colors.onSecondary,
@@ -129,7 +134,7 @@ private fun ListOfEnvelopes(
 
 @Composable
 fun TotalView(
-    navController: NavController,
+    navigate: Navigate,
     envelopes: Iterable<EnvelopeSnapshot>,
     filterByYear: Boolean,
     modifier: Modifier = Modifier
@@ -154,7 +159,7 @@ fun TotalView(
             modifier = Modifier.padding(bottom = 8.dp)
         )
         IconButton(
-            onClick = { navController.navigate(AppNavigation.statistics()) },
+            onClick = { navigate(AppNavigation.statistics()) },
             modifier = Modifier.padding(end = 16.dp, bottom = 8.dp)
         ) {
             Icon(

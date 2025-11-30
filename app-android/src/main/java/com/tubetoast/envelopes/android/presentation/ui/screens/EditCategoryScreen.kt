@@ -13,13 +13,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.navigation.NavController
-import com.tubetoast.envelopes.android.presentation.ui.AppNavigation
+import com.tubetoast.envelopes.android.presentation.navigation.AppNavigation
+import com.tubetoast.envelopes.android.presentation.navigation.Back
+import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EditCategoryScreen(
-    navController: NavController,
+    navigate: Navigate,
     viewModel: EditCategoryViewModel = koinViewModel(),
     categoryId: Int? = null,
     envelopeId: Int? = null
@@ -45,7 +46,7 @@ fun EditCategoryScreen(
             Button(
                 onClick = {
                     viewModel.confirm()
-                    navController.popBackStack()
+                    navigate(Back)
                 },
                 enabled = categoryOperations.canConfirm
             ) {
@@ -54,7 +55,7 @@ fun EditCategoryScreen(
             Button(
                 onClick = {
                     viewModel.delete()
-                    navController.popBackStack()
+                    navigate(Back)
                 },
                 enabled = categoryOperations.canDelete
             ) {
@@ -64,9 +65,7 @@ fun EditCategoryScreen(
             val envelope by remember { viewModel.envelope }
             Button(
                 onClick = {
-                    navController.navigate(
-                        AppNavigation.chooseEnvelope(draftCategory)
-                    )
+                    navigate(AppNavigation.chooseEnvelope(draftCategory))
                 },
                 enabled = viewModel.canChooseEnvelope()
             ) {
