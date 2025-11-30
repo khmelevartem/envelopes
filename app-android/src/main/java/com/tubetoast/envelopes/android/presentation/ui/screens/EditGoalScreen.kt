@@ -14,7 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.tubetoast.envelopes.android.presentation.navigation.Back
 import com.tubetoast.envelopes.android.presentation.navigation.Navigate
+import com.tubetoast.envelopes.android.presentation.ui.views.ApplyOrCloseButtons
 import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.common.domain.models.Goal
 import org.koin.compose.viewmodel.koinViewModel
@@ -27,9 +29,18 @@ fun EditGoalScreen(
 ) {
     val draftGoal by remember { editGoalViewModel.goal(goalId) }
     val isNewGoal by remember { editGoalViewModel.isNewGoal }
+    val operations by remember { editGoalViewModel.operations }
     Column {
         EditGoalTopAppBar(navigate, isNewGoal)
         GoalInfo(draftGoal, editGoalViewModel)
+        ApplyOrCloseButtons(
+            onAbort = { navigate(Back) },
+            canConfirm = operations.canConfirm,
+            onConfirm = {
+                editGoalViewModel.confirm()
+                navigate(Back)
+            }
+        )
     }
 }
 

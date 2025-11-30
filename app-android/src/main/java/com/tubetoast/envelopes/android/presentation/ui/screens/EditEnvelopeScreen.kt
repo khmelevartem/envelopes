@@ -2,25 +2,18 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -31,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.navigation.AppNavigation
 import com.tubetoast.envelopes.android.presentation.navigation.Back
 import com.tubetoast.envelopes.android.presentation.navigation.Navigate
+import com.tubetoast.envelopes.android.presentation.ui.views.ApplyOrCloseButtons
 import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
-import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.CategoryWithSumView
 import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControl
 import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControlViewModel
@@ -57,7 +50,14 @@ fun EditEnvelopeScreen(
             Categories(categories, draftEnvelope, navigate)
         }
 
-        Buttons(navigate, envelopeOperations, editEnvelopeViewModel)
+        ApplyOrCloseButtons(
+            onAbort = { navigate(Back) },
+            canConfirm = envelopeOperations.canConfirm,
+            onConfirm = {
+                editEnvelopeViewModel.confirm()
+                navigate(Back)
+            }
+        )
     }
 }
 
@@ -131,60 +131,6 @@ private fun Categories(
             ) {
                 navigate(
                     AppNavigation.editCategory(categorySnapshot.category, draftEnvelope)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun Buttons(
-    navigate: Navigate,
-    envelopeOperations: EditEnvelopeViewModel.EnvelopeOperations,
-    editEnvelopeViewModel: EditEnvelopeViewModel
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(72.dp)
-            .padding(8.dp)
-    ) {
-        CardItem(
-            color = MaterialTheme.colors.secondary,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            IconButton(onClick = { navigate(Back) }) {
-                Icon(
-                    tint = contentColorFor(MaterialTheme.colors.secondary),
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Cancel"
-                )
-            }
-        }
-
-        val canConfirm = envelopeOperations.canConfirm
-        val colors = ButtonDefaults.buttonColors()
-        val background by colors.backgroundColor(enabled = canConfirm)
-        val content by colors.contentColor(enabled = canConfirm)
-        CardItem(
-            color = background,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            IconButton(
-                onClick = {
-                    editEnvelopeViewModel.confirm()
-                    navigate(Back)
-                },
-                enabled = envelopeOperations.canConfirm
-            ) {
-                Icon(
-                    tint = content,
-                    imageVector = Icons.Default.Done,
-                    contentDescription = "Confirm"
                 )
             }
         }
