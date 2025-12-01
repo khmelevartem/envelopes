@@ -15,8 +15,7 @@ import kotlinx.coroutines.launch
 open class SnapshotsInteractorImpl(
     private val spendingRepository: UpdatingSpendingRepository,
     private val categoriesRepository: UpdatingCategoriesRepository,
-    private val envelopesRepository: UpdatingEnvelopesRepository,
-    private val selectedPeriodRepository: SelectedPeriodRepository
+    private val envelopesRepository: UpdatingEnvelopesRepository
 ) : SnapshotsInteractor {
 
     private val flow = MutableStateFlow<Set<EnvelopeSnapshot>>(emptySet())

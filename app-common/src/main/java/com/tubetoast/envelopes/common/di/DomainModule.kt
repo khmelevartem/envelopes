@@ -5,6 +5,8 @@ import com.tubetoast.envelopes.common.domain.CategoryInteractor
 import com.tubetoast.envelopes.common.domain.CategoryInteractorImpl
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractorImpl
+import com.tubetoast.envelopes.common.domain.GoalInteractor
+import com.tubetoast.envelopes.common.domain.GoalInteractorImpl
 import com.tubetoast.envelopes.common.domain.InflationCalculator
 import com.tubetoast.envelopes.common.domain.SelectedPeriodRepository
 import com.tubetoast.envelopes.common.domain.SelectedPeriodRepositoryImpl
@@ -23,14 +25,14 @@ val domainModule = module {
         SnapshotsInteractorCachingImpl(
             spendingRepository = get(named(SPENDING_REPO)),
             categoriesRepository = get(named(CATEGORIES_REPO)),
-            envelopesRepository = get(named(ENVELOPES_REPO)),
-            selectedPeriodRepository = get()
+            envelopesRepository = get(named(ENVELOPES_REPO))
         )
     }
     single<EnvelopeInteractor> { EnvelopeInteractorImpl(repository = get(named(ENVELOPES_REPO))) }
     single<CategoryInteractor> { CategoryInteractorImpl(repository = get(named(CATEGORIES_REPO))) }
     single<SpendingInteractor> { SpendingInteractorImpl(repository = get(named(SPENDING_REPO))) }
     single<SettingsRepository> { get<MutableSettingsRepository>() }
+    single<GoalInteractor> { GoalInteractorImpl() }
     single<SelectedPeriodRepository> { SelectedPeriodRepositoryImpl(get()) }
     single { AverageCalculator(get()) }
     single { InflationCalculator(get()) }

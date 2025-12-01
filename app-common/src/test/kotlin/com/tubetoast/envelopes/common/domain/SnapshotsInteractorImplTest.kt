@@ -6,7 +6,6 @@ import com.tubetoast.envelopes.common.data.EnvelopesRepositoryInMemoryImpl
 import com.tubetoast.envelopes.common.data.SpendingRepositoryInMemoryImpl
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.settings.SettingsRepositoryDefaultImpl
 import org.junit.jupiter.api.Test
 
 class SnapshotsInteractorImplTest {
@@ -14,14 +13,10 @@ class SnapshotsInteractorImplTest {
     private val spendingRepositoryImpl = SpendingRepositoryInMemoryImpl()
     private val categoriesRepositoryImpl = CategoriesRepositoryInMemoryImpl()
     private val envelopesRepositoryImpl = EnvelopesRepositoryInMemoryImpl()
-    private val selectedPeriodRepository = SelectedPeriodRepositoryImpl(
-        SettingsRepositoryDefaultImpl()
-    )
     private val interactor: SnapshotsInteractorImpl = SnapshotsInteractorImpl(
         spendingRepositoryImpl,
         categoriesRepositoryImpl,
-        envelopesRepositoryImpl,
-        selectedPeriodRepository
+        envelopesRepositoryImpl
     )
 
     @Test

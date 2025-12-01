@@ -5,14 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.android.domain.SelectedCategoryRepository
+import com.tubetoast.envelopes.common.domain.GoalInteractor
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Goal
+import com.tubetoast.envelopes.common.domain.models.id
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import kotlinx.coroutines.launch
 
 class EditGoalViewModel(
-    private val selectedCategoryRepository: SelectedCategoryRepository
+    private val selectedCategoryRepository: SelectedCategoryRepository,
+    private val goalInteractor: GoalInteractor
 ) : ViewModel() {
 
     sealed interface Mode {
@@ -31,7 +34,7 @@ class EditGoalViewModel(
         }
     }
 
-    private var mode: Mode = CreateGoalMode()
+    private var mode: Mode = CreateGoalMode(goalInteractor)
         set(value) {
             field = value
             _isNewGoal.value = value is CreateGoalMode
@@ -50,13 +53,12 @@ class EditGoalViewModel(
 
     fun goal(goalId: Int?): State<Goal> {
         goalId?.let { id ->
-//            viewModelScope.launch {
-//                envelopeInteractor.getExactEnvelope(id.id())?.let {
-//                    mode = EditGoalMode(envelopeInteractor, it)
-//                    collectEnvelopeCategories(it)
-//                    updateGoal(it)
-//                } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
-//            }
+            viewModelScope.launch {
+                goalInteractor.getExactGoal(id.id())?.let {
+                    mode = EditGoalMode(it, goalInteractor)
+                    updateGoal { it }
+                } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
+            }
         } ?: reset()
         return draftGoal
     }
@@ -117,7 +119,7 @@ class EditGoalViewModel(
     }
 
     private fun reset() {
-        mode = CreateGoalMode()
+        mode = CreateGoalMode(goalInteractor)
         draftGoal.value = Goal.EMPTY
         _operations.value = GoalOperations.EMPTY
     }
@@ -131,30 +133,33 @@ class EditGoalViewModel(
     }
 }
 
-private class CreateGoalMode() : EditGoalViewModel.Mode {
+private class CreateGoalMode(
+    private val goalInteractor: GoalInteractor
+) : EditGoalViewModel.Mode {
     override suspend fun canConfirm(goal: Goal?) = goal?.run {
-        isNotEmpty() && hasValidDateRange() // && envelopeInteractor.getEnvelopeByName(name) == null
+        isNotEmpty() && hasValidDateRange() && goalInteractor.getGoalByName(name) == null
     } ?: false
 
     override suspend fun canDelete() = false
     override suspend fun delete() = throw IllegalStateException("Cannot delete what is not created")
-    override suspend fun confirm(goal: Goal) = Unit // envelopeInteractor.addEnvelope(goal)
+    override suspend fun confirm(goal: Goal) = goalInteractor.addGoal(goal)
 }
 
 private class EditGoalMode(
-    private val editedGoal: Goal
+    private val editedGoal: Goal,
+    private val goalInteractor: GoalInteractor
 ) : EditGoalViewModel.Mode {
     override suspend fun canConfirm(goal: Goal?) = goal?.run {
         isNotEmpty() && hasValidDateRange() && this != editedGoal && notSameNameAsOtherExisting()
     } ?: false
 
     private suspend fun Goal.notSameNameAsOtherExisting() =
-        name == editedGoal.name // || envelopeInteractor.getEnvelopeByName(name) == null
+        name == editedGoal.name || goalInteractor.getGoalByName(name) == null
 
     override suspend fun canDelete() = true
 
-    override suspend fun delete() = Unit // envelopeInteractor.deleteEnvelope(editedGoal)
-    override suspend fun confirm(goal: Goal) = Unit // envelopeInteractor.editEnvelope(editedGoal, goal)
+    override suspend fun delete() = goalInteractor.deleteGoal(editedGoal)
+    override suspend fun confirm(goal: Goal) = goalInteractor.editGoal(editedGoal, goal)
 }
 
 private fun Goal.isNotEmpty(): Boolean = name.isNotBlank() && target != Amount.ZERO && categories.isNotEmpty()

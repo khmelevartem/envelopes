@@ -5,9 +5,8 @@ import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 class SnapshotsInteractorCachingImpl(
     spendingRepository: UpdatingSpendingRepository,
     categoriesRepository: UpdatingCategoriesRepository,
-    envelopesRepository: UpdatingEnvelopesRepository,
-    selectedPeriodRepository: SelectedPeriodRepository
-) : SnapshotsInteractorImpl(spendingRepository, categoriesRepository, envelopesRepository, selectedPeriodRepository) {
+    envelopesRepository: UpdatingEnvelopesRepository
+) : SnapshotsInteractorImpl(spendingRepository, categoriesRepository, envelopesRepository) {
 
     private var isOutdated
         get() = snapshotsCache == null
