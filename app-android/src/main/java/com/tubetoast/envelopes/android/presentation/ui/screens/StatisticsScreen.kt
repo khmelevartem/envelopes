@@ -10,14 +10,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,7 +41,7 @@ import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import com.tubetoast.envelopes.android.presentation.ui.theme.EColor
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
-import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeLabelView
+import com.tubetoast.envelopes.android.presentation.ui.views.SelectableLabelItem
 import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -65,7 +65,7 @@ fun StatisticsScreen(
 fun Average(viewModel: AverageViewViewModel) {
     Box(
         Modifier
-            .border(1.dp, color = MaterialTheme.colors.secondary, shape = RoundedCornerShape(16.dp))
+            .border(1.dp, color = MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(16.dp))
             .padding(16.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -155,7 +155,7 @@ private fun FilterByEnvelopes(viewModel: EnvelopesFilterViewModel) {
     val itemModels = envelopes.asItemModels()
     LazyColumn(modifier = Modifier.padding(vertical = 16.dp)) {
         item {
-            CardItem(color = MaterialTheme.colors.secondary) {
+            CardItem(color = MaterialTheme.colorScheme.secondary) {
                 IconButton(onClick = { viewModel.toggleShowFilter() }) {
                     Icon(imageVector = Icons.Default.List, contentDescription = "Filter envelopes")
                 }
@@ -163,12 +163,12 @@ private fun FilterByEnvelopes(viewModel: EnvelopesFilterViewModel) {
         }
         items(itemModels) {
             CardItem(color = it.color) {
-                EnvelopeLabelView(
-                    isChosen = it.data.isChosen,
-                    envelope = it.data.envelope,
+                SelectableLabelItem(
+                    isChosen = it.data.isSelected,
+                    label = it.data.item.name,
                     color = it.color
                 ) {
-                    viewModel.toggleEnvelopesFilter(it.data.envelope)
+                    viewModel.toggleEnvelopesFilter(it.data.item)
                 }
             }
         }

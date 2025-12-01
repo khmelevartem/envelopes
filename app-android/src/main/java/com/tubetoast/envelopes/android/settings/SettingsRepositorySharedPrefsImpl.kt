@@ -3,6 +3,7 @@ package com.tubetoast.envelopes.android.settings
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
 import com.tubetoast.envelopes.common.settings.Setting
 import com.tubetoast.envelopes.common.settings.SettingsRepository
@@ -40,11 +41,11 @@ class SettingsRepositorySharedPrefsImpl(
     }
 
     override fun saveChanges(vararg settings: Setting) {
-        val editor = sharedPrefs.edit()
-        settings.forEach {
-            editor.putBoolean(it.key.name, it.checked)
-            flows.getOrPut(it.key) { MutableStateFlow(it) }.tryEmit(it)
+        sharedPrefs.edit {
+            settings.forEach {
+                putBoolean(it.key.name, it.checked)
+                flows.getOrPut(it.key) { MutableStateFlow(it) }.tryEmit(it)
+            }
         }
-        editor.apply()
     }
 }

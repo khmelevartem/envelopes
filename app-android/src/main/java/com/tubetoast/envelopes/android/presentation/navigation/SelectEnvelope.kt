@@ -1,10 +1,10 @@
 package com.tubetoast.envelopes.android.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeScreen
+import com.tubetoast.envelopes.android.presentation.ui.screens.SelectEnvelopeScreen
 import kotlinx.serialization.Serializable
 
-object ChooseEnvelope : NavigationRoute<ChooseEnvelope.Args> {
+object SelectEnvelope : NavigationRoute<SelectEnvelope.Args> {
     @Serializable
     data class Args(
         val categoryId: Int
@@ -15,7 +15,7 @@ object ChooseEnvelope : NavigationRoute<ChooseEnvelope.Args> {
         args: Args,
         navigate: Navigate
     ) {
-        ChooseEnvelopeScreen(
+        SelectEnvelopeScreen(
             navigate = navigate,
             categoryId = args.categoryId
         )

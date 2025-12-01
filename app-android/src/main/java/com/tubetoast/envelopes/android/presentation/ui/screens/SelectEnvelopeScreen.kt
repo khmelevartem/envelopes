@@ -22,16 +22,16 @@ import com.tubetoast.envelopes.android.presentation.navigation.AppNavigation
 import com.tubetoast.envelopes.android.presentation.navigation.BackTo
 import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
-import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeLabelView
+import com.tubetoast.envelopes.android.presentation.ui.views.SelectableLabelItem
 import com.tubetoast.envelopes.common.domain.models.Category
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ChooseEnvelopeScreen(
+fun SelectEnvelopeScreen(
     navigate: Navigate,
-    viewModel: ChooseEnvelopeViewModel = koinViewModel(),
+    viewModel: SelectEnvelopeViewModel = koinViewModel(),
     categoryId: Int? = null
 ) {
     Column {
@@ -47,12 +47,12 @@ fun ChooseEnvelopeScreen(
             items(itemModels) {
                 CardItem(color = it.color) {
                     val scope = rememberCoroutineScope()
-                    EnvelopeLabelView(
-                        isChosen = it.data.isChosen,
-                        envelope = it.data.envelope,
+                    SelectableLabelItem(
+                        isChosen = it.data.isSelected,
+                        label = it.data.item.name,
                         color = it.color
                     ) {
-                        viewModel.setNewChosenEnvelope(it.data.envelope)
+                        viewModel.setNewChosenEnvelope(it.data.item)
                         scope.launch {
                             delay(500)
                             navigate(BackTo(AppNavigation.start))

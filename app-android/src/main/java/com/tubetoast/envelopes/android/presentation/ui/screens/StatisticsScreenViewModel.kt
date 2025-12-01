@@ -2,7 +2,9 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tubetoast.envelopes.android.presentation.models.ChoosableEnvelope
+import com.tubetoast.envelopes.android.domain.SelectedEnvelopesRepository
+import com.tubetoast.envelopes.android.domain.isChosen
+import com.tubetoast.envelopes.android.presentation.models.SelectableEnvelope
 import com.tubetoast.envelopes.common.domain.AverageCalculator
 import com.tubetoast.envelopes.common.domain.InflationCalculator
 import com.tubetoast.envelopes.common.domain.SpendingInteractor
@@ -31,7 +33,7 @@ class InflationViewModel(
     init {
         val percentCeiling = 500
         viewModelScope.launch {
-            selectedEnvelopesRepository.selectedEnvelopes.collect {
+            selectedEnvelopesRepository.items.collect {
                 val limitInflation = settingsRepository.getSetting(Setting.Key.LIMIT_INFLATION).checked
                 launch(Dispatchers.IO) {
                     val data = inflationCalculator.calculateInflationByYears(
@@ -55,13 +57,13 @@ class EnvelopesFilterViewModel(
     private val selectedEnvelopesRepository: SelectedEnvelopesRepository
 ) : ViewModel() {
     private val showFilter = MutableStateFlow(false)
-    val displayedEnvelopes = MutableStateFlow(emptyList<ChoosableEnvelope>())
+    val displayedEnvelopes = MutableStateFlow(emptyList<SelectableEnvelope>())
 
     init {
         viewModelScope.launch {
-            merge(selectedEnvelopesRepository.selectedEnvelopes, showFilter).collect {
+            merge(selectedEnvelopesRepository.items, showFilter).collect {
                 displayedEnvelopes.value = if (showFilter.value) {
-                    selectedEnvelopesRepository.selectedEnvelopes.value.toList()
+                    selectedEnvelopesRepository.items.value.toList()
                 } else {
                     emptyList()
                 }
@@ -72,7 +74,7 @@ class EnvelopesFilterViewModel(
     fun toggleEnvelopesFilter(envelope: Envelope) {
         selectedEnvelopesRepository.changeSelection {
             map {
-                if (it.envelope != envelope) it else it.copy(isChosen = it.isChosen.not())
+                if (it.item != envelope) it else it.copy(isSelected = it.isSelected.not())
             }.toSet()
         }
     }
@@ -105,7 +107,7 @@ class AverageViewViewModel(
                 .inMonths()
 
             launch {
-                merge(periodInMonths, isPeriodInMonths, selectedEnvelopes.selectedEnvelopes).collect {
+                merge(periodInMonths, isPeriodInMonths, selectedEnvelopes.items).collect {
                     displayedPeriod.value = if (isPeriodInMonths.value) {
                         val months = periodInMonths.value
                         if (months > 1) "last $months months" else "last month"

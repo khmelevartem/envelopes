@@ -65,7 +65,7 @@ fun EditCategoryScreen(
             val envelope by remember { viewModel.envelope }
             Button(
                 onClick = {
-                    navigate(AppNavigation.chooseEnvelope(draftCategory))
+                    navigate(AppNavigation.selectEnvelope(draftCategory))
                 },
                 enabled = viewModel.canChooseEnvelope()
             ) {

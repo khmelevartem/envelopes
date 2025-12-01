@@ -1,8 +1,9 @@
 package com.tubetoast.envelopes.android.di
 
+import com.tubetoast.envelopes.android.domain.SelectedCategoryRepository
+import com.tubetoast.envelopes.android.domain.SelectedEnvelopesRepository
 import com.tubetoast.envelopes.android.presentation.MainViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.AverageViewViewModel
-import com.tubetoast.envelopes.android.presentation.ui.screens.ChooseEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditGoalViewModel
@@ -10,10 +11,10 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesFilterVi
 import com.tubetoast.envelopes.android.presentation.ui.screens.EnvelopesListViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.GoalsListViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.InflationViewModel
-import com.tubetoast.envelopes.android.presentation.ui.screens.SelectedEnvelopesRepository
-import com.tubetoast.envelopes.android.presentation.ui.screens.SelectedEnvelopesRepositoryImpl
+import com.tubetoast.envelopes.android.presentation.ui.screens.SelectEnvelopeViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.SettingsViewModel
 import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControlViewModel
+import com.tubetoast.envelopes.android.presentation.ui.views.SelectableCategoriesListViewModel
 import com.tubetoast.envelopes.android.settings.SettingsRepositorySharedPrefsImpl
 import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
 import com.tubetoast.envelopes.common.settings.SettingsRepositoryDefaultImpl
@@ -25,7 +26,7 @@ val appModule = module {
     viewModel { EnvelopesListViewModel(get(), get(), get(), get()) }
     viewModel { EditEnvelopeViewModel(get(), get(), get()) }
     viewModel { EditCategoryViewModel(get(), get(), get()) }
-    viewModel { ChooseEnvelopeViewModel(get(), get()) }
+    viewModel { SelectEnvelopeViewModel(get(), get()) }
     viewModel { SettingsViewModel(get()) }
     viewModel { MainViewModel(get(), get(), androidContext()) }
     viewModel { PeriodControlViewModel(get(), get()) }
@@ -33,8 +34,10 @@ val appModule = module {
     viewModel { InflationViewModel(get(), get(), get()) }
     viewModel { EnvelopesFilterViewModel(get()) }
     viewModel { GoalsListViewModel() }
-    viewModel { EditGoalViewModel() }
-    single<SelectedEnvelopesRepository> { SelectedEnvelopesRepositoryImpl(get()) }
+    viewModel { EditGoalViewModel(get()) }
+    viewModel { SelectableCategoriesListViewModel(get()) }
+    single { SelectedEnvelopesRepository(get()) }
+    single { SelectedCategoryRepository(get()) }
     single<MutableSettingsRepository> {
         SettingsRepositorySharedPrefsImpl(
             androidContext(),

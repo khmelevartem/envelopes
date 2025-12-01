@@ -10,6 +10,13 @@ class CategoryInteractorImpl(
     private val repository: UpdatingCategoriesRepository
 ) : CategoryInteractor {
     private val dispatcher = Dispatchers.IO
+
+    override suspend fun getAll(): Set<Category> {
+        return withContext(dispatcher) {
+            repository.getAll()
+        }
+    }
+
     override suspend fun getCategoryByName(name: String): Category? {
         return withContext(dispatcher) {
             repository

@@ -5,6 +5,7 @@ import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Id
 
 interface CategoryInteractor {
+    suspend fun getAll(): Set<Category>
     suspend fun getCategoryByName(name: String): Category?
     suspend fun getCategory(id: Id<Category>): Category?
     suspend fun addCategory(category: Category, envelopeId: Id<Envelope>)

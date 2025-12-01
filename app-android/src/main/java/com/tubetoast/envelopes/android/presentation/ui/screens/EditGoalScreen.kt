@@ -20,6 +20,8 @@ import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import com.tubetoast.envelopes.android.presentation.ui.views.ApplyOrCloseButtons
 import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.android.presentation.ui.views.DatePickerFieldToModal
+import com.tubetoast.envelopes.android.presentation.ui.views.SelectableCategoriesList
+import com.tubetoast.envelopes.android.presentation.ui.views.SelectableCategoriesListViewModel
 import com.tubetoast.envelopes.common.domain.models.Goal
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -27,6 +29,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun EditGoalScreen(
     navigate: Navigate,
     editGoalViewModel: EditGoalViewModel = koinViewModel(),
+    selectableCategoriesListViewModel: SelectableCategoriesListViewModel = koinViewModel(),
     goalId: Int? = null
 ) {
     val draftGoal by remember { editGoalViewModel.goal(goalId) }
@@ -36,7 +39,7 @@ fun EditGoalScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         EditGoalTopAppBar(navigate, isNewGoal)
-        GoalInfo(draftGoal, editGoalViewModel)
+        GoalInfo(draftGoal, editGoalViewModel, selectableCategoriesListViewModel)
         ApplyOrCloseButtons(
             onAbort = { navigate(Back) },
             canConfirm = operations.canConfirm,
@@ -51,7 +54,8 @@ fun EditGoalScreen(
 @Composable
 fun GoalInfo(
     draftGoal: Goal,
-    editGoalViewModel: EditGoalViewModel
+    editGoalViewModel: EditGoalViewModel,
+    selectableCategoriesListViewModel: SelectableCategoriesListViewModel
 ) {
     Column(
         modifier = Modifier.padding(top = 8.dp, end = 8.dp, start = 8.dp)
@@ -77,6 +81,9 @@ fun GoalInfo(
         DatePickerFieldToModal(label = "End date", selectedDate = draftGoal.finish) {
             editGoalViewModel.setFinish(it)
         }
+        SelectableCategoriesList(
+            selectableCategoriesListViewModel
+        )
     }
 }
 

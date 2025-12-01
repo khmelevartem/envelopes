@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,11 +20,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.ui.theme.darken
-import com.tubetoast.envelopes.common.domain.models.Envelope
 
 @Composable
-fun EnvelopeLabelView(
-    envelope: Envelope,
+fun SelectableLabelItem(
+    label: String,
     color: Color,
     modifier: Modifier = Modifier,
     isChosen: Boolean = false,
@@ -39,14 +38,14 @@ fun EnvelopeLabelView(
         Box(
             modifier = modifier
                 .background(color.darken())
-                .width(4.dp)
+                .width(8.dp)
                 .fillMaxHeight()
         )
     }
     Spacer(modifier = Modifier.weight(1f))
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxHeight()) {
         Text(
-            text = envelope.name,
+            text = label,
             modifier = Modifier.padding(end = 18.dp),
             style = if (isChosen) TextStyle(fontWeight = SemiBold) else TextStyle.Default
         )

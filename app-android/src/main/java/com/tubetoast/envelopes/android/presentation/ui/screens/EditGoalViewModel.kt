@@ -4,13 +4,16 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tubetoast.envelopes.android.domain.SelectedCategoryRepository
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Goal
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import kotlinx.coroutines.launch
 
-class EditGoalViewModel() : ViewModel() {
+class EditGoalViewModel(
+    private val selectedCategoryRepository: SelectedCategoryRepository
+) : ViewModel() {
 
     sealed interface Mode {
         suspend fun canConfirm(goal: Goal?): Boolean
@@ -39,8 +42,11 @@ class EditGoalViewModel() : ViewModel() {
     private val _isNewGoal = mutableStateOf(true)
 
     val operations: State<GoalOperations> = _operations
-    val categories: State<List<CategorySnapshot>> = _categories
     val isNewGoal: State<Boolean> = _isNewGoal
+
+    init {
+        collectCategories()
+    }
 
     fun goal(goalId: Int?): State<Goal> {
         goalId?.let { id ->
@@ -75,17 +81,27 @@ class EditGoalViewModel() : ViewModel() {
         reset()
     }
 
-    private fun collectEnvelopeCategories(goal: Goal) {
+    private fun collectCategories() {
+        selectedCategoryRepository.changeSelection {
+            val dratCategories = draftGoal.value.categories
+            map {
+                it.copy(
+                    item = it.item,
+                    isSelected = dratCategories.contains(it.item)
+                )
+            }.toSet()
+        }
         viewModelScope.launch {
-//            snapshotsInteractor.envelopeSnapshots(selectedPeriodRepository.selectedPeriodFlow)
-//                .collect { set ->
-//                    set.find {
-//                        it.envelope == envelope
-//                    }?.let { found ->
-//                        _categories.value = found.categories
-//                            .sortedByDescending { it.sum() }
-//                    }
-//                }
+            selectedCategoryRepository.items.collect { selectableCategories ->
+                updateGoal {
+                    copy(
+                        categories = selectableCategories
+                            .filter { it.isSelected }
+                            .map { it -> it.item }
+                            .toSet()
+                    )
+                }
+            }
         }
     }
 
@@ -104,7 +120,6 @@ class EditGoalViewModel() : ViewModel() {
         mode = CreateGoalMode()
         draftGoal.value = Goal.EMPTY
         _operations.value = GoalOperations.EMPTY
-        _categories.value = emptyList()
     }
 
     fun setStart(start: Date?) {
@@ -142,6 +157,6 @@ private class EditGoalMode(
     override suspend fun confirm(goal: Goal) = Unit // envelopeInteractor.editEnvelope(editedGoal, goal)
 }
 
-private fun Goal.isNotEmpty(): Boolean = name.isNotBlank() && target != Amount.ZERO // && categories.isNotEmpty()
+private fun Goal.isNotEmpty(): Boolean = name.isNotBlank() && target != Amount.ZERO && categories.isNotEmpty()
 
 private fun Goal.hasValidDateRange(): Boolean = start == null || finish == null || start!! < finish!!

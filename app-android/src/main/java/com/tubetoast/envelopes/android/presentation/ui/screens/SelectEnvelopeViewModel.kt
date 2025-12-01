@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tubetoast.envelopes.android.presentation.models.ChoosableEnvelope
+import com.tubetoast.envelopes.android.presentation.models.SelectableEnvelope
 import com.tubetoast.envelopes.common.domain.CategoryInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Category
@@ -16,19 +16,19 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-class ChooseEnvelopeViewModel(
+class SelectEnvelopeViewModel(
     private val categoryInteractor: CategoryInteractor,
     private val snapshotsInteractor: SnapshotsInteractor
 ) : ViewModel() {
 
     private val categoryFlow = MutableStateFlow(Category.EMPTY)
-    private val envelopesFlow = mutableStateOf(emptyList<ChoosableEnvelope>())
+    private val envelopesFlow = mutableStateOf(emptyList<SelectableEnvelope>())
 
     init {
         viewModelScope.launch {
             snapshotsInteractor.allEnvelopeSnapshotsFlow.combine(categoryFlow) { snapshots, category ->
                 envelopesFlow.value = snapshots.map { snapshot ->
-                    ChoosableEnvelope(
+                    SelectableEnvelope(
                         snapshot.envelope,
                         snapshot.categories.find { it.category == category } != null
                     )
@@ -37,7 +37,7 @@ class ChooseEnvelopeViewModel(
         }
     }
 
-    fun envelopes(): State<List<ChoosableEnvelope>> = envelopesFlow
+    fun envelopes(): State<List<SelectableEnvelope>> = envelopesFlow
 
     fun category(id: Int?): Flow<Category> {
         id?.let {

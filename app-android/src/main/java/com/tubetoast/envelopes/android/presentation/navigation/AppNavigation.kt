@@ -22,8 +22,8 @@ object AppNavigation {
     fun editCategory(category: Category, envelope: Envelope) =
         CategoryDetails.Args(envelopeId = envelope.id.code, categoryId = category.id.code)
 
-    fun chooseEnvelope(category: Category) =
-        ChooseEnvelope.Args(category.id.code)
+    fun selectEnvelope(category: Category) =
+        SelectEnvelope.Args(category.id.code)
 
     fun settings() = Settings.Args
 

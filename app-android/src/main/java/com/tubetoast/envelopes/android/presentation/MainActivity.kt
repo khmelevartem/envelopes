@@ -7,8 +7,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.tubetoast.envelopes.android.presentation.ui.EnvelopesApp
 import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
             EnvelopesTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     EnvelopesApp()
                 }
