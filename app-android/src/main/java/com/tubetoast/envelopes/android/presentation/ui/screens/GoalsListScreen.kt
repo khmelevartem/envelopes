@@ -1,6 +1,5 @@
 package com.tubetoast.envelopes.android.presentation.ui.screens
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +21,7 @@ import com.tubetoast.envelopes.android.presentation.navigation.AppNavigation
 import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
+import com.tubetoast.envelopes.android.presentation.ui.views.GoalItem
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -31,13 +31,16 @@ fun GoalsListScreen(
     viewModel: GoalsListViewModel = koinViewModel()
 ) {
     val goals by viewModel.goals.collectAsState()
-    Column {
+    val items = goals.toList().asItemModels()
+    Column(modifier = modifier) {
         GoalsListTopAppBar(navigate)
         LazyColumn {
-            items(goals.toList(), key = { item -> item.id.code }) {
-                Box() {
-                    Text(it.name)
-                }
+            items(items, key = { item -> item.data.id.code }) { item ->
+                GoalItem(
+                    itemModel = item,
+                    onEditClick = { navigate(AppNavigation.editGoal(it)) },
+                    onDeleteClick = { viewModel.delete(it) }
+                )
             }
             item {
                 CardItem(

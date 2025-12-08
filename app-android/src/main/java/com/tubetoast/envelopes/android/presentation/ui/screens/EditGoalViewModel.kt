@@ -47,10 +47,6 @@ class EditGoalViewModel(
     val operations: State<GoalOperations> = _operations
     val isNewGoal: State<Boolean> = _isNewGoal
 
-    init {
-        collectCategories()
-    }
-
     fun goal(goalId: Int?): State<Goal> {
         goalId?.let { id ->
             viewModelScope.launch {
@@ -60,6 +56,7 @@ class EditGoalViewModel(
                 } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
             }
         } ?: reset()
+        collectCategories()
         return draftGoal
     }
 
@@ -75,7 +72,7 @@ class EditGoalViewModel(
 
     fun confirm() {
         viewModelScope.launch { mode.confirm(draftGoal.value) }
-        reset()
+//        reset() // for no flicker on confirm
     }
 
     fun delete() {

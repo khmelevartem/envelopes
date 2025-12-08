@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +18,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,25 +29,19 @@ import androidx.compose.ui.unit.TextUnitType.Companion.Sp
 import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.ui.screens.ItemModel
 import com.tubetoast.envelopes.android.presentation.ui.theme.darken
-import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
-import com.tubetoast.envelopes.common.domain.models.Category
-import com.tubetoast.envelopes.common.domain.models.Envelope
-import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
+import com.tubetoast.envelopes.common.domain.models.Goal
 
 @Composable
-fun EnvelopeView(
-    itemModel: ItemModel<EnvelopeSnapshot>,
-    byYear: Boolean,
-    onEditClick: (Envelope) -> Unit,
-    onDeleteClick: (Envelope) -> Unit,
-    onAddClick: (Envelope) -> Unit,
-    onCategoryClick: (Category, Envelope) -> Unit,
+fun GoalItem(
+    itemModel: ItemModel<Goal>,
+    onEditClick: (Goal) -> Unit,
+    onDeleteClick: (Goal) -> Unit,
     modifier: Modifier = Modifier
 ) = CardItem(
     color = itemModel.color,
-    modifier = modifier.clickable { onEditClick(itemModel.data.envelope) }
+    modifier = modifier.clickable { onEditClick(itemModel.data) }
 ) {
-    val percentage = itemModel.data.run { if (byYear) yearPercentage else percentage }
+    val percentage = 0.5f // itemModel.data
     val darkColor = MaterialTheme.colors.onSurface.copy(alpha = 0.3f)
     HorizontalProgressBar(percentage, darkColor)
     Percentage(percentage, darkColor)
@@ -60,21 +52,19 @@ fun EnvelopeView(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Info(itemModel, byYear, darkColor)
-            IconButton(onClick = { onDeleteClick(itemModel.data.envelope) }) {
-                Icon(Icons.Rounded.Delete, contentDescription = "delete envelope")
+            Info(itemModel, darkColor)
+            IconButton(onClick = { onDeleteClick(itemModel.data) }) {
+                Icon(Icons.Rounded.Delete, contentDescription = "delete goal")
             }
         }
-        Categories(modifier, itemModel, onCategoryClick, onAddClick)
+        Categories(modifier, itemModel)
     }
 }
 
 @Composable
 private fun Categories(
     modifier: Modifier,
-    itemModel: ItemModel<EnvelopeSnapshot>,
-    onCategoryClick: (Category, Envelope) -> Unit,
-    onAddClick: (Envelope) -> Unit
+    itemModel: ItemModel<Goal>
 ) {
     LazyRow(
         modifier = modifier.padding(4.dp),
@@ -95,43 +85,28 @@ private fun Categories(
             )
         items(itemModel.data.categories.toList()) {
             CategoryItem(
-                snapshot = it,
+                name = it.name,
                 modifier = categoriesModifier
-            ) {
-                onCategoryClick(
-                    it.category,
-                    itemModel.data.envelope
-                )
-            }
-        }
-        item {
-            IconButton(
-                modifier = categoriesModifier.size(44.dp),
-                onClick = { onAddClick(itemModel.data.envelope) }
-            ) {
-                Icon(Icons.Rounded.Add, contentDescription = "add category")
-            }
+            ) {}
         }
     }
 }
 
 @Composable
 private fun Info(
-    itemModel: ItemModel<EnvelopeSnapshot>,
-    byYear: Boolean,
+    itemModel: ItemModel<Goal>,
     darkColor: Color
 ) {
     itemModel.data.run {
         Column(modifier = Modifier.padding(8.dp)) {
             Text(
-                text = envelope.name,
+                text = name,
                 fontSize = TextUnit(value = 24f, type = Sp),
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1
             )
-            val limit = envelope.run { if (byYear) yearLimit else limit }.units.formatToReadableNumber()
             Text(
-                text = "${sum.units.formatToReadableNumber()} / $limit",
+                text = finish?.let { "Until $it" } ?: "",
                 fontSize = TextUnit(value = 20f, type = Sp),
                 color = darkColor,
                 fontWeight = FontWeight.Bold

@@ -17,8 +17,23 @@ import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.sum
 
 @Composable
-fun CategoryView(
+fun CategoryItem(
     snapshot: CategorySnapshot,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    CategoryItem(
+        name = snapshot.category.name,
+        isActive = snapshot.isNotEmpty(),
+        modifier = modifier,
+        onClick = onClick
+    )
+}
+
+@Composable
+fun CategoryItem(
+    name: String,
+    isActive: Boolean = true,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
@@ -26,9 +41,9 @@ fun CategoryView(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .clickable(onClick = onClick)
-            .alpha(if (snapshot.isNotEmpty()) 1f else 0.7f)
+            .alpha(if (isActive) 1f else 0.7f)
     ) {
-        Text(text = snapshot.category.name, modifier = Modifier.padding(horizontal = 8.dp))
+        Text(text = name, modifier = Modifier.padding(horizontal = 8.dp))
     }
 }
 
