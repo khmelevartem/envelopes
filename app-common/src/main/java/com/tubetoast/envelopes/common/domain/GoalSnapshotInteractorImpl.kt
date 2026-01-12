@@ -15,24 +15,24 @@ import kotlinx.coroutines.withContext
 
 class GoalSnapshotInteractorImpl(
     private val linksRepository: CategoryToGoalLinksRepository,
-    private val goalRepository: UpdatingGoalsRepository,
-    private val categoryRepository: UpdatingCategoriesRepository,
     private val spendingRepository: UpdatingSpendingRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val scope: CoroutineScope = CoroutineScope(dispatcher)
 ) : GoalSnapshotInteractor {
 
-    override val goalSnapshots: StateFlow<Set<GoalSnapshot>> = linksRepository.linksFlow.map { idsMap ->
-        idsMap.mapTo(mutableSetOf()) { (goalId, categoriesIds) ->
+    override val goalSnapshots: StateFlow<Set<GoalSnapshot>> = linksRepository.linksFlow.map { map ->
+        map.mapTo(mutableSetOf()) { (goal, categories) ->
             GoalSnapshot(
-                goal = goalRepository.get(goalId)
-                    ?: throw IllegalStateException("Cannot find Goal for existing goal id $goalId"),
+                goal = goal,
                 categories =
-                categoriesIds.mapTo(mutableSetOf()) { id ->
+                categories.mapTo(mutableSetOf()) { category ->
                     CategorySnapshot(
-                        category = categoryRepository.get(id)
-                            ?: throw IllegalStateException("Cannot find Category for existing category id $id"),
-                        transactions = spendingRepository.getCollection(id)
+                        category = category,
+                        transactions = spendingRepository.getCollection(category.id)
+                            .filterTo(mutableSetOf()) { transaction ->
+                                (goal.start?.let { transaction.date > it } ?: true) &&
+                                    (goal.finish?.let { transaction.date < it } ?: true)
+                            }
                     )
                 }
             )
@@ -45,8 +45,8 @@ class GoalSnapshotInteractorImpl(
     ) {
         withContext(dispatcher) {
             linksRepository.attachNewCategoriesToGoal(
-                goal.id,
-                categories.mapTo(mutableSetOf()) { it.id }
+                goal,
+                categories.mapTo(mutableSetOf()) { it }
             )
         }
     }
@@ -57,8 +57,8 @@ class GoalSnapshotInteractorImpl(
     ) {
         withContext(dispatcher) {
             linksRepository.detachCategoriesFromGoal(
-                goal.id,
-                categories.mapTo(mutableSetOf()) { it.id }
+                goal,
+                categories.mapTo(mutableSetOf()) { it }
             )
         }
     }

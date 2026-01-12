@@ -5,12 +5,19 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.tubetoast.envelopes.database.data.dao.CategoryDao
+import com.tubetoast.envelopes.database.data.dao.CategoryToGoalLinksDao
 import com.tubetoast.envelopes.database.data.dao.EnvelopeDao
 import com.tubetoast.envelopes.database.data.dao.GoalDao
 import com.tubetoast.envelopes.database.data.dao.SpendingDao
 
 @Database(
-    entities = [EnvelopeEntity::class, CategoryEntity::class, SpendingEntity::class, GoalEntity::class],
+    entities = [
+        EnvelopeEntity::class,
+        CategoryEntity::class,
+        SpendingEntity::class,
+        GoalEntity::class,
+        CategoryToGoalLinkEntity::class
+    ],
     version = 1
 )
 abstract class StandardDatabase : RoomDatabase() {
@@ -18,6 +25,7 @@ abstract class StandardDatabase : RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
     abstract fun spendingDao(): SpendingDao
     abstract fun goalDao(): GoalDao
+    abstract fun linksDao(): CategoryToGoalLinksDao
 
     companion object Factory {
         fun create(context: Context) =

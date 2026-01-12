@@ -1,9 +1,11 @@
 package com.tubetoast.envelopes.database.di
 
 import android.content.Context
+import com.tubetoast.envelopes.common.domain.CategoryToGoalLinksRepository
 import com.tubetoast.envelopes.database.data.CategoriesRepositoryDatabaseImpl
 import com.tubetoast.envelopes.database.data.CategoryConverter
 import com.tubetoast.envelopes.database.data.CategoryDataSource
+import com.tubetoast.envelopes.database.data.CategoryToGoalLinksRepositoryDatabaseImpl
 import com.tubetoast.envelopes.database.data.EnvelopeConverter
 import com.tubetoast.envelopes.database.data.EnvelopeDataSource
 import com.tubetoast.envelopes.database.data.EnvelopesRepositoryDatabaseImpl
@@ -26,6 +28,7 @@ fun databaseModule(context: Context) = module {
     val categoryDao = db.categoryDao()
     val spendingDao = db.spendingDao()
     val goalsDao = db.goalDao()
+    val linksDao = db.linksDao()
     single {
         EnvelopesRepositoryDatabaseImpl(
             EnvelopeDataSource(envelopeDao, envelopeConverter)
@@ -45,6 +48,15 @@ fun databaseModule(context: Context) = module {
     single {
         GoalsRepositoryDatabaseImpl(
             GoalsDataSource(goalsDao, goalConverter)
+        )
+    }
+    single<CategoryToGoalLinksRepository> {
+        CategoryToGoalLinksRepositoryDatabaseImpl(
+            linksDao,
+            categoryDao,
+            categoryConverter,
+            goalsDao,
+            goalConverter
         )
     }
 }

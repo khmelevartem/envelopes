@@ -82,3 +82,25 @@ data class SpendingEntity(
     val date: String,
     val comment: String?
 ) : DatabaseEntity()
+
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = GoalEntity::class,
+            parentColumns = arrayOf("primaryKey"),
+            childColumns = arrayOf("goalKey"),
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = CategoryEntity::class,
+            parentColumns = arrayOf("primaryKey"),
+            childColumns = arrayOf("categoryKey"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+data class CategoryToGoalLinkEntity(
+    @PrimaryKey(autoGenerate = true) var primaryKey: Int = 0,
+    val categoryKey: Int,
+    val goalKey: Int
+)

@@ -42,7 +42,6 @@ class EditGoalViewModel(
             _isNewGoal.value = value is CreateGoalMode
         }
     private val draftGoal = mutableStateOf(Goal.EMPTY)
-    private val draftCategories = mutableStateOf(setOf<Category>())
     private val _operations = mutableStateOf(GoalOperations.EMPTY)
     private val _isNewGoal = mutableStateOf(true)
 
@@ -57,8 +56,16 @@ class EditGoalViewModel(
                         goalSnapshotInteractor.goalSnapshots.value.find { it.goal == foundGoal }?.categories
                             ?.mapTo(mutableSetOf()) { it.category }.orEmpty()
                     mode = EditGoalMode(foundGoal, foundCategories, goalInteractor, goalSnapshotInteractor)
-                    update(foundCategories) { foundGoal }
-                } ?: throw IllegalStateException("Trying to set envelope id $id that doesn't exit")
+                    selectedCategoryRepository.changeSelection {
+                        map {
+                            it.copy(
+                                item = it.item,
+                                isSelected = foundCategories.contains(it.item)
+                            )
+                        }.toSet()
+                    }
+                    update { foundGoal }
+                } ?: throw IllegalStateException("Trying to set goal id $id that doesn't exit")
             }
         } ?: reset()
         collectCategories()
@@ -76,7 +83,7 @@ class EditGoalViewModel(
     }
 
     fun confirm() {
-        viewModelScope.launch { mode.confirm(draftGoal.value, draftCategories.value) }
+        viewModelScope.launch { mode.confirm(draftGoal.value, selectedCategoryRepository.selectedModels) }
 //        reset() // for no flicker on confirm
     }
 
@@ -86,35 +93,21 @@ class EditGoalViewModel(
     }
 
     private fun collectCategories() {
-        selectedCategoryRepository.changeSelection {
-            map {
-                it.copy(
-                    item = it.item,
-                    isSelected = draftCategories.value.contains(it.item)
-                )
-            }.toSet()
-        }
         viewModelScope.launch {
             selectedCategoryRepository.items.collect { selectableCategories ->
-                update(
-                    selectableCategories
-                        .filter { it.isSelected }
-                        .map { it -> it.item }
-                        .toSet()
-                )
+                update()
             }
         }
     }
 
     private fun update(
-        categories: Set<Category> = draftCategories.value,
         update: Goal.() -> Goal = { this }
     ) {
         val newValue = draftGoal.value.update()
         draftGoal.value = newValue
         viewModelScope.launch {
             _operations.value = GoalOperations(
-                canConfirm = mode.canConfirm(newValue, categories),
+                canConfirm = mode.canConfirm(newValue, selectedCategoryRepository.selectedModels),
                 canDelete = mode.canDelete()
             )
         }
@@ -158,8 +151,8 @@ private class EditGoalMode(
     private val linksInteractor: GoalSnapshotInteractor
 ) : EditGoalViewModel.Mode {
     override suspend fun canConfirm(goal: Goal?, categories: Set<Category>) = goal?.run {
-        isNotEmpty() && hasValidDateRange() && this != editedGoal && notSameNameAsOtherExisting() &&
-            categories.isNotEmpty() && foundCategories != categories
+        isNotEmpty() && hasValidDateRange() && (this != editedGoal || foundCategories != categories) &&
+            notSameNameAsOtherExisting() && categories.isNotEmpty()
     } ?: false
 
     private suspend fun Goal.notSameNameAsOtherExisting() =

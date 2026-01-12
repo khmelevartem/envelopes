@@ -42,8 +42,6 @@ val domainModule = module {
     single<GoalSnapshotInteractor> {
         GoalSnapshotInteractorImpl(
             linksRepository = get(),
-            goalRepository = get(named(GOALS_REPO)),
-            categoryRepository = get(named(CATEGORIES_REPO)),
             spendingRepository = get(named(SPENDING_REPO))
         )
     }
