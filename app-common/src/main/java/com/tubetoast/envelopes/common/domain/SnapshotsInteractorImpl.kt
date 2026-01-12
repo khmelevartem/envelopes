@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 open class SnapshotsInteractorImpl(
@@ -23,10 +24,10 @@ open class SnapshotsInteractorImpl(
 
     init {
         listOf(spendingRepository, categoriesRepository, envelopesRepository).forEach {
-            it.update = ::updateFlow
+            it.addUpdateListener(::updateFlow)
         }
-        envelopesRepository.deleteListener = categoriesRepository.deleteListenerImpl
-        categoriesRepository.deleteListener = spendingRepository.deleteListenerImpl
+        envelopesRepository.addDeleteListener(categoriesRepository::onKeyDelete)
+        categoriesRepository.addDeleteListener(spendingRepository::onKeyDelete)
     }
 
     override val allEnvelopeSnapshots: Set<EnvelopeSnapshot>
@@ -68,7 +69,7 @@ open class SnapshotsInteractorImpl(
 
     private fun updateFlow() {
         scope.launch {
-            flow.emit(allEnvelopeSnapshots)
+            flow.update { allEnvelopeSnapshots }
         }
     }
 }

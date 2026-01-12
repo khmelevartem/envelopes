@@ -15,4 +15,4 @@ data class CategorySnapshot(
 fun CategorySnapshot.sum() = transactions
     .filterIsInstance<Spending>()
     .map { it.amount }
-    .sum().units
+    .sum()

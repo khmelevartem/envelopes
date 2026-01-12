@@ -33,8 +33,8 @@ val appModule = module {
     viewModel { AverageViewViewModel(get(), get(), get()) }
     viewModel { InflationViewModel(get(), get(), get()) }
     viewModel { EnvelopesFilterViewModel(get()) }
-    viewModel { GoalsListViewModel(get()) }
-    viewModel { EditGoalViewModel(get(), get()) }
+    viewModel { GoalsListViewModel(get(), get()) }
+    viewModel { EditGoalViewModel(get(), get(), get()) }
     viewModel { SelectableCategoriesListViewModel(get()) }
     single { SelectedEnvelopesRepository(get()) }
     single { SelectedCategoryRepository(get()) }

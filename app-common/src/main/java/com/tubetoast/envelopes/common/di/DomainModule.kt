@@ -7,6 +7,8 @@ import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
 import com.tubetoast.envelopes.common.domain.EnvelopeInteractorImpl
 import com.tubetoast.envelopes.common.domain.GoalInteractor
 import com.tubetoast.envelopes.common.domain.GoalInteractorImpl
+import com.tubetoast.envelopes.common.domain.GoalSnapshotInteractor
+import com.tubetoast.envelopes.common.domain.GoalSnapshotInteractorImpl
 import com.tubetoast.envelopes.common.domain.InflationCalculator
 import com.tubetoast.envelopes.common.domain.SelectedPeriodRepository
 import com.tubetoast.envelopes.common.domain.SelectedPeriodRepositoryImpl
@@ -32,13 +34,22 @@ val domainModule = module {
     single<CategoryInteractor> { CategoryInteractorImpl(repository = get(named(CATEGORIES_REPO))) }
     single<SpendingInteractor> { SpendingInteractorImpl(repository = get(named(SPENDING_REPO))) }
     single<SettingsRepository> { get<MutableSettingsRepository>() }
-    single<GoalInteractor> { GoalInteractorImpl() }
+    single<GoalInteractor> { GoalInteractorImpl(get(named(GOALS_REPO))) }
     single<SelectedPeriodRepository> { SelectedPeriodRepositoryImpl(get()) }
     single { AverageCalculator(get()) }
     single { InflationCalculator(get()) }
     single { SpendingCalculator(get(), get()) }
+    single<GoalSnapshotInteractor> {
+        GoalSnapshotInteractorImpl(
+            linksRepository = get(),
+            goalRepository = get(named(GOALS_REPO)),
+            categoryRepository = get(named(CATEGORIES_REPO)),
+            spendingRepository = get(named(SPENDING_REPO))
+        )
+    }
 }
 
 const val SPENDING_REPO = "spending repo"
 const val CATEGORIES_REPO = "categories repo"
 const val ENVELOPES_REPO = "envelopes repo"
+const val GOALS_REPO = "goals repo"

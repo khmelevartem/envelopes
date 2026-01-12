@@ -61,6 +61,6 @@ fun CategoryWithSumView(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = snapshot.category.name, modifier = Modifier.padding(horizontal = 8.dp))
-        Text(text = snapshot.sum().formatToReadableNumber(), modifier = Modifier.padding(horizontal = 8.dp))
+        Text(text = snapshot.sum().units.formatToReadableNumber(), modifier = Modifier.padding(horizontal = 8.dp))
     }
 }

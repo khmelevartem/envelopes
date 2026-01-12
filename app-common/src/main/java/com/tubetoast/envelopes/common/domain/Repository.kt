@@ -2,6 +2,7 @@ package com.tubetoast.envelopes.common.domain
 
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.Goal
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Root
@@ -24,49 +25,60 @@ interface Repository<M : ImmutableModel<M>, Key : ImmutableModel<Key>> {
 
 abstract class UpdatingRepository<M : ImmutableModel<M>, Key : ImmutableModel<Key>> :
     Repository<M, Key> {
-    var update: (() -> Unit)? = null
-    var deleteListener: ((Id<M>) -> Unit)? = null
-    val deleteListenerImpl: ((Id<Key>) -> Unit) = {
-        deleteCollection(it)
+    protected val updateListeners: MutableList<(() -> Unit)> = mutableListOf()
+    protected var deleteListeners: MutableList<((Id<M>) -> Unit)> = mutableListOf()
+
+    fun onKeyDelete(key: Id<Key>) {
+        deleteCollection(key)
+    }
+
+    fun addUpdateListener(listener: () -> Unit) {
+        updateListeners.add(listener)
+    }
+
+    fun addDeleteListener(listener: (Id<M>) -> Unit) {
+        deleteListeners.add(listener)
     }
 
     final override fun add(keyId: Id<Key>, value: M) {
-        if (addImpl(value, keyId)) update?.invoke()
+        if (addImpl(value, keyId)) notifyUpdate()
     }
 
     override fun add(vararg values: Pair<Id<Key>, M>) {
         if (values.map { (key, value) -> addImpl(value, key) }.any()) {
-            update?.invoke()
+            notifyUpdate()
         }
     }
 
     final override fun delete(value: M) {
         if (deleteImpl(value)) {
-            deleteListener?.invoke(value.id)
-            update?.invoke()
+            notifyDelete(value.id)
+            notifyUpdate()
         }
     }
 
     final override fun move(value: M, newKey: Id<Key>) {
         if (moveImpl(value, newKey)) {
-            update?.invoke()
+            notifyUpdate()
         }
     }
 
     final override fun edit(oldValue: M, newValue: M) {
-        if (editImpl(oldValue, newValue)) update?.invoke()
+        if (editImpl(oldValue, newValue)) notifyUpdate()
     }
 
     final override fun deleteCollection(keyId: Id<Key>) {
-        val deleted = deleteCollectionImpl(keyId)
-        deleted.onEach { deleteListener?.invoke(it) }
-        update?.invoke()
+        deleteCollectionImpl(keyId).onEach { deleted ->
+            notifyDelete(deleted)
+        }
+        notifyUpdate()
     }
 
     final override fun deleteAll() {
-        val deleted = deleteAllImpl()
-        deleted.onEach { deleteListener?.invoke(it) }
-        update?.invoke()
+        deleteAllImpl().onEach { deleted ->
+            notifyDelete(deleted)
+        }
+        notifyUpdate()
     }
 
     abstract fun addImpl(value: M, keyId: Id<Key>): Boolean
@@ -77,6 +89,14 @@ abstract class UpdatingRepository<M : ImmutableModel<M>, Key : ImmutableModel<Ke
     abstract fun deleteAllImpl(): Set<Id<M>>
     abstract fun editImpl(oldValue: M, newValue: M): Boolean
     abstract fun moveImpl(value: M, newKyId: Id<Key>): Boolean
+
+    private fun notifyUpdate() {
+        updateListeners.forEach { it.invoke() }
+    }
+
+    private fun notifyDelete(value: Id<M>) {
+        deleteListeners.forEach { it.invoke(value) }
+    }
 }
 
 fun <M : ImmutableModel<M>, Key : ImmutableModel<Key>> Repository<M, Key>.put(
@@ -89,3 +109,4 @@ fun <M : ImmutableModel<M>, Key : ImmutableModel<Key>> Repository<M, Key>.put(
 typealias UpdatingSpendingRepository = UpdatingRepository<Spending, Category>
 typealias UpdatingCategoriesRepository = UpdatingRepository<Category, Envelope>
 typealias UpdatingEnvelopesRepository = UpdatingRepository<Envelope, Root>
+typealias UpdatingGoalsRepository = UpdatingRepository<Goal, Root>

@@ -2,10 +2,12 @@ package com.tubetoast.envelopes.database.data
 
 import com.tubetoast.envelopes.common.domain.UpdatingCategoriesRepository
 import com.tubetoast.envelopes.common.domain.UpdatingEnvelopesRepository
+import com.tubetoast.envelopes.common.domain.UpdatingGoalsRepository
 import com.tubetoast.envelopes.common.domain.UpdatingRepository
 import com.tubetoast.envelopes.common.domain.UpdatingSpendingRepository
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.Goal
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Root
@@ -66,6 +68,11 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key : Immutable
         return emptySet() // deleting recursive with foreign key
     }
 }
+
+/** [UpdatingGoalsRepository] */
+class GoalsRepositoryDatabaseImpl(
+    dataSource: GoalsDataSource
+) : UpdatingRepositoryDatabaseImpl<Goal, Root>(dataSource)
 
 /** [UpdatingEnvelopesRepository] */
 class EnvelopesRepositoryDatabaseImpl(

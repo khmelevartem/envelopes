@@ -35,7 +35,7 @@ fun GoalsListScreen(
     Column(modifier = modifier) {
         GoalsListTopAppBar(navigate)
         LazyColumn {
-            items(items, key = { item -> item.data.id.code }) { item ->
+            items(items, key = { item -> item.data.goal.id.code }) { item ->
                 GoalItem(
                     itemModel = item,
                     onEditClick = { navigate(AppNavigation.editGoal(it)) },

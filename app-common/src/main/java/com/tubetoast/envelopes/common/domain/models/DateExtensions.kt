@@ -90,6 +90,10 @@ object DateConverter {
     fun String.toDate() = split(DELIMITER).map { it.toInt() }
         .let { (d, m, y) -> Date(day = d, month = m, year = y) }
 
+    fun String.toDateOrNull() = split(DELIMITER).mapNotNull { it.toIntOrNull() }
+        .run { if (size != 3) null else this }
+        ?.let { (d, m, y) -> Date(day = d, month = m, year = y) }
+
     fun Date.fromDate() = "$day$DELIMITER$month$DELIMITER$year"
 }
 

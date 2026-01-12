@@ -30,18 +30,21 @@ import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.ui.screens.ItemModel
 import com.tubetoast.envelopes.android.presentation.ui.theme.darken
 import com.tubetoast.envelopes.common.domain.models.Goal
+import com.tubetoast.envelopes.common.domain.models.sum
+import com.tubetoast.envelopes.common.domain.snapshots.GoalSnapshot
+import com.tubetoast.envelopes.common.domain.snapshots.sum
 
 @Composable
 fun GoalItem(
-    itemModel: ItemModel<Goal>,
+    itemModel: ItemModel<GoalSnapshot>,
     onEditClick: (Goal) -> Unit,
     onDeleteClick: (Goal) -> Unit,
     modifier: Modifier = Modifier
 ) = CardItem(
     color = itemModel.color,
-    modifier = modifier.clickable { onEditClick(itemModel.data) }
+    modifier = modifier.clickable { onEditClick(itemModel.data.goal) }
 ) {
-    val percentage = 0.5f // itemModel.data
+    val percentage = itemModel.data.categories.map { it.sum() }.sum() / itemModel.data.goal.target
     val darkColor = MaterialTheme.colors.onSurface.copy(alpha = 0.3f)
     HorizontalProgressBar(percentage, darkColor)
     Percentage(percentage, darkColor)
@@ -53,7 +56,7 @@ fun GoalItem(
             modifier = Modifier.fillMaxWidth()
         ) {
             Info(itemModel, darkColor)
-            IconButton(onClick = { onDeleteClick(itemModel.data) }) {
+            IconButton(onClick = { onDeleteClick(itemModel.data.goal) }) {
                 Icon(Icons.Rounded.Delete, contentDescription = "delete goal")
             }
         }
@@ -64,7 +67,7 @@ fun GoalItem(
 @Composable
 private fun Categories(
     modifier: Modifier,
-    itemModel: ItemModel<Goal>
+    itemModel: ItemModel<GoalSnapshot>
 ) {
     LazyRow(
         modifier = modifier.padding(4.dp),
@@ -83,7 +86,7 @@ private fun Categories(
                 color = itemModel.color.darken(),
                 shape = RoundedCornerShape(4.dp)
             )
-        items(itemModel.data.categories.toList()) {
+        items(itemModel.data.categories.map { it.category }) {
             CategoryItem(
                 name = it.name,
                 modifier = categoriesModifier
@@ -94,19 +97,19 @@ private fun Categories(
 
 @Composable
 private fun Info(
-    itemModel: ItemModel<Goal>,
+    itemModel: ItemModel<GoalSnapshot>,
     darkColor: Color
 ) {
     itemModel.data.run {
         Column(modifier = Modifier.padding(8.dp)) {
             Text(
-                text = name,
+                text = goal.name,
                 fontSize = TextUnit(value = 24f, type = Sp),
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1
             )
             Text(
-                text = finish?.let { "Until $it" } ?: "",
+                text = goal.finish?.let { "Until $it" } ?: "",
                 fontSize = TextUnit(value = 20f, type = Sp),
                 color = darkColor,
                 fontWeight = FontWeight.Bold

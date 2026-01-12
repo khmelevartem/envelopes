@@ -4,11 +4,17 @@ import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.Goal
 import com.tubetoast.envelopes.common.domain.models.Id
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Root
 import com.tubetoast.envelopes.common.domain.models.Spending
 import com.tubetoast.envelopes.common.domain.models.id
+import com.tubetoast.envelopes.database.data.dao.CategoryDao
+import com.tubetoast.envelopes.database.data.dao.EnvelopeDao
+import com.tubetoast.envelopes.database.data.dao.GoalDao
+import com.tubetoast.envelopes.database.data.dao.SpendingDao
+import com.tubetoast.envelopes.database.data.dao.StandardDao
 
 // Model, Key, ModelDatabaseEntity, KeyDatabaseEntity
 abstract class DataSource<M, K, MDE, KDE>(
@@ -89,6 +95,9 @@ abstract class DataSource<M, K, MDE, KDE>(
         return dao.update(newMDE) != 0
     }
 }
+
+class GoalsDataSource(dao: GoalDao, converter: Converter<Goal, GoalEntity>) :
+    DataSource<Goal, Root, GoalEntity, GoalEntity>(dao, converter, null, null)
 
 class EnvelopeDataSource(dao: EnvelopeDao, converter: Converter<Envelope, EnvelopeEntity>) :
     DataSource<Envelope, Root, EnvelopeEntity, EnvelopeEntity>(dao, converter, null, null)

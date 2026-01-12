@@ -2,10 +2,12 @@ package com.tubetoast.envelopes.android.di
 
 import com.tubetoast.envelopes.common.di.CATEGORIES_REPO
 import com.tubetoast.envelopes.common.di.ENVELOPES_REPO
+import com.tubetoast.envelopes.common.di.GOALS_REPO
 import com.tubetoast.envelopes.common.di.SPENDING_REPO
 import com.tubetoast.envelopes.common.di.api
 import com.tubetoast.envelopes.common.domain.UpdatingCategoriesRepository
 import com.tubetoast.envelopes.common.domain.UpdatingEnvelopesRepository
+import com.tubetoast.envelopes.common.domain.UpdatingGoalsRepository
 import com.tubetoast.envelopes.common.domain.UpdatingSpendingRepository
 import com.tubetoast.envelopes.database.di.DatabaseApi
 import org.koin.core.qualifier.named
@@ -22,5 +24,9 @@ val repositoriesModule = module {
 
     single<UpdatingSpendingRepository>(named(SPENDING_REPO)) {
         api<DatabaseApi>().spendingRepository
+    }
+
+    single<UpdatingGoalsRepository>(named(GOALS_REPO)) {
+        api<DatabaseApi>().goalsRepository
     }
 }

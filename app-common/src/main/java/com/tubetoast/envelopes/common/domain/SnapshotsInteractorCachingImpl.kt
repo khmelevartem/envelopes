@@ -27,12 +27,7 @@ class SnapshotsInteractorCachingImpl(
 
     init {
         listOf(spendingRepository, categoriesRepository, envelopesRepository).forEach {
-            it.update = it.update.let { innerUpdate ->
-                {
-                    isOutdated = true
-                    innerUpdate?.invoke()
-                }
-            }
+            it.addUpdateListener { isOutdated = true }
         }
     }
 }

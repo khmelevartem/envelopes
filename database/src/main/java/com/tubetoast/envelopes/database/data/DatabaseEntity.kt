@@ -17,6 +17,21 @@ abstract class DatabaseEntity {
         Index("valueId", orders = emptyArray(), unique = true)
     ]
 )
+data class GoalEntity(
+    @PrimaryKey(autoGenerate = true) override var primaryKey: Int = 0,
+    override val foreignKey: Int = Root.id.code,
+    override val valueId: Int,
+    val name: String,
+    val target: Long,
+    val startDate: String,
+    val finishDate: String
+) : DatabaseEntity()
+
+@Entity(
+    indices = [
+        Index("valueId", orders = emptyArray(), unique = true)
+    ]
+)
 data class EnvelopeEntity(
     @PrimaryKey(autoGenerate = true) override var primaryKey: Int = 0,
     override val foreignKey: Int = Root.id.code,

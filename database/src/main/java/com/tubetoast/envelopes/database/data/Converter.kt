@@ -4,7 +4,9 @@ import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.DateConverter.fromDate
 import com.tubetoast.envelopes.common.domain.models.DateConverter.toDate
+import com.tubetoast.envelopes.common.domain.models.DateConverter.toDateOrNull
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.Goal
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import com.tubetoast.envelopes.common.domain.models.Spending
 
@@ -60,5 +62,27 @@ class SpendingConverter : Converter<Spending, SpendingEntity> {
             amount = domainModel.amount.units,
             date = domainModel.date.fromDate(),
             comment = domainModel.comment
+        )
+}
+
+class GoalConverter : Converter<Goal, GoalEntity> {
+    override fun toDomainModel(databaseEntity: GoalEntity): Goal = databaseEntity.run {
+        Goal(
+            name = name,
+            target = Amount(units = target),
+            start = startDate.toDateOrNull(),
+            finish = finishDate.toDateOrNull()
+        )
+    }
+
+    override fun toDatabaseEntity(domainModel: Goal, foreignKey: Int, primaryKey: Int) =
+        GoalEntity(
+            primaryKey = primaryKey,
+            valueId = domainModel.id.code,
+            foreignKey = foreignKey,
+            name = domainModel.name,
+            target = domainModel.target.units,
+            startDate = domainModel.start?.fromDate().orEmpty(),
+            finishDate = domainModel.finish?.fromDate().orEmpty()
         )
 }

@@ -91,7 +91,7 @@ class EditEnvelopeViewModel(
                         it.envelope == envelope
                     }?.let { found ->
                         _categories.value = found.categories
-                            .sortedByDescending { it.sum() }
+                            .sortedByDescending { it.sum().units }
                     }
                 }
         }
