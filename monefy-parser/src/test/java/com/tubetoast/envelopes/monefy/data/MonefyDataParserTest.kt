@@ -9,7 +9,7 @@ class MonefyDataParserTest {
 
     @Test
     fun test() {
-        val realFile = File("src/test/resources/Monefy.Data.10.12.2023.csv")
+        val realFile = File("src/test/resources/Monefy.Data.13.01.2026.csv")
         parser.parse(realFile).forEach {
             println(it.category)
             it.transactions.forEach(::println)

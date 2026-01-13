@@ -1,6 +1,6 @@
 package com.tubetoast.envelopes.common.domain.models
 
-data class Amount constructor(
+data class Amount(
     val units: Long,
     val shares: Int = 0,
     val currency: Currency = Currency.Ruble
@@ -37,6 +37,24 @@ data class Amount constructor(
         check(this.currency == another.currency) {
             "Need to use converter to sum $this and $another"
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Amount) return false
+
+        if (units != other.units) return false
+        if (shares != other.shares) return false
+        if (currency != other.currency) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = units.hashCode()
+        result = 31 * result + shares
+        result = 31 * result + currency.name.hashCode()
+        return result
     }
 
     companion object {

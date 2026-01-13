@@ -15,10 +15,22 @@ interface Converter<M : ImmutableModel<M>, DE : DatabaseEntity> {
     fun toDatabaseEntity(domainModel: M, foreignKey: Int, primaryKey: Int = 0): DE
 }
 
-class EnvelopeConverter : Converter<Envelope, EnvelopeEntity> {
-    override fun toDomainModel(databaseEntity: EnvelopeEntity): Envelope = databaseEntity.run {
-        Envelope(name = name, limit = Amount(units = limit))
+abstract class CheckingConverter<M : ImmutableModel<M>, DE : DatabaseEntity> : Converter<M, DE> {
+    final override fun toDomainModel(databaseEntity: DE): M {
+        return databaseEntity.run {
+            withCheckValueId {
+                toDomainModelUnsafe()
+            }
+        }
     }
+
+    abstract fun DE.toDomainModelUnsafe(): M
+}
+
+class EnvelopeConverter : CheckingConverter<Envelope, EnvelopeEntity>() {
+
+    override fun EnvelopeEntity.toDomainModelUnsafe(): Envelope =
+        Envelope(name = name, limit = Amount(units = limit))
 
     override fun toDatabaseEntity(domainModel: Envelope, foreignKey: Int, primaryKey: Int) =
         EnvelopeEntity(
@@ -45,14 +57,14 @@ class CategoryConverter : Converter<Category, CategoryEntity> {
         )
 }
 
-class SpendingConverter : Converter<Spending, SpendingEntity> {
-    override fun toDomainModel(databaseEntity: SpendingEntity): Spending = databaseEntity.run {
+class SpendingConverter : CheckingConverter<Spending, SpendingEntity>() {
+
+    override fun SpendingEntity.toDomainModelUnsafe(): Spending =
         Spending(
             amount = Amount(units = amount),
             date = date.toDate(),
             comment = comment
         )
-    }
 
     override fun toDatabaseEntity(domainModel: Spending, foreignKey: Int, primaryKey: Int) =
         SpendingEntity(
@@ -65,15 +77,15 @@ class SpendingConverter : Converter<Spending, SpendingEntity> {
         )
 }
 
-class GoalConverter : Converter<Goal, GoalEntity> {
-    override fun toDomainModel(databaseEntity: GoalEntity): Goal = databaseEntity.run {
+class GoalConverter : CheckingConverter<Goal, GoalEntity>() {
+
+    override fun GoalEntity.toDomainModelUnsafe(): Goal =
         Goal(
             name = name,
             target = Amount(units = target),
             start = startDate.toDateOrNull(),
             finish = finishDate.toDateOrNull()
         )
-    }
 
     override fun toDatabaseEntity(domainModel: Goal, foreignKey: Int, primaryKey: Int) =
         GoalEntity(
@@ -85,4 +97,12 @@ class GoalConverter : Converter<Goal, GoalEntity> {
             startDate = domainModel.start?.fromDate().orEmpty(),
             finishDate = domainModel.finish?.fromDate().orEmpty()
         )
+}
+
+fun <T : ImmutableModel<T>> DatabaseEntity.withCheckValueId(model: () -> T): T {
+    return model().also {
+        check(it.id.code == valueId) {
+            "Inconsistent valueId: result is ${it.id.code} but is $valueId in db"
+        }
+    }
 }

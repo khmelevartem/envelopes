@@ -7,6 +7,7 @@ import com.tubetoast.envelopes.android.presentation.models.SelectableCategory
 import com.tubetoast.envelopes.common.domain.models.Category
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SelectableCategoriesListViewModel(
@@ -36,6 +37,6 @@ class SelectableCategoriesListViewModel(
     }
 
     fun toggleShowFilter() {
-        showFilter.value = !showFilter.value
+        showFilter.update { !it }
     }
 }
