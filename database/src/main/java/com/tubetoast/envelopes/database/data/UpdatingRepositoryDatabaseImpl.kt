@@ -71,8 +71,9 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key : Immutable
 
 /** [UpdatingGoalsRepository] */
 class GoalsRepositoryDatabaseImpl(
-    dataSource: GoalsDataSource
-) : UpdatingRepositoryDatabaseImpl<Goal, Root>(dataSource)
+    dataSource: GoalsDataSource,
+    settingsRepository: MutableSettingsRepository
+) : CleanableRepository<Goal, Root>(dataSource, settingsRepository, Setting.Key.DELETE_GOALS)
 
 /** [UpdatingEnvelopesRepository] */
 class EnvelopesRepositoryDatabaseImpl(
@@ -87,24 +88,29 @@ class CategoriesRepositoryDatabaseImpl(
 /** [UpdatingSpendingRepository] */
 class SpendingRepositoryDatabaseImpl(
     dataSource: SpendingDataSource,
-    private val settingsRepository: MutableSettingsRepository
-) : UpdatingRepositoryDatabaseImpl<Spending, Category>(dataSource) {
+    settingsRepository: MutableSettingsRepository
+) : CleanableRepository<Spending, Category>(dataSource, settingsRepository, Setting.Key.DELETE_SPENDING)
 
-    private val scope = CoroutineScope(Job())
+abstract class CleanableRepository<M : ImmutableModel<M>, Key : ImmutableModel<Key>>(
+    dataSource: DataSource<M, Key, *, *>,
+    private val settingsRepository: MutableSettingsRepository,
+    private val settingKey: Setting.Key,
+    scope: CoroutineScope = CoroutineScope(Job())
+) : UpdatingRepositoryDatabaseImpl<M, Key>(dataSource) {
 
     init {
         scope.launch {
-            settingsRepository.getSettingFlow(Setting.Key.DELETE_SPENDING).collect {
+            settingsRepository.getSettingFlow(settingKey).collect {
                 if (it.checked) deleteAll()
             }
         }
     }
 
-    override fun addImpl(value: Spending, keyId: Id<Category>): Boolean {
+    override fun addImpl(value: M, keyId: Id<Key>): Boolean {
         val added = super.addImpl(value, keyId)
         if (added) {
             settingsRepository.run {
-                val setting = getSetting(Setting.Key.DELETE_SPENDING)
+                val setting = getSetting(settingKey)
                 if (setting.checked) {
                     saveChanges(
                         setting.copy(checked = false)

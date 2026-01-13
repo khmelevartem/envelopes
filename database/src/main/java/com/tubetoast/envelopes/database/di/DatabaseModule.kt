@@ -47,7 +47,8 @@ fun databaseModule(context: Context) = module {
     }
     single {
         GoalsRepositoryDatabaseImpl(
-            GoalsDataSource(goalsDao, goalConverter)
+            GoalsDataSource(goalsDao, goalConverter),
+            get()
         )
     }
     single<CategoryToGoalLinksRepository> {

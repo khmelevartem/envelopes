@@ -6,7 +6,11 @@ data class Setting(
     val checked: Boolean
 ) {
     enum class Key {
-        FROM_LAST_IMPORT, FILTER_BY_YEAR, DELETE_SPENDING, LIMIT_INFLATION
+        FROM_LAST_IMPORT,
+        FILTER_BY_YEAR,
+        DELETE_SPENDING,
+        DELETE_GOALS,
+        LIMIT_INFLATION
     }
 }
 
@@ -17,4 +21,5 @@ fun Setting.Key.default(): Setting =
         Setting.Key.LIMIT_INFLATION -> Setting(this, "Limit inflation displaying by y", true)
         // это костыль. true - одноразово удалить все. false - ничего
         Setting.Key.DELETE_SPENDING -> Setting(this, "Delete all spending", false)
+        Setting.Key.DELETE_GOALS -> Setting(this, "Delete all goals", false)
     }
