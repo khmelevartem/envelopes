@@ -25,6 +25,7 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "11.4.0" }
+room = { id = "androidx.room", version.ref = "roomVersion"}
 
 [libraries]
 
