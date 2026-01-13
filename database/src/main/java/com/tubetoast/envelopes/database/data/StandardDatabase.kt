@@ -1,6 +1,7 @@
 package com.tubetoast.envelopes.database.data
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -18,7 +19,10 @@ import com.tubetoast.envelopes.database.data.dao.SpendingDao
         GoalEntity::class,
         CategoryToGoalLinkEntity::class
     ],
-    version = 1
+    autoMigrations = [
+        AutoMigration(1, 2)
+    ],
+    version = 2
 )
 abstract class StandardDatabase : RoomDatabase() {
     abstract fun envelopeDao(): EnvelopeDao

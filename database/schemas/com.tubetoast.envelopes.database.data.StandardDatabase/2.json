@@ -1,0 +1,321 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "2fdeeff69ba7000e33faa2664485d7ff",
+    "entities": [
+      {
+        "tableName": "EnvelopeEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`primaryKey` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `foreignKey` INTEGER NOT NULL, `valueId` INTEGER NOT NULL, `name` TEXT NOT NULL, `limit` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "primaryKey",
+            "columnName": "primaryKey",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "foreignKey",
+            "columnName": "foreignKey",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valueId",
+            "columnName": "valueId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "limit",
+            "columnName": "limit",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "primaryKey"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_EnvelopeEntity_valueId",
+            "unique": true,
+            "columnNames": [
+              "valueId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_EnvelopeEntity_valueId` ON `${TABLE_NAME}` (`valueId`)"
+          }
+        ]
+      },
+      {
+        "tableName": "CategoryEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`primaryKey` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `foreignKey` INTEGER NOT NULL, `valueId` INTEGER NOT NULL, `name` TEXT NOT NULL, `limit` INTEGER, FOREIGN KEY(`foreignKey`) REFERENCES `EnvelopeEntity`(`primaryKey`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "primaryKey",
+            "columnName": "primaryKey",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "foreignKey",
+            "columnName": "foreignKey",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valueId",
+            "columnName": "valueId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "limit",
+            "columnName": "limit",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "primaryKey"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_CategoryEntity_valueId",
+            "unique": true,
+            "columnNames": [
+              "valueId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_CategoryEntity_valueId` ON `${TABLE_NAME}` (`valueId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "EnvelopeEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "foreignKey"
+            ],
+            "referencedColumns": [
+              "primaryKey"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "SpendingEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`primaryKey` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `foreignKey` INTEGER NOT NULL, `valueId` INTEGER NOT NULL, `amount` INTEGER NOT NULL, `date` TEXT NOT NULL, `comment` TEXT, FOREIGN KEY(`foreignKey`) REFERENCES `CategoryEntity`(`primaryKey`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "primaryKey",
+            "columnName": "primaryKey",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "foreignKey",
+            "columnName": "foreignKey",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valueId",
+            "columnName": "valueId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "amount",
+            "columnName": "amount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comment",
+            "columnName": "comment",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "primaryKey"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_SpendingEntity_valueId",
+            "unique": true,
+            "columnNames": [
+              "valueId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SpendingEntity_valueId` ON `${TABLE_NAME}` (`valueId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "CategoryEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "foreignKey"
+            ],
+            "referencedColumns": [
+              "primaryKey"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "GoalEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`primaryKey` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `foreignKey` INTEGER NOT NULL, `valueId` INTEGER NOT NULL, `name` TEXT NOT NULL, `target` INTEGER NOT NULL, `startDate` TEXT NOT NULL, `finishDate` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "primaryKey",
+            "columnName": "primaryKey",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "foreignKey",
+            "columnName": "foreignKey",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valueId",
+            "columnName": "valueId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "target",
+            "columnName": "target",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startDate",
+            "columnName": "startDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "finishDate",
+            "columnName": "finishDate",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "primaryKey"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_GoalEntity_valueId",
+            "unique": true,
+            "columnNames": [
+              "valueId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_GoalEntity_valueId` ON `${TABLE_NAME}` (`valueId`)"
+          }
+        ]
+      },
+      {
+        "tableName": "CategoryToGoalLinkEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`primaryKey` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `categoryKey` INTEGER NOT NULL, `goalKey` INTEGER NOT NULL, FOREIGN KEY(`goalKey`) REFERENCES `GoalEntity`(`primaryKey`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`categoryKey`) REFERENCES `CategoryEntity`(`primaryKey`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "primaryKey",
+            "columnName": "primaryKey",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "categoryKey",
+            "columnName": "categoryKey",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "goalKey",
+            "columnName": "goalKey",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "primaryKey"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "GoalEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "goalKey"
+            ],
+            "referencedColumns": [
+              "primaryKey"
+            ]
+          },
+          {
+            "table": "CategoryEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "categoryKey"
+            ],
+            "referencedColumns": [
+              "primaryKey"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2fdeeff69ba7000e33faa2664485d7ff')"
+    ]
+  }
+}
