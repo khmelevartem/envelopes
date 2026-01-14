@@ -48,7 +48,7 @@ class CategoryToGoalLinksRepositoryDatabaseImpl(
         categories: Set<Category>
     ) {
         forEachCategory(goal, categories) { goalKey, categoryKey ->
-            dao.delete(CategoryToGoalLinkEntity(categoryKey = categoryKey, goalKey = goalKey))
+            dao.delete(goalKey = goalKey, categoryKey = categoryKey)
         }
     }
 

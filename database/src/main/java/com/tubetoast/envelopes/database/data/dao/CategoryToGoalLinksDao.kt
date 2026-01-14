@@ -1,7 +1,6 @@
 package com.tubetoast.envelopes.database.data.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.tubetoast.envelopes.database.data.CategoryToGoalLinkEntity
@@ -24,6 +23,6 @@ abstract class CategoryToGoalLinksDao {
     @Insert
     abstract fun write(link: CategoryToGoalLinkEntity)
 
-    @Delete
-    abstract fun delete(link: CategoryToGoalLinkEntity)
+    @Query("DELETE from categorytogoallinkentity WHERE goalKey LIKE :goalKey AND categoryKey LIKE :categoryKey")
+    abstract fun delete(goalKey: Int, categoryKey: Int)
 }
