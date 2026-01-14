@@ -2,7 +2,6 @@ envelopes todo:
 
 * total view
 * period view
-* ui on edit category
 * swap periods on envelopes list
 * drag to delete button
 * average envelope summ

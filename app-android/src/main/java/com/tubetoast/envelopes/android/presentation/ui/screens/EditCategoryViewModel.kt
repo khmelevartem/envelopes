@@ -35,22 +35,26 @@ class EditCategoryViewModel(
 
     data class CategoryOperations(
         val canConfirm: Boolean,
-        val canDelete: Boolean
+        val canDelete: Boolean,
+        val canChooseEnvelope: Boolean
     ) {
         companion object {
             val EMPTY = CategoryOperations(
                 canConfirm = false,
-                canDelete = false
+                canDelete = false,
+                canChooseEnvelope = false
             )
         }
     }
 
-    private var mode: Mode =
-        CreateCategoryMode(categoryInteractor, envelopeInteractor, viewModelScope)
+    private var mode: Mode = CreateCategoryMode(categoryInteractor, envelopeInteractor, viewModelScope)
         set(value) {
             field.destroy()
             field = value
+            isNewCategory.value = value is CreateCategoryMode
         }
+
+    val isNewCategory = mutableStateOf(mode is CreateCategoryMode)
 
     private val _categoryOperations = mutableStateOf(CategoryOperations.EMPTY)
     private val _envelope = mutableStateOf(Envelope.EMPTY)
@@ -101,8 +105,6 @@ class EditCategoryViewModel(
         }
     }
 
-    fun canChooseEnvelope(): Boolean = mode.canChooseEnvelope()
-
     override fun onCleared() {
         super.onCleared()
         mode.destroy()
@@ -113,7 +115,8 @@ class EditCategoryViewModel(
         viewModelScope.launch {
             _categoryOperations.value = CategoryOperations(
                 canConfirm = mode.canConfirm(category),
-                canDelete = mode.canDelete()
+                canDelete = mode.canDelete(),
+                canChooseEnvelope = mode.canChooseEnvelope()
             )
         }
     }
