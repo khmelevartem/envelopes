@@ -1,10 +1,12 @@
 package com.tubetoast.envelopes.common.domain.models
 
+import kotlin.math.roundToLong
+
 data class Amount(
     val units: Long,
     val shares: Int = 0,
     val currency: Currency = Currency.Ruble
-) : ImmutableModel<Amount>() {
+) : ImmutableModel<Amount>(), Comparable<Amount> {
     init {
         check(units >= 0 && shares >= 0) {
             "Cannot create negative amount $this"
@@ -13,9 +15,24 @@ data class Amount(
 
     infix operator fun plus(another: Amount): Amount {
         checkCurrency(another)
+        val sharesSum = this.shares + another.shares
+        val shares = sharesSum % SHARES_IN_UNIT
+        val plusUnits = sharesSum.floorDiv(SHARES_IN_UNIT)
         return Amount(
-            units = this.units + another.units,
-            shares = this.shares + another.shares,
+            units = this.units + another.units + plusUnits,
+            shares = shares,
+            currency = this.currency
+        )
+    }
+
+    infix operator fun minus(another: Amount): Amount {
+        checkCurrency(another)
+        val sharesDiff = this.shares - another.shares
+        val shares = if (sharesDiff >= 0) sharesDiff else SHARES_IN_UNIT + sharesDiff
+        val minusUnits = if (sharesDiff >= 0) 0 else 1
+        return Amount(
+            units = this.units - another.units - minusUnits,
+            shares = shares,
             currency = this.currency
         )
     }
@@ -24,6 +41,9 @@ data class Amount(
         checkCurrency(another)
         return this.units.toFloat() / another.units // avoid shared not to overflow int
     }
+
+    infix operator fun div(times: Int): Amount =
+        copy(units = (this.units.toFloat() / times).roundToLong()) // avoid shared not to overflow int
 
     infix operator fun times(other: Int) = run {
         val (units, shares) = (inShares() * other)
@@ -57,7 +77,19 @@ data class Amount(
         return result
     }
 
+    override fun compareTo(other: Amount): Int {
+        checkCurrency(other)
+        return when {
+            this.units > other.units -> 1
+            other.units > this.units -> -1
+            this.shares > other.shares -> 1
+            other.shares > this.shares -> -1
+            else -> 0
+        }
+    }
+
     companion object {
+        private const val SHARES_IN_UNIT = 100
         val ZERO = Amount(0)
     }
 }
