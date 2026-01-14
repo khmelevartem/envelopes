@@ -7,23 +7,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.navigation.AppNavigation
 import com.tubetoast.envelopes.android.presentation.navigation.Back
 import com.tubetoast.envelopes.android.presentation.navigation.Navigate
+import com.tubetoast.envelopes.android.presentation.ui.theme.EnvelopesTheme
+import com.tubetoast.envelopes.android.presentation.ui.theme.topAppBarColors
 import com.tubetoast.envelopes.android.presentation.ui.views.ApplyOrCloseButtons
 import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.android.presentation.ui.views.CategoryWithSumView
@@ -61,6 +63,7 @@ fun EditEnvelopeScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditEnvelopeTopAppBar(
     periodControlViewModel: PeriodControlViewModel,
@@ -69,8 +72,7 @@ private fun EditEnvelopeTopAppBar(
 ) {
     val isNewEnvelope by remember { editEnvelopeViewModel.isNewEnvelope }
     TopAppBar(
-        backgroundColor = Color.Black,
-        contentColor = Color.White,
+        colors = EnvelopesTheme.topAppBarColors(),
         title = { Text(text = if (isNewEnvelope) "Add envelope" else "Edit envelope") },
         navigationIcon = { BackButton(navigate) },
         actions = {

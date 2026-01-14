@@ -4,40 +4,38 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun ApplyOrCloseButtons(
+    modifier: Modifier = Modifier,
     onAbort: () -> Unit,
     canConfirm: Boolean,
     onConfirm: () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(72.dp)
-            .padding(vertical = 8.dp)
+            .padding(bottom = 8.dp, top = 12.dp)
     ) {
         CardItem(
-            color = MaterialTheme.colors.secondary,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.weight(1f)
         ) {
             IconButton(onClick = onAbort) {
                 Icon(
-                    tint = contentColorFor(MaterialTheme.colors.secondary),
+                    tint = contentColorFor(MaterialTheme.colorScheme.secondary),
                     imageVector = Icons.Default.Close,
                     contentDescription = "Cancel"
                 )
@@ -45,13 +43,11 @@ fun ApplyOrCloseButtons(
         }
 
         val colors = ButtonDefaults.buttonColors()
-        val background by colors.backgroundColor(enabled = canConfirm)
-        val content by colors.contentColor(enabled = canConfirm)
+        val background = if (canConfirm) colors.containerColor else colors.disabledContainerColor
+        val content = if (canConfirm) colors.contentColor else colors.disabledContentColor
         CardItem(
             color = background,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+            modifier = Modifier.weight(1f)
         ) {
             IconButton(
                 onClick = onConfirm,

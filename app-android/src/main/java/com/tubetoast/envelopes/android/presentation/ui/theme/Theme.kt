@@ -1,30 +1,24 @@
 package com.tubetoast.envelopes.android.presentation.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = darkColorScheme(
     primary = EColor.Emerald.darken(),
-    primaryVariant = EColor.Haki.darken(),
+    inversePrimary = EColor.Haki.darken(),
     secondary = EColor.Vanilla.darken()
 )
 
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     primary = EColor.Emerald,
-    primaryVariant = EColor.Haki,
+    inversePrimary = EColor.Haki,
     secondary = EColor.Vanilla
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
 )
 
 @Composable
@@ -36,9 +30,20 @@ fun EnvelopesTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
     }
 
     MaterialTheme(
-        colors = colors,
-        typography = Typography,
+        colorScheme = colors,
         shapes = Shapes,
         content = content
     )
 }
+
+object EnvelopesTheme
+
+@Composable
+fun EnvelopesTheme.topAppBarColors(): TopAppBarColors =
+    TopAppBarDefaults.topAppBarColors(
+        containerColor = Color.Black,
+        titleContentColor = Color.White,
+        subtitleContentColor = Color.White,
+        actionIconContentColor = Color.White,
+        navigationIconContentColor = Color.White
+    )

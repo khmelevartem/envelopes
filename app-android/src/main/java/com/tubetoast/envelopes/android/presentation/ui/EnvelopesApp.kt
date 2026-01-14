@@ -1,7 +1,10 @@
 package com.tubetoast.envelopes.android.presentation.ui
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -24,19 +27,17 @@ import com.tubetoast.envelopes.android.presentation.navigation.Statistics
 
 @Composable
 fun EnvelopesApp() {
-    MaterialTheme {
-        val navController = rememberNavController()
-        NavHost(navController = navController, startDestination = AppNavigation.start) {
-            with(this to navController) {
-                register(EnvelopeDetails)
-                register(CategoryDetails)
-                register(SelectEnvelope)
-                register(EnvelopesList)
-                register(Settings)
-                register(Statistics)
-                register(GoalsList)
-                register(GoalDetails)
-            }
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = AppNavigation.start) {
+        with(this to navController) {
+            register(EnvelopeDetails)
+            register(CategoryDetails)
+            register(SelectEnvelope)
+            register(EnvelopesList)
+            register(Settings)
+            register(Statistics)
+            register(GoalsList)
+            register(GoalDetails)
         }
     }
 }
@@ -45,8 +46,13 @@ private inline infix fun <reified A : NavigationRouteArgs> Pair<NavGraphBuilder,
     route: NavigationRoute<A>
 ) {
     first.composable<A> {
-        route.Route(it.toRoute<A>()) { next ->
-            second.next(next)
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            route.Route(it.toRoute<A>()) { next ->
+                second.next(next)
+            }
         }
     }
 }

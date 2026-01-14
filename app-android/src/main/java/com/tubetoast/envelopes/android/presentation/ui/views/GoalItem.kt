@@ -13,12 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,7 +45,7 @@ fun GoalItem(
     modifier = modifier.clickable { onEditClick(itemModel.data.goal) }
 ) {
     val percentage = itemModel.data.categories.map { it.sum() }.sum() / itemModel.data.goal.target
-    val darkColor = MaterialTheme.colors.onSurface.copy(alpha = 0.3f)
+    val darkColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
     HorizontalProgressBar(percentage, darkColor)
     Percentage(percentage, darkColor)
     Column(

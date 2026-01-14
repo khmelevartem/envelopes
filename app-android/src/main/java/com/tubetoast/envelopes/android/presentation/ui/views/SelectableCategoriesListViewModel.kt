@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 class SelectableCategoriesListViewModel(
     private val selectedEnvelopesRepository: SelectedCategoryRepository
 ) : ViewModel() {
-    private val showFilter = MutableStateFlow(true)
+    private val showFilter = MutableStateFlow(false)
     val displayedCategories = MutableStateFlow(emptyList<SelectableCategory>())
 
     init {
