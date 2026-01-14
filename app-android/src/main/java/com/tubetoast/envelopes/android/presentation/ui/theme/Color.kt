@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 object EColor {
 
     val Emerald = Color(0xff237D62)
+    val Charcoal = Color(0xff49637b)
     val Haki = Color(0xff669672)
     val Vanilla = Color(0xffc9d7ff)
 

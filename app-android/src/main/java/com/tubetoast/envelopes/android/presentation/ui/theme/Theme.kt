@@ -11,14 +11,16 @@ import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColorScheme(
     primary = EColor.Emerald.darken(),
-    inversePrimary = EColor.Haki.darken(),
-    secondary = EColor.Vanilla.darken()
+    primaryContainer = EColor.Emerald.darken().copy(alpha = 0.8f),
+    secondary = EColor.Charcoal.darken(),
+    tertiary = EColor.Vanilla.darken()
 )
 
 private val LightColorPalette = lightColorScheme(
     primary = EColor.Emerald,
-    inversePrimary = EColor.Haki,
-    secondary = EColor.Vanilla
+    primaryContainer = EColor.Emerald.copy(alpha = 0.8f),
+    secondary = EColor.Charcoal,
+    tertiary = EColor.Vanilla
 )
 
 @Composable

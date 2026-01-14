@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,24 +28,24 @@ fun ApplyOrCloseButtons(
             .height(72.dp)
             .padding(bottom = 8.dp, top = 12.dp)
     ) {
+        val color = MaterialTheme.colorScheme.secondary
         CardItem(
-            color = MaterialTheme.colorScheme.secondary,
+            color = color,
             modifier = Modifier.weight(1f)
         ) {
             IconButton(onClick = onAbort) {
                 Icon(
-                    tint = contentColorFor(MaterialTheme.colorScheme.secondary),
+                    tint = contentColorFor(color),
                     imageVector = Icons.Default.Close,
                     contentDescription = "Cancel"
                 )
             }
         }
 
-        val colors = ButtonDefaults.buttonColors()
-        val background = if (canConfirm) colors.containerColor else colors.disabledContainerColor
-        val content = if (canConfirm) colors.contentColor else colors.disabledContentColor
+        val buttonColor =
+            if (canConfirm) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer
         CardItem(
-            color = background,
+            color = buttonColor,
             modifier = Modifier.weight(1f)
         ) {
             IconButton(
@@ -54,7 +53,7 @@ fun ApplyOrCloseButtons(
                 enabled = canConfirm
             ) {
                 Icon(
-                    tint = content,
+                    tint = contentColorFor(buttonColor),
                     imageVector = Icons.Default.Done,
                     contentDescription = "Confirm"
                 )
