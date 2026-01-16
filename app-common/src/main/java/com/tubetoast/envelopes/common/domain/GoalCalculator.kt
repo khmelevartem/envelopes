@@ -3,7 +3,6 @@ package com.tubetoast.envelopes.common.domain
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.inMonths
-import com.tubetoast.envelopes.common.domain.models.rangeTo
 import com.tubetoast.envelopes.common.domain.snapshots.GoalSnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.sum
 

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -137,5 +138,20 @@ private fun Info(
                 fontWeight = FontWeight.Bold
             )
         }
+    }
+}
+
+@Composable
+private fun HorizontalProgressBar(percentage: Float, darkColor: Color) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(fraction = percentage)
+                .background(
+                    color = darkColor,
+                    shape = RoundedCornerShape(bottomEnd = 4.dp, topEnd = 4.dp)
+                )
+                .height(6.dp)
+        )
     }
 }

@@ -8,7 +8,7 @@ fun Date.monthAsRange() =
 fun Date.yearAsRange() =
     copy(day = 1, month = 1)..copy(day = 31, month = 12)
 
-infix operator fun Date.rangeTo(other: Date): DateRange =
+infix fun Date.dateRangeTo(other: Date): DateRange =
     DateRange(start = this, endInclusive = other)
 
 fun Date.daysInThisYear() =

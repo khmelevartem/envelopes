@@ -34,6 +34,8 @@ data class Date(
         return "$day.$month.$year"
     }
 
+    infix operator fun rangeTo(other: Date): DateRange = dateRangeTo(other)
+
     companion object {
         @OptIn(ExperimentalTime::class)
         fun fromMillis(millis: Long): Date =

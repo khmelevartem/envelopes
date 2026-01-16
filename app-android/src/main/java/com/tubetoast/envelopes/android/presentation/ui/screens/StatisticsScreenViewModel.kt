@@ -11,7 +11,6 @@ import com.tubetoast.envelopes.common.domain.SpendingInteractor
 import com.tubetoast.envelopes.common.domain.models.Date.Companion.today
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.inMonths
-import com.tubetoast.envelopes.common.domain.models.rangeTo
 import com.tubetoast.envelopes.common.settings.Setting
 import com.tubetoast.envelopes.common.settings.SettingsRepository
 import kotlinx.coroutines.Dispatchers
@@ -101,10 +100,7 @@ class AverageViewViewModel(
     init {
         viewModelScope.launch {
 
-            maxMonths = spendingInteractor.getEarliestSpending()
-                .date
-                .rangeTo(today())
-                .inMonths()
+            maxMonths = (spendingInteractor.getEarliestSpending().date..today()).inMonths()
 
             launch {
                 merge(periodInMonths, isPeriodInMonths, selectedEnvelopes.items).collect {

@@ -8,3 +8,5 @@ envelopes todo:
 * избавиться от коина в пользу ручного DI
 * save goal percentage in db
 * bottom navigation
+* fix goal and category updating
+* move goal calculations to view model

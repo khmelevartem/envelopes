@@ -10,4 +10,8 @@ data class DateRange(
         other.start > start && other.endInclusive > endInclusive -> -1
         else -> throw IllegalStateException("Cannot compare $this to $other")
     }
+
+    companion object {
+        val EMPTY = DateRange(Date.today(), Date.today())
+    }
 }

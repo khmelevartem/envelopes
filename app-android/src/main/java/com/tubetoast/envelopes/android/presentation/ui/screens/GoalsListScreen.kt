@@ -2,6 +2,7 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -33,10 +34,10 @@ fun GoalsListScreen(
     viewModel: GoalsListViewModel = koinViewModel()
 ) {
     val goals by viewModel.goals.collectAsState()
-    val items = goals.toList().asItemModels()
+    val items = goals.asItemModels()
     Column(modifier = modifier) {
         GoalsListTopAppBar(navigate)
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(top = 4.dp)) {
             items(items, key = { item -> item.data.goal.id.code }) { item ->
                 GoalItem(
                     itemModel = item,

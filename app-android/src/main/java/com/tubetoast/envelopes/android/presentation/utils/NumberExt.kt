@@ -1,5 +1,7 @@
 package com.tubetoast.envelopes.android.presentation.utils
 
+import com.tubetoast.envelopes.common.domain.models.Amount
+
 fun Long.formatToReadableNumber(): String {
     val rev = toString().reversed()
     val strBuilder = StringBuilder()
@@ -11,3 +13,5 @@ fun Long.formatToReadableNumber(): String {
     }
     return strBuilder.toString().reversed()
 }
+
+fun Amount.formatToReadableNumber(): String = units.formatToReadableNumber()

@@ -48,7 +48,7 @@ private inline infix fun <reified A : NavigationRouteArgs> Pair<NavGraphBuilder,
     first.composable<A> {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.surface
+            color = MaterialTheme.colorScheme.surfaceDim
         ) {
             route.Route(it.toRoute<A>()) { next ->
                 second.next(next)

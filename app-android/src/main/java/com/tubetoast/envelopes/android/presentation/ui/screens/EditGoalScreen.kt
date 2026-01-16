@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,6 +34,7 @@ import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.android.presentation.ui.views.DatePickerFieldToModal
 import com.tubetoast.envelopes.android.presentation.ui.views.SelectableCategoriesList
 import com.tubetoast.envelopes.android.presentation.ui.views.SelectableCategoriesListViewModel
+import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.models.Goal
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -47,7 +52,9 @@ fun EditGoalScreen(
         Column(
             modifier = Modifier.fillMaxSize().align(Alignment.TopCenter)
         ) {
-            EditGoalTopAppBar(navigate, isNewGoal)
+            EditGoalTopAppBar(navigate, operations.canDelete, isNewGoal) {
+                editGoalViewModel.delete()
+            }
             GoalInfo(
                 draftGoal = draftGoal,
                 editGoalViewModel = editGoalViewModel
@@ -91,8 +98,8 @@ fun GoalInfo(
             maxLines = 1
         )
         OutlinedTextField(
-            value = draftGoal.target.units.takeIf { it > 0 }?.toString().orEmpty(),
-            onValueChange = { editGoalViewModel.setTarget(it) },
+            value = draftGoal.target.units.takeIf { it > 0 }?.formatToReadableNumber().orEmpty(),
+            onValueChange = { editGoalViewModel.setTarget(it.replace(" ", "")) },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             label = { Text("Target") },
@@ -111,11 +118,24 @@ fun GoalInfo(
 @Composable
 private fun EditGoalTopAppBar(
     navigate: Navigate,
-    isNewGoal: Boolean
+    canDelete: Boolean,
+    isNewGoal: Boolean,
+    onDelete: () -> Unit
 ) {
     TopAppBar(
         colors = EnvelopesTheme.topAppBarColors(),
         title = { Text(text = if (isNewGoal) "Add goal" else "Edit goal") },
-        navigationIcon = { BackButton(navigate) }
+        navigationIcon = { BackButton(navigate) },
+        actions = {
+            IconButton(
+                onClick = {
+                    onDelete()
+                    navigate(Back)
+                },
+                enabled = canDelete
+            ) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete")
+            }
+        }
     )
 }
