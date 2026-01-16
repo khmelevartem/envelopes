@@ -18,7 +18,8 @@ import com.tubetoast.envelopes.android.presentation.ui.screens.asItemModels
 @Composable
 fun SelectableCategoriesList(viewModel: SelectableCategoriesListViewModel) {
     val categories by viewModel.displayedCategories.collectAsState()
-    val itemModels = categories.asItemModels()
+    val isColorful by viewModel.isColorful.collectAsState()
+    val itemModels = categories.asItemModels(isColorful.checked)
     LazyColumn(modifier = Modifier.padding(vertical = 16.dp)) {
         item {
             CardItem(color = MaterialTheme.colorScheme.secondary) {

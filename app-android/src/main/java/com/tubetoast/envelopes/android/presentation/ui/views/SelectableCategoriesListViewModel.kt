@@ -5,13 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.android.domain.SelectedCategoryRepository
 import com.tubetoast.envelopes.android.presentation.models.SelectableCategory
 import com.tubetoast.envelopes.common.domain.models.Category
+import com.tubetoast.envelopes.common.settings.Setting
+import com.tubetoast.envelopes.common.settings.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SelectableCategoriesListViewModel(
-    private val selectedEnvelopesRepository: SelectedCategoryRepository
+    private val selectedEnvelopesRepository: SelectedCategoryRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
     private val showFilter = MutableStateFlow(false)
     val displayedCategories = MutableStateFlow(emptyList<SelectableCategory>())
@@ -27,6 +31,8 @@ class SelectableCategoriesListViewModel(
             }
         }
     }
+
+    val isColorful = settingsRepository.getSettingFlow(Setting.Key.COLORFUL)
 
     fun chooseCategory(category: Category) {
         selectedEnvelopesRepository.changeSelection {

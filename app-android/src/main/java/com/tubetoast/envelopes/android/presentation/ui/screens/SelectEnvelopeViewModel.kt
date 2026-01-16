@@ -10,6 +10,8 @@ import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.id
+import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
+import com.tubetoast.envelopes.common.settings.Setting
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -18,11 +20,13 @@ import kotlinx.coroutines.launch
 
 class SelectEnvelopeViewModel(
     private val categoryInteractor: CategoryInteractor,
-    private val snapshotsInteractor: SnapshotsInteractor
+    private val snapshotsInteractor: SnapshotsInteractor,
+    settingsRepository: MutableSettingsRepository
 ) : ViewModel() {
 
     private val categoryFlow = MutableStateFlow(Category.EMPTY)
     private val envelopesFlow = mutableStateOf(emptyList<SelectableEnvelope>())
+    val isColorful = settingsRepository.getSettingFlow(Setting.Key.COLORFUL)
 
     init {
         viewModelScope.launch {

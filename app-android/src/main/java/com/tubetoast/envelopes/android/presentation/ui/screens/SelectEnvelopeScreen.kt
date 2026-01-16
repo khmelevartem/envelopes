@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -36,7 +37,8 @@ fun SelectEnvelopeScreen(
 ) {
     Column {
         val category = viewModel.category(categoryId).collectAsState(initial = Category.EMPTY)
-        val itemModels = viewModel.envelopes().value.asItemModels()
+        val isColorful by viewModel.isColorful.collectAsState()
+        val itemModels = viewModel.envelopes().value.asItemModels(isColorful.checked)
         Text(
             text = category.value.name,
             fontSize = TextUnit(value = 24f, type = TextUnitType.Sp),

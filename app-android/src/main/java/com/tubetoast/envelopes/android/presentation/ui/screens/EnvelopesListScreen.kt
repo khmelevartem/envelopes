@@ -51,7 +51,8 @@ fun EnvelopesListScreen(
     periodControlViewModel: PeriodControlViewModel = koinViewModel()
 ) {
     val envelopes by envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
-    val itemModels = envelopes.asItemModels()
+    val isColorful by envelopesListViewModel.isColorful.collectAsState()
+    val itemModels = envelopes.asItemModels(isColorful.checked)
     val listState = rememberLazyListState()
     val filterByYear by envelopesListViewModel.filterByYear.collectAsState()
     Column {

@@ -33,6 +33,8 @@ class EnvelopesListViewModel(
     val itemModels: Flow<Iterable<EnvelopeSnapshot>> = snapshotsInteractor
         .envelopeSnapshots(selectedPeriodRepository.selectedPeriodFlow)
 
+    val isColorful = settingsRepository.getSettingFlow(Setting.Key.COLORFUL)
+
     fun delete(envelope: Envelope) {
         viewModelScope.launch {
             envelopeInteractor.deleteEnvelope(envelope)

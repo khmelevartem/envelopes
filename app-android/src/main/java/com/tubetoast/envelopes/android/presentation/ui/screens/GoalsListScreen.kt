@@ -34,7 +34,8 @@ fun GoalsListScreen(
     viewModel: GoalsListViewModel = koinViewModel()
 ) {
     val goals by viewModel.goals.collectAsState()
-    val items = goals.asItemModels()
+    val isColorful by viewModel.isColorful.collectAsState()
+    val items = goals.asItemModels(isColorful.checked)
     Column(modifier = modifier) {
         GoalsListTopAppBar(navigate)
         LazyColumn(modifier = Modifier.padding(top = 4.dp)) {

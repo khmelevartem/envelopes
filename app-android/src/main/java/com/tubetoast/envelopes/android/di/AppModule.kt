@@ -26,16 +26,16 @@ val appModule = module {
     viewModel { EnvelopesListViewModel(get(), get(), get(), get()) }
     viewModel { EditEnvelopeViewModel(get(), get(), get()) }
     viewModel { EditCategoryViewModel(get(), get(), get()) }
-    viewModel { SelectEnvelopeViewModel(get(), get()) }
+    viewModel { SelectEnvelopeViewModel(get(), get(), get()) }
     viewModel { SettingsViewModel(get()) }
     viewModel { MainViewModel(get(), get(), androidContext()) }
     viewModel { PeriodControlViewModel(get(), get()) }
     viewModel { AverageViewViewModel(get(), get(), get()) }
     viewModel { InflationViewModel(get(), get(), get()) }
     viewModel { EnvelopesFilterViewModel(get()) }
-    viewModel { GoalsListViewModel(get(), get()) }
+    viewModel { GoalsListViewModel(get(), get(), get()) }
     viewModel { EditGoalViewModel(get(), get(), get()) }
-    viewModel { SelectableCategoriesListViewModel(get()) }
+    viewModel { SelectableCategoriesListViewModel(get(), get()) }
     single { SelectedEnvelopesRepository(get()) }
     single { SelectedCategoryRepository(get()) }
     single<MutableSettingsRepository> {

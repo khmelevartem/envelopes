@@ -10,7 +10,8 @@ data class Setting(
         FILTER_BY_YEAR,
         DELETE_SPENDING,
         DELETE_GOALS,
-        LIMIT_INFLATION
+        LIMIT_INFLATION,
+        COLORFUL
     }
 }
 
@@ -22,4 +23,5 @@ fun Setting.Key.default(): Setting =
         // это костыль. true - одноразово удалить все. false - ничего
         Setting.Key.DELETE_SPENDING -> Setting(this, "Delete all spending", false)
         Setting.Key.DELETE_GOALS -> Setting(this, "Delete all goals", false)
+        Setting.Key.COLORFUL -> Setting(this, "Colorful envelopes and goals", true)
     }

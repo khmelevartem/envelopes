@@ -1,5 +1,6 @@
 package com.tubetoast.envelopes.android.presentation.ui.screens
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.tubetoast.envelopes.android.presentation.ui.theme.EColor
@@ -11,5 +12,14 @@ data class ItemModel<T>(
 )
 
 @Composable
-fun <T> Iterable<T>.asItemModels() =
-    mapIndexed { index, value -> ItemModel(value, EColor.ePalette().next(index)) }
+fun <T> Iterable<T>.asItemModels(colorful: Boolean = true) =
+    mapIndexed { index, value ->
+        ItemModel(
+            value,
+            if (colorful) {
+                EColor.ePalette().next(index)
+            } else {
+                MaterialTheme.colorScheme.surfaceContainer
+            }
+        )
+    }
