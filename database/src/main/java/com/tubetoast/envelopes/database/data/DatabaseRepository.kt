@@ -1,10 +1,10 @@
 package com.tubetoast.envelopes.database.data
 
-import com.tubetoast.envelopes.common.domain.UpdatingCategoriesRepository
-import com.tubetoast.envelopes.common.domain.UpdatingEnvelopesRepository
-import com.tubetoast.envelopes.common.domain.UpdatingGoalsRepository
-import com.tubetoast.envelopes.common.domain.UpdatingRepository
-import com.tubetoast.envelopes.common.domain.UpdatingSpendingRepository
+import com.tubetoast.envelopes.common.domain.CategoriesRepository
+import com.tubetoast.envelopes.common.domain.EnvelopesRepository
+import com.tubetoast.envelopes.common.domain.GoalsRepository
+import com.tubetoast.envelopes.common.domain.Repository
+import com.tubetoast.envelopes.common.domain.SpendingRepository
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Goal
@@ -18,9 +18,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key : ImmutableModel<Key>>(
+open class DatabaseRepository<M : ImmutableModel<M>, Key : ImmutableModel<Key>>(
     private val dataSource: DataSource<M, Key, *, *>
-) : UpdatingRepository<M, Key>() {
+) : Repository<M, Key> {
 
     override fun get(valueId: Id<M>): M? {
         return dataSource.get(valueId)
@@ -30,63 +30,63 @@ open class UpdatingRepositoryDatabaseImpl<M : ImmutableModel<M>, Key : Immutable
         return dataSource.getCollection(keyId).toSet()
     }
 
-    override fun moveImpl(value: M, newKyId: Id<Key>): Boolean {
-        return dataSource.move(value, newKyId)
+    override fun move(value: M, newKey: Id<Key>) {
+        dataSource.move(value, newKey)
     }
 
     override fun getAll(): Set<M> {
         return dataSource.getAll().toSet()
     }
 
-    override fun getAllByKeys(): Map<Id<Key>, Set<M>> {
-        return dataSource.getAllByKeys()
-    }
-
     override fun getKey(valueId: Id<M>): Id<Key>? {
         return dataSource.getKey(valueId)
     }
 
-    override fun addImpl(value: M, keyId: Id<Key>): Boolean {
-        return dataSource.write(value, keyId)
+    override fun add(keyId: Id<Key>, value: M) {
+        dataSource.write(value, keyId)
     }
 
-    override fun deleteImpl(value: M): Boolean {
-        return dataSource.delete(value.id)
+    override fun add(vararg values: Pair<Id<Key>, M>) {
+        values.forEach {
+            add(it.first, it.second)
+        }
     }
 
-    override fun editImpl(oldValue: M, newValue: M): Boolean {
-        return dataSource.update(oldValue.id, newValue)
+    override fun delete(value: M) {
+        dataSource.delete(value.id)
     }
 
-    override fun deleteCollectionImpl(keyId: Id<Key>): Set<Id<M>> {
+    override fun edit(oldValue: M, newValue: M) {
+        dataSource.update(oldValue.id, newValue)
+    }
+
+    override fun deleteCollection(keyId: Id<Key>) {
         dataSource.deleteCollection(keyId)
-        return emptySet() // deleting recursive with foreign key
     }
 
-    override fun deleteAllImpl(): Set<Id<M>> {
+    override fun deleteAll() {
         dataSource.deleteAll()
-        return emptySet() // deleting recursive with foreign key
     }
 }
 
-/** [UpdatingGoalsRepository] */
-class GoalsRepositoryDatabaseImpl(
+/** [GoalsRepository] */
+class GoalsDatabaseRepository(
     dataSource: GoalsDataSource,
     settingsRepository: MutableSettingsRepository
 ) : CleanableRepository<Goal, Root>(dataSource, settingsRepository, Setting.Key.DELETE_GOALS)
 
-/** [UpdatingEnvelopesRepository] */
-class EnvelopesRepositoryDatabaseImpl(
+/** [EnvelopesRepository] */
+class EnvelopesDatabaseRepository(
     dataSource: EnvelopeDataSource
-) : UpdatingRepositoryDatabaseImpl<Envelope, Root>(dataSource)
+) : DatabaseRepository<Envelope, Root>(dataSource)
 
-/** [UpdatingCategoriesRepository] */
-class CategoriesRepositoryDatabaseImpl(
+/** [CategoriesRepository] */
+class CategoriesDatabaseRepository(
     dataSource: CategoryDataSource
-) : UpdatingRepositoryDatabaseImpl<Category, Envelope>(dataSource)
+) : DatabaseRepository<Category, Envelope>(dataSource)
 
-/** [UpdatingSpendingRepository] */
-class SpendingRepositoryDatabaseImpl(
+/** [SpendingRepository] */
+class SpendingDatabaseRepository(
     dataSource: SpendingDataSource,
     settingsRepository: MutableSettingsRepository
 ) : CleanableRepository<Spending, Category>(dataSource, settingsRepository, Setting.Key.DELETE_SPENDING)
@@ -96,7 +96,7 @@ abstract class CleanableRepository<M : ImmutableModel<M>, Key : ImmutableModel<K
     private val settingsRepository: MutableSettingsRepository,
     private val settingKey: Setting.Key,
     scope: CoroutineScope = CoroutineScope(Job())
-) : UpdatingRepositoryDatabaseImpl<M, Key>(dataSource) {
+) : DatabaseRepository<M, Key>(dataSource) {
 
     init {
         scope.launch {
@@ -106,16 +106,14 @@ abstract class CleanableRepository<M : ImmutableModel<M>, Key : ImmutableModel<K
         }
     }
 
-    override fun addImpl(value: M, keyId: Id<Key>): Boolean {
-        val added = super.addImpl(value, keyId)
-        if (added) {
-            settingsRepository.run {
-                val setting = getSetting(settingKey)
-                if (setting.checked) {
-                    saveChanges(
-                        setting.copy(checked = false)
-                    )
-                }
+    override fun add(keyId: Id<Key>, value: M) {
+        val added = super.add(keyId, value)
+        settingsRepository.run {
+            val setting = getSetting(settingKey)
+            if (setting.checked) {
+                saveChanges(
+                    setting.copy(checked = false)
+                )
             }
         }
         return added

@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class CategoryInteractorImpl(
-    private val repository: UpdatingCategoriesRepository
+    private val repository: CategoriesRepository
 ) : CategoryInteractor {
     private val dispatcher = Dispatchers.IO
 

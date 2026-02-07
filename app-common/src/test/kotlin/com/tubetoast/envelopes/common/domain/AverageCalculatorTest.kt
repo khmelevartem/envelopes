@@ -1,6 +1,6 @@
 package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.common.data.SpendingRepositoryInMemoryImpl
+import com.tubetoast.envelopes.common.data.SpendingInMemoryRepository
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Date
@@ -34,7 +34,7 @@ class AverageCalculatorTest {
             snapshotOf(*spending)
         )
     }
-    private val repository = SpendingRepositoryInMemoryImpl().apply {
+    private val repository = SpendingInMemoryRepository().apply {
         spending.forEach {
             add(it.id(), it)
         }

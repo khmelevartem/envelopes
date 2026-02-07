@@ -8,7 +8,9 @@ import androidx.room.RoomDatabase
 import com.tubetoast.envelopes.database.data.dao.CategoryDao
 import com.tubetoast.envelopes.database.data.dao.CategoryToGoalLinksDao
 import com.tubetoast.envelopes.database.data.dao.EnvelopeDao
+import com.tubetoast.envelopes.database.data.dao.EnvelopeSnapshotDao
 import com.tubetoast.envelopes.database.data.dao.GoalDao
+import com.tubetoast.envelopes.database.data.dao.GoalSnapshotDao
 import com.tubetoast.envelopes.database.data.dao.SpendingDao
 
 @Database(
@@ -30,6 +32,8 @@ abstract class StandardDatabase : RoomDatabase() {
     abstract fun spendingDao(): SpendingDao
     abstract fun goalDao(): GoalDao
     abstract fun linksDao(): CategoryToGoalLinksDao
+    abstract fun envelopeSnapshotDao(): EnvelopeSnapshotDao
+    abstract fun goalSnapshotDao(): GoalSnapshotDao
 
     companion object Factory {
         fun create(context: Context) =

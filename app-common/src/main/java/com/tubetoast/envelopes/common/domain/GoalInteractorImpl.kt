@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GoalInteractorImpl(
-    private val repository: UpdatingGoalsRepository,
+    private val repository: GoalsRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : GoalInteractor {
 

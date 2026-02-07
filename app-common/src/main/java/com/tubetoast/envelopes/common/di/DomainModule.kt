@@ -25,9 +25,7 @@ import org.koin.dsl.module
 val domainModule = module {
     single<SnapshotsInteractor> {
         SnapshotsInteractorCachingImpl(
-            spendingRepository = get(named(SPENDING_REPO)),
-            categoriesRepository = get(named(CATEGORIES_REPO)),
-            envelopesRepository = get(named(ENVELOPES_REPO))
+            get()
         )
     }
     single<EnvelopeInteractor> { EnvelopeInteractorImpl(repository = get(named(ENVELOPES_REPO))) }
@@ -41,8 +39,8 @@ val domainModule = module {
     single { SpendingCalculator(get(), get()) }
     single<GoalSnapshotInteractor> {
         GoalSnapshotInteractorImpl(
-            linksRepository = get(),
-            spendingRepository = get(named(SPENDING_REPO))
+            repository = get(),
+            linksRepository = get()
         )
     }
 }

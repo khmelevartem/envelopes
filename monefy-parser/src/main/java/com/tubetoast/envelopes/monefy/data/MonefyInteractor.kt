@@ -1,8 +1,8 @@
 package com.tubetoast.envelopes.monefy.data
 
-import com.tubetoast.envelopes.common.domain.UpdatingCategoriesRepository
-import com.tubetoast.envelopes.common.domain.UpdatingEnvelopesRepository
-import com.tubetoast.envelopes.common.domain.UpdatingSpendingRepository
+import com.tubetoast.envelopes.common.domain.CategoriesRepository
+import com.tubetoast.envelopes.common.domain.EnvelopesRepository
+import com.tubetoast.envelopes.common.domain.SpendingRepository
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Spending
 import com.tubetoast.envelopes.common.domain.models.undefinedCategoriesEnvelope
@@ -11,9 +11,9 @@ import java.io.InputStream
 
 class MonefyInteractor(
     private val monefyDataParser: MonefyDataParser,
-    private val envelopesRepository: UpdatingEnvelopesRepository,
-    private val categoriesRepository: UpdatingCategoriesRepository,
-    private val spendingRepository: UpdatingSpendingRepository
+    private val envelopesRepository: EnvelopesRepository,
+    private val categoriesRepository: CategoriesRepository,
+    private val spendingRepository: SpendingRepository
 ) {
     @JvmOverloads
     suspend fun import(inputStream: InputStream, startFrom: Date? = null): Date? {

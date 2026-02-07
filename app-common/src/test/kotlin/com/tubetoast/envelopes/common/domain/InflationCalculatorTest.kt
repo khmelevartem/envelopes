@@ -1,6 +1,6 @@
 package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.common.data.SpendingRepositoryInMemoryImpl
+import com.tubetoast.envelopes.common.data.SpendingInMemoryRepository
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Date
@@ -21,7 +21,7 @@ class InflationCalculatorTest {
     private val calculator = InflationCalculator(
         SpendingCalculator(
             snapshotsInteractor,
-            SpendingInteractorImpl(SpendingRepositoryInMemoryImpl())
+            SpendingInteractorImpl(SpendingInMemoryRepository())
         )
     )
 

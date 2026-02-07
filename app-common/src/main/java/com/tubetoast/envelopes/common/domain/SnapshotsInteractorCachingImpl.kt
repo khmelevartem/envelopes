@@ -1,12 +1,11 @@
 package com.tubetoast.envelopes.common.domain
 
+import SnapshotsInteractorImpl
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 
 class SnapshotsInteractorCachingImpl(
-    spendingRepository: UpdatingSpendingRepository,
-    categoriesRepository: UpdatingCategoriesRepository,
-    envelopesRepository: UpdatingEnvelopesRepository
-) : SnapshotsInteractorImpl(spendingRepository, categoriesRepository, envelopesRepository) {
+    envelopeSnapshotRepository: EnvelopeSnapshotRepository
+) : SnapshotsInteractorImpl(envelopeSnapshotRepository) {
 
     private var isOutdated
         get() = snapshotsCache == null
@@ -24,10 +23,4 @@ class SnapshotsInteractorCachingImpl(
             }
             return snapshotsCache ?: allEnvelopeSnapshots
         }
-
-    init {
-        listOf(spendingRepository, categoriesRepository, envelopesRepository).forEach {
-            it.addUpdateListener { isOutdated = true }
-        }
-    }
 }

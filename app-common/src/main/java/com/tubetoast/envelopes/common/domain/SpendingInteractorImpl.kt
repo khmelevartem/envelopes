@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class SpendingInteractorImpl(
-    private val repository: UpdatingSpendingRepository
+    private val repository: SpendingRepository
 ) : SpendingInteractor {
     override suspend fun getEarliestSpending(): Spending = withContext(Dispatchers.IO) {
         repository.getAll().associateBy { it.date }.let {

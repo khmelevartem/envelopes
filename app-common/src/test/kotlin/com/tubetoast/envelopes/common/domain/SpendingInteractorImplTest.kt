@@ -1,6 +1,6 @@
 package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.common.data.SpendingRepositoryInMemoryImpl
+import com.tubetoast.envelopes.common.data.SpendingInMemoryRepository
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Spending
@@ -18,7 +18,7 @@ class SpendingInteractorImplTest {
     private val date3 = date2.plusMonth()
     private val date4 = date3.plusMonth()
 
-    private val repository = SpendingRepositoryInMemoryImpl().apply {
+    private val repository = SpendingInMemoryRepository().apply {
         add(1.id(), Spending(Amount.ZERO, date1))
         add(2.id(), Spending(Amount.ZERO, date2))
         add(3.id(), Spending(Amount.ZERO, date3))
