@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType.Companion.Sp
 import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.ui.screens.ItemModel
-import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
+import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.DateRange
 import com.tubetoast.envelopes.common.domain.models.Goal

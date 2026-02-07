@@ -1,7 +1,6 @@
-package com.tubetoast.envelopes.android.domain
+package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.android.presentation.models.SelectableEnvelope
-import com.tubetoast.envelopes.common.domain.EnvelopeInteractor
+import com.tubetoast.envelopes.common.domain.models.SelectableEnvelope
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 

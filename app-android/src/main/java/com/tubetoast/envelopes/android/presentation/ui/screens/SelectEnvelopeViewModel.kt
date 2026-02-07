@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tubetoast.envelopes.android.presentation.models.SelectableEnvelope
+import com.tubetoast.envelopes.common.domain.models.SelectableEnvelope
 import com.tubetoast.envelopes.common.domain.CategoryInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Category

@@ -2,13 +2,12 @@ package com.tubetoast.envelopes.android.presentation.ui.views
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tubetoast.envelopes.android.domain.SelectedCategoryRepository
-import com.tubetoast.envelopes.android.presentation.models.SelectableCategory
+import com.tubetoast.envelopes.common.domain.SelectedCategoryRepository
+import com.tubetoast.envelopes.common.domain.models.SelectableCategory
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.settings.Setting
 import com.tubetoast.envelopes.common.settings.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

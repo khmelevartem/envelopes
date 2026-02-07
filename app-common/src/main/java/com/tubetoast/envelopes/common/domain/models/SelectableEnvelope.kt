@@ -1,6 +1,4 @@
-package com.tubetoast.envelopes.android.presentation.models
-
-import com.tubetoast.envelopes.common.domain.models.Envelope
+package com.tubetoast.envelopes.common.domain.models
 
 data class SelectableEnvelope(
     override val item: Envelope,

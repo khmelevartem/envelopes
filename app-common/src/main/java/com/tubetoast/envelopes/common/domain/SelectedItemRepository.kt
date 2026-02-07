@@ -1,6 +1,6 @@
-package com.tubetoast.envelopes.android.domain
+package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.android.presentation.models.SelectableItem
+import com.tubetoast.envelopes.common.domain.models.SelectableItem
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job

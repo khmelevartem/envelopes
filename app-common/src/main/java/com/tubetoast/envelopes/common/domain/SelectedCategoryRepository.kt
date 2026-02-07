@@ -1,7 +1,6 @@
-package com.tubetoast.envelopes.android.domain
+package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.android.presentation.models.SelectableCategory
-import com.tubetoast.envelopes.common.domain.CategoryInteractor
+import com.tubetoast.envelopes.common.domain.models.SelectableCategory
 import com.tubetoast.envelopes.common.domain.models.Category
 
 class SelectedCategoryRepository(

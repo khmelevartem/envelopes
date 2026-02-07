@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tubetoast.envelopes.android.domain.SelectedCategoryRepository
+import com.tubetoast.envelopes.common.domain.SelectedCategoryRepository
 import com.tubetoast.envelopes.common.domain.GoalInteractor
 import com.tubetoast.envelopes.common.domain.GoalSnapshotInteractor
 import com.tubetoast.envelopes.common.domain.models.Amount

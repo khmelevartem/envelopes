@@ -42,7 +42,7 @@ import com.tubetoast.envelopes.android.presentation.navigation.Navigate
 import com.tubetoast.envelopes.android.presentation.ui.theme.EColor
 import com.tubetoast.envelopes.android.presentation.ui.views.CardItem
 import com.tubetoast.envelopes.android.presentation.ui.views.SelectableLabelItem
-import com.tubetoast.envelopes.android.presentation.utils.formatToReadableNumber
+import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

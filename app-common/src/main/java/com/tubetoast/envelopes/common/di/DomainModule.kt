@@ -10,6 +10,8 @@ import com.tubetoast.envelopes.common.domain.GoalInteractorImpl
 import com.tubetoast.envelopes.common.domain.GoalSnapshotInteractor
 import com.tubetoast.envelopes.common.domain.GoalSnapshotInteractorImpl
 import com.tubetoast.envelopes.common.domain.InflationCalculator
+import com.tubetoast.envelopes.common.domain.SelectedCategoryRepository
+import com.tubetoast.envelopes.common.domain.SelectedEnvelopesRepository
 import com.tubetoast.envelopes.common.domain.SelectedPeriodRepository
 import com.tubetoast.envelopes.common.domain.SelectedPeriodRepositoryImpl
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
@@ -43,6 +45,8 @@ val domainModule = module {
             linksRepository = get()
         )
     }
+    single { SelectedCategoryRepository(get()) }
+    single { SelectedEnvelopesRepository(get()) }
 }
 
 const val SPENDING_REPO = "spending repo"

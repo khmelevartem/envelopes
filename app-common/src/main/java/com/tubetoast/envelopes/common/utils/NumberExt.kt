@@ -1,4 +1,4 @@
-package com.tubetoast.envelopes.android.presentation.utils
+package com.tubetoast.envelopes.common.utils
 
 import com.tubetoast.envelopes.common.domain.models.Amount
 

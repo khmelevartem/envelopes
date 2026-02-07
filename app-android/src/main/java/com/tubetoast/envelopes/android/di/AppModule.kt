@@ -1,7 +1,5 @@
 package com.tubetoast.envelopes.android.di
 
-import com.tubetoast.envelopes.android.domain.SelectedCategoryRepository
-import com.tubetoast.envelopes.android.domain.SelectedEnvelopesRepository
 import com.tubetoast.envelopes.android.presentation.MainViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.AverageViewViewModel
 import com.tubetoast.envelopes.android.presentation.ui.screens.EditCategoryViewModel
@@ -36,8 +34,6 @@ val appModule = module {
     viewModel { GoalsListViewModel(get(), get(), get()) }
     viewModel { EditGoalViewModel(get(), get(), get()) }
     viewModel { SelectableCategoriesListViewModel(get(), get()) }
-    single { SelectedEnvelopesRepository(get()) }
-    single { SelectedCategoryRepository(get()) }
     single<MutableSettingsRepository> {
         SettingsRepositorySharedPrefsImpl(
             androidContext(),

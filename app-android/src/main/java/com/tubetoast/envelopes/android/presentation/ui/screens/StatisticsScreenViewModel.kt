@@ -2,9 +2,9 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tubetoast.envelopes.android.domain.SelectedEnvelopesRepository
-import com.tubetoast.envelopes.android.domain.isChosen
-import com.tubetoast.envelopes.android.presentation.models.SelectableEnvelope
+import com.tubetoast.envelopes.common.domain.SelectedEnvelopesRepository
+import com.tubetoast.envelopes.common.domain.isChosen
+import com.tubetoast.envelopes.common.domain.models.SelectableEnvelope
 import com.tubetoast.envelopes.common.domain.AverageCalculator
 import com.tubetoast.envelopes.common.domain.InflationCalculator
 import com.tubetoast.envelopes.common.domain.SpendingInteractor
