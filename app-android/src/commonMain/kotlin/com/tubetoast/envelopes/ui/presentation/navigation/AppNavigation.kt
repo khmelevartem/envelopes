@@ -24,8 +24,6 @@ object AppNavigation {
 
     fun settings() = Settings.Args
 
-    fun statistics() = Statistics.Args
-
     fun goalsList() = GoalsList.Args
 
     fun addGoal() = GoalDetails.Args()

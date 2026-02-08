@@ -161,15 +161,5 @@ fun TotalView(
             color = Color.LightGray,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        IconButton(
-            onClick = { navigate(AppNavigation.statistics()) },
-            modifier = Modifier.padding(end = 16.dp, bottom = 8.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Info,
-                tint = Color.LightGray,
-                contentDescription = "statistics"
-            )
-        }
     }
 }

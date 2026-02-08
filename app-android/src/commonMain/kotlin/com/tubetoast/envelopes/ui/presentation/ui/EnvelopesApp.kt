@@ -23,7 +23,6 @@ import com.tubetoast.envelopes.ui.presentation.navigation.NavigationRoute
 import com.tubetoast.envelopes.ui.presentation.navigation.NavigationRouteArgs
 import com.tubetoast.envelopes.ui.presentation.navigation.SelectEnvelope
 import com.tubetoast.envelopes.ui.presentation.navigation.Settings
-import com.tubetoast.envelopes.ui.presentation.navigation.Statistics
 
 @Composable
 fun EnvelopesApp() {
@@ -35,7 +34,6 @@ fun EnvelopesApp() {
             register(SelectEnvelope)
             register(EnvelopesList)
             register(Settings)
-            register(Statistics)
             register(GoalsList)
             register(GoalDetails)
         }
