@@ -1,33 +1,54 @@
 plugins {
+    alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
 }
 
-android {
-    namespace = "com.tubetoast.envelopes.database"
-    compileSdk = 34
+kotlin {
+    androidTarget()
+    iosArm64()
+    iosX64()
+    iosSimulatorArm64()
+    macosArm64()
 
-    defaultConfig {
-        minSdk = 28
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
+    sourceSets {
+        commonMain.dependencies {
+            implementation(project(":app-common"))
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
+            implementation(libs.koin.core)
+        }
 
-    buildTypes.getByName("release") {
-        minifyEnabled(false)
+        androidMain.dependencies {
+            implementation(libs.koin.android)
+        }
     }
-    kotlin {
-        jvmToolchain(21)
-    }
+}
+
+room {
+    schemaDirectory(layout.projectDirectory.dir("schemas").toString())
 }
 
 dependencies {
-    implementation(project(":app-common"))
-    implementation(libs.koin.android)
-    // Room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspMacosArm64", libs.androidx.room.compiler)
 }
 
-room { schemaDirectory(layout.projectDirectory.dir("schemas").toString()) }
+android {
+    namespace = "com.tubetoast.envelopes.database"
+    compileSdk = libs.versions.androidCompileSdk
+        .get()
+        .toInt()
+    defaultConfig {
+        minSdk = libs.versions.androidMinSdk
+            .get()
+            .toInt()
+    }
+}

@@ -1,21 +1,47 @@
 plugins {
-    `java-library`
-    kotlin("jvm")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotest)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
-    jvmToolchain(21)
+    androidTarget()
+    iosArm64()
+    iosX64()
+    iosSimulatorArm64()
+    macosArm64()
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(project(":app-common"))
+            api(libs.koin.core)
+            api(libs.kotlinx.coroutines.core)
+            api(libs.kotlinx.datetime)
+        }
+        commonTest.dependencies {
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.kotest.assertions)
+            implementation(libs.kotest.framework.engine)
+        }
+        androidUnitTest.dependencies {
+            implementation(libs.kotest.runner.junit5)
+        }
+    }
 }
 
-tasks.test {
+android {
+    namespace = "com.tubetoast.envelopes.monefy"
+    compileSdk = libs.versions.androidCompileSdk
+        .get()
+        .toInt()
+    defaultConfig {
+        minSdk = libs.versions.androidMinSdk
+            .get()
+            .toInt()
+    }
+}
+
+tasks.withType<Test> {
     useJUnitPlatform()
-}
-
-dependencies {
-    implementation(project(":app-common"))
-
-    testImplementation(libs.test.junit.jupiter)
-    testRuntimeOnly(libs.test.junit.platform)
-    testImplementation(libs.test.truth)
-    testImplementation(libs.test.mockk)
 }
