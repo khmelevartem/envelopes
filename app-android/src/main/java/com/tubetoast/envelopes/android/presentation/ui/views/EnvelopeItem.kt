@@ -32,10 +32,10 @@ import androidx.compose.ui.unit.TextUnitType.Companion.Sp
 import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.ui.screens.ItemModel
 import com.tubetoast.envelopes.android.presentation.ui.theme.darken
-import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
+import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 
 @Composable
 fun EnvelopeView(

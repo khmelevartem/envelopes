@@ -4,11 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tubetoast.envelopes.common.domain.models.SelectableEnvelope
 import com.tubetoast.envelopes.common.domain.CategoryInteractor
 import com.tubetoast.envelopes.common.domain.SnapshotsInteractor
 import com.tubetoast.envelopes.common.domain.models.Category
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.SelectableEnvelope
 import com.tubetoast.envelopes.common.domain.models.id
 import com.tubetoast.envelopes.common.settings.MutableSettingsRepository
 import com.tubetoast.envelopes.common.settings.Setting

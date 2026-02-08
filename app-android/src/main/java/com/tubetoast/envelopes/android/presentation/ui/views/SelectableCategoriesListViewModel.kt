@@ -3,8 +3,8 @@ package com.tubetoast.envelopes.android.presentation.ui.views
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tubetoast.envelopes.common.domain.SelectedCategoryRepository
-import com.tubetoast.envelopes.common.domain.models.SelectableCategory
 import com.tubetoast.envelopes.common.domain.models.Category
+import com.tubetoast.envelopes.common.domain.models.SelectableCategory
 import com.tubetoast.envelopes.common.settings.Setting
 import com.tubetoast.envelopes.common.settings.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow

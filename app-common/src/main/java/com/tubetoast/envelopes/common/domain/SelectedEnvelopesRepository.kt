@@ -1,7 +1,7 @@
 package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.common.domain.models.SelectableEnvelope
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.SelectableEnvelope
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 
 class SelectedEnvelopesRepository(

@@ -39,9 +39,9 @@ import com.tubetoast.envelopes.android.presentation.ui.views.EnvelopeView
 import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControl
 import com.tubetoast.envelopes.android.presentation.ui.views.PeriodControlViewModel
 import com.tubetoast.envelopes.android.presentation.ui.views.SettingsButton
-import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.models.sum
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
+import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

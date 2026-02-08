@@ -1,7 +1,7 @@
 package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.common.domain.models.SelectableCategory
 import com.tubetoast.envelopes.common.domain.models.Category
+import com.tubetoast.envelopes.common.domain.models.SelectableCategory
 
 class SelectedCategoryRepository(
     categoryInteractor: CategoryInteractor

@@ -12,9 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
-import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.snapshots.CategorySnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.sum
+import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 
 @Composable
 fun CategoryItem(

@@ -2,14 +2,14 @@ package com.tubetoast.envelopes.android.presentation.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tubetoast.envelopes.common.domain.SelectedEnvelopesRepository
-import com.tubetoast.envelopes.common.domain.isChosen
-import com.tubetoast.envelopes.common.domain.models.SelectableEnvelope
 import com.tubetoast.envelopes.common.domain.AverageCalculator
 import com.tubetoast.envelopes.common.domain.InflationCalculator
+import com.tubetoast.envelopes.common.domain.SelectedEnvelopesRepository
 import com.tubetoast.envelopes.common.domain.SpendingInteractor
+import com.tubetoast.envelopes.common.domain.isChosen
 import com.tubetoast.envelopes.common.domain.models.Date.Companion.today
 import com.tubetoast.envelopes.common.domain.models.Envelope
+import com.tubetoast.envelopes.common.domain.models.SelectableEnvelope
 import com.tubetoast.envelopes.common.domain.models.inMonths
 import com.tubetoast.envelopes.common.settings.Setting
 import com.tubetoast.envelopes.common.settings.SettingsRepository

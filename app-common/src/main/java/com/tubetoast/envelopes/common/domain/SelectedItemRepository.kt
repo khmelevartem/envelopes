@@ -1,7 +1,7 @@
 package com.tubetoast.envelopes.common.domain
 
-import com.tubetoast.envelopes.common.domain.models.SelectableItem
 import com.tubetoast.envelopes.common.domain.models.ImmutableModel
+import com.tubetoast.envelopes.common.domain.models.SelectableItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

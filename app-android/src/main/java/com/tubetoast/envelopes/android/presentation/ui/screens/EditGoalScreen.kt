@@ -34,8 +34,8 @@ import com.tubetoast.envelopes.android.presentation.ui.views.BackButton
 import com.tubetoast.envelopes.android.presentation.ui.views.DatePickerFieldToModal
 import com.tubetoast.envelopes.android.presentation.ui.views.SelectableCategoriesList
 import com.tubetoast.envelopes.android.presentation.ui.views.SelectableCategoriesListViewModel
-import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.models.Goal
+import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

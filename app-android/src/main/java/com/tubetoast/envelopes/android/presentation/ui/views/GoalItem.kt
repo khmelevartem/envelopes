@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType.Companion.Sp
 import androidx.compose.ui.unit.dp
 import com.tubetoast.envelopes.android.presentation.ui.screens.ItemModel
-import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.DateRange
 import com.tubetoast.envelopes.common.domain.models.Goal
@@ -25,6 +24,7 @@ import com.tubetoast.envelopes.common.domain.savePerMonth
 import com.tubetoast.envelopes.common.domain.snapshots.GoalSnapshot
 import com.tubetoast.envelopes.common.domain.snapshots.percentage
 import com.tubetoast.envelopes.common.domain.snapshots.sum
+import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 
 @Composable
 fun GoalItem(
