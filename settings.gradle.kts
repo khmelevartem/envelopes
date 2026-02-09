@@ -13,8 +13,8 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Envelopes"
-include(":app-android")
-include(":app-common")
+include(":application")
+include(":core")
 include(":monefy-parser")
 include(":database")
 

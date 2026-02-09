@@ -36,7 +36,7 @@ abstract class StandardDatabase : RoomDatabase() {
 
     abstract fun goalDao(): GoalDao
 
-    abstract fun linksDao(): CategoryToGoalLinksDao
+    abstract fun categoryToGoalLinksDao(): CategoryToGoalLinksDao
 
     abstract fun envelopeSnapshotDao(): EnvelopeSnapshotDao
 

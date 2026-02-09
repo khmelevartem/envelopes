@@ -14,7 +14,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":app-common"))
+            implementation(project(":core"))
             api(libs.koin.core)
             api(libs.kotlinx.coroutines.core)
             api(libs.kotlinx.datetime)

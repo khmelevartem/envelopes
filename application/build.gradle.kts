@@ -23,7 +23,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":app-common"))
+            implementation(project(":core"))
             implementation(project(":database"))
             implementation(project(":monefy-parser"))
 

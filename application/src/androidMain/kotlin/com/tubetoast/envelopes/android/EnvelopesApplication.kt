@@ -12,7 +12,7 @@ class EnvelopesApplication : Application() {
         super.onCreate()
         startKoin {
             androidContext(applicationContext)
-            modules(*applicationModules() + androidModule + databaseAndroidModule)
+            modules(*applicationModules() + androidModule + databaseAndroidModule(applicationContext))
         }
     }
 }
