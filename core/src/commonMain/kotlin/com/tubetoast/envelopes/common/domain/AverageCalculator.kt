@@ -4,7 +4,7 @@ import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.Date.Companion.toDate
 import com.tubetoast.envelopes.common.domain.models.DateRange
-import com.tubetoast.envelopes.common.domain.models.sum
+import com.tubetoast.envelopes.common.domain.models.summarize
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -52,7 +52,7 @@ class AverageCalculator(
                 for (firstMonthIndex in 0..(spendingSorted.size - months)) {
                     val lastMonthIndex = firstMonthIndex + months
                     moving[monthsSorted[lastMonthIndex - 1]] =
-                        spendingSorted.subList(firstMonthIndex, lastMonthIndex).sum()
+                        spendingSorted.subList(firstMonthIndex, lastMonthIndex).summarize()
                 }
             }
             moving.entries.sortedBy { it.key }.associate { it.toPair() }

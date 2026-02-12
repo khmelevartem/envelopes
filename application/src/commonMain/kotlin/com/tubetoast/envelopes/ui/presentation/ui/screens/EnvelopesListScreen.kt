@@ -48,24 +48,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.tubetoast.envelopes.common.domain.models.Amount
-import com.tubetoast.envelopes.common.domain.models.sum
-import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import com.tubetoast.envelopes.common.utils.formatToReadableNumber
 import com.tubetoast.envelopes.ui.presentation.navigation.AppNavigation
 import com.tubetoast.envelopes.ui.presentation.navigation.Navigate
+import com.tubetoast.envelopes.ui.presentation.ui.screens.models.EnvelopePaceInfo
+import com.tubetoast.envelopes.ui.presentation.ui.screens.models.MainSummaryInfo
+import com.tubetoast.envelopes.ui.presentation.ui.screens.models.PaceStatus
+import com.tubetoast.envelopes.ui.presentation.ui.theme.Dimensions
+import com.tubetoast.envelopes.ui.presentation.ui.theme.EColor
+import com.tubetoast.envelopes.ui.presentation.ui.theme.FontWeights
+import com.tubetoast.envelopes.ui.presentation.ui.theme.Typography
 import com.tubetoast.envelopes.ui.presentation.ui.views.PeriodControlViewModel
 import org.koin.compose.viewmodel.koinViewModel
-
-// Theme Colors based on Pace logic
-val PaceMint = Color(0xFF00C896)
-val PaceAmber = Color(0xFFFFB74D)
-val PaceCoral = Color(0xFFFF5252)
-val SurfaceDark = Color(0xFF2A2A36)
-val BackgroundDark = Color(0xFF0F0E13)
 
 @Composable
 fun EnvelopesListScreen(
@@ -73,53 +68,46 @@ fun EnvelopesListScreen(
     envelopesListViewModel: EnvelopesListViewModel = koinViewModel(),
     periodControlViewModel: PeriodControlViewModel = koinViewModel()
 ) {
-    val snapshots by envelopesListViewModel.itemModels.collectAsState(initial = emptyList())
+    val mainSummary by envelopesListViewModel.mainSummary.collectAsState()
+    val envelopePaceInfos by envelopesListViewModel.envelopePaceInfos.collectAsState()
+    val elapsedPercentage by envelopesListViewModel.elapsedPercentage.collectAsState()
     val filterByYear by envelopesListViewModel.filterByYear.collectAsState()
 
-    // Logic for Elapsed Time Percentage (Mocked logic - should ideally come from periodControlViewModel)
-    val elapsedPercentage = 0.65f // e.g., 20th day of a 30-day month
-
     Scaffold(
-        containerColor = BackgroundDark,
+        containerColor = EColor.BackgroundDark,
         bottomBar = { DashboardBottomNav(navigate) }
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
-            PeriodSelectorSection(periodControlViewModel)
+            PeriodSelectorSection(periodControlViewModel, filterByYear)
 
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.fillMaxSize().padding(horizontal = Dimensions.PaddingMedium),
+                verticalArrangement = Arrangement.spacedBy(Dimensions.SpacingSmall)
             ) {
                 item {
-                    MainSummarySection(
-                        snapshots = snapshots,
-                        filterByYear = filterByYear,
-                        elapsedPercentage = elapsedPercentage
-                    )
+                    MainSummarySection(mainSummary)
                 }
 
-                val sortedSnapshots = snapshots.sortedByDescending {
-                    getPaceColor(it.percentage, elapsedPercentage).value.toLong()
-                }
-
-                items(sortedSnapshots, key = { it.envelope.id.code }) { snapshot ->
+                items(envelopePaceInfos, key = { it.envelope.id.code }) { paceInfo ->
                     EnvelopePaceCard(
-                        snapshot = snapshot,
-                        filterByYear = filterByYear,
-                        elapsedPercentage = elapsedPercentage,
-                        onClick = { navigate(AppNavigation.editEnvelope(snapshot.envelope)) }
+                        paceInfo = paceInfo,
+                        onClick = { navigate(AppNavigation.editEnvelope(paceInfo.envelope)) }
                     )
                 }
 
-                item { Spacer(Modifier.height(80.dp)) } // Padding for BottomNav
+                item { Spacer(Modifier.height(Dimensions.PaddingBottomNav)) }
+                // Padding for BottomNav
             }
         }
     }
 }
 
 @Composable
-fun PeriodSelectorSection(viewModel: PeriodControlViewModel) {
-    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+fun PeriodSelectorSection(
+    viewModel: PeriodControlViewModel,
+    filterByYear: Boolean
+) {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = Dimensions.PaddingSmall)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
@@ -132,7 +120,7 @@ fun PeriodSelectorSection(viewModel: PeriodControlViewModel) {
             Text(
                 text = text,
                 color = Color.White,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeights.Bold,
                 modifier = Modifier.clickable { viewModel.changePeriodType() }
             )
             IconButton(onClick = { viewModel.nextPeriod() }) {
@@ -141,16 +129,17 @@ fun PeriodSelectorSection(viewModel: PeriodControlViewModel) {
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = Dimensions.PaddingMedium),
+            horizontalArrangement = Arrangement.spacedBy(Dimensions.SpacingSmall)
         ) {
             listOf("Month", "Year").forEach { label ->
+                val isSelected = (label == "Month") == !filterByYear
                 FilterChip(
-                    selected = label == "Month",
+                    selected = isSelected,
                     onClick = { viewModel.changePeriodType() },
                     label = { Text(label) },
                     colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = PaceMint,
+                        selectedContainerColor = EColor.PaceMint,
                         selectedLabelColor = Color.Black
                     )
                 )
@@ -160,88 +149,82 @@ fun PeriodSelectorSection(viewModel: PeriodControlViewModel) {
 }
 
 @Composable
-fun MainSummarySection(
-    snapshots: Iterable<EnvelopeSnapshot>,
-    filterByYear: Boolean,
-    elapsedPercentage: Float
-) {
-    val totalSpent = snapshots.map { it.sum }.sum()
-    val totalLimit = snapshots.map { if (filterByYear) it.envelope.yearLimit else it.envelope.limit }.sum()
-    val spentPercentage = if (totalLimit.units > 0) totalSpent / totalLimit else 0f
-
-    val paceColor by animateColorAsState(getPaceColor(spentPercentage, elapsedPercentage))
-
+fun MainSummarySection(mainSummary: MainSummaryInfo) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = Dimensions.PaddingLarge),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "${totalSpent.units.formatToReadableNumber()} ₽",
-            fontSize = 42.sp,
-            fontWeight = FontWeight.ExtraBold,
+            text = "${mainSummary.totalSpent.units.formatToReadableNumber()} ₽",
+            fontSize = Typography.DisplayLarge,
+            fontWeight = FontWeights.ExtraBold,
             color = Color.White
         )
         Text(
-            text = "of ${totalLimit.units.formatToReadableNumber()} ₽",
+            text = "of ${mainSummary.totalLimit.units.formatToReadableNumber()} ₽",
             color = Color.Gray,
-            fontSize = 16.sp
+            fontSize = Typography.DisplayMedium
         )
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(Dimensions.PaddingLarge))
 
         PaceProgressBar(
-            progress = spentPercentage,
-            elapsedPercentage = elapsedPercentage,
-            activeColor = paceColor
+            progress = mainSummary.spentPercentage,
+            elapsedPercentage = mainSummary.elapsedPercentage,
+            activeColor = mainSummary.paceColor
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(Dimensions.SpacingSmall))
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            val remaining = (totalLimit.units - totalSpent.units).coerceAtLeast(0)
-            Text("Remaining: ${remaining.formatToReadableNumber()} ₽", color = Color.Gray, fontSize = 12.sp)
-            Text("${(elapsedPercentage * 100).toInt()}% of period elapsed", color = Color.Gray, fontSize = 12.sp)
+            Text(
+                "Remaining: ${mainSummary.remaining.formatToReadableNumber()} ₽",
+                color = Color.Gray,
+                fontSize = Typography.BodyLarge
+            )
+            Text(
+                "${(mainSummary.elapsedPercentage * 100).toInt()}% of period elapsed",
+                color = Color.Gray,
+                fontSize = Typography.BodyLarge
+            )
         }
     }
 }
 
 @Composable
 fun EnvelopePaceCard(
-    snapshot: EnvelopeSnapshot,
-    filterByYear: Boolean,
-    elapsedPercentage: Float,
+    paceInfo: EnvelopePaceInfo,
     onClick: () -> Unit
 ) {
-    val limit = if (filterByYear) snapshot.envelope.yearLimit else snapshot.envelope.limit
-    val paceColor by animateColorAsState(getPaceColor(snapshot.percentage, elapsedPercentage))
+    val paceColor by animateColorAsState(paceInfo.paceColor)
 
     Surface(
-        color = SurfaceDark,
+        color = EColor.SurfaceDark,
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier.fillMaxWidth().clickable { onClick() }
     ) {
-        Column(Modifier.padding(12.dp)) {
+        Column(Modifier.padding(Dimensions.PaddingMedium)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("🍕 ${snapshot.envelope.name}", color = Color.White, fontWeight = FontWeight.Bold)
+                Text("🍕 ${paceInfo.envelope.name}", color = Color.White, fontWeight = FontWeights.Bold)
                 Text(
-                    "${snapshot.sum.units.formatToReadableNumber()} / ${limit.units.formatToReadableNumber()}",
+                    "${paceInfo.sum.units.formatToReadableNumber()} / ${paceInfo.limit.units.formatToReadableNumber()}",
                     color = Color.Gray,
-                    fontSize = 12.sp
+                    fontSize = Typography.BodyLarge
                 )
             }
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(Dimensions.PaddingSmall))
 
             PaceProgressBar(
-                progress = snapshot.percentage,
-                elapsedPercentage = elapsedPercentage,
+                progress = paceInfo.percentage,
+                elapsedPercentage = paceInfo.elapsedPercentage,
                 activeColor = paceColor,
                 height = 4.dp
             )
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(Dimensions.PaddingSmall))
 
-            StatusLabel(snapshot, limit, elapsedPercentage, paceColor)
+            StatusLabel(paceInfo, paceColor)
         }
     }
 }
@@ -253,7 +236,7 @@ fun PaceProgressBar(
     activeColor: Color,
     height: androidx.compose.ui.unit.Dp = 8.dp
 ) {
-    Box(modifier = Modifier.fillMaxWidth().height(height).background(Color(0xFF1C1C24), CircleShape)) {
+    Box(modifier = Modifier.fillMaxWidth().height(height).background(EColor.TrackBackground, CircleShape)) {
         // Active Fill
         Box(
             modifier = Modifier
@@ -276,29 +259,26 @@ fun PaceProgressBar(
 
 @Composable
 fun StatusLabel(
-    snapshot: EnvelopeSnapshot,
-    limit: Amount,
-    elapsed: Float,
+    paceInfo: EnvelopePaceInfo,
     color: Color
 ) {
-    val remaining = limit.units - snapshot.sum.units
-    val (icon, text) = when {
-        snapshot.percentage > 1.0f -> Icons.Default.Delete to "Exceeded by ${(-remaining).formatToReadableNumber()} ₽"
-        snapshot.percentage > elapsed + 0.1f -> Icons.Default.Warning to "Above pace"
-        snapshot.percentage >= elapsed - 0.05f -> Icons.Default.CheckCircle to "On track"
-        else -> Icons.Default.Check to "Remaining: ${remaining.formatToReadableNumber()} ₽"
+    val (icon, text) = when (paceInfo.status) {
+        is PaceStatus.Exceeded -> Icons.Default.Delete to "Exceeded by ${paceInfo.status.amount.formatToReadableNumber()} ₽"
+        is PaceStatus.AbovePace -> Icons.Default.Warning to "Above pace"
+        is PaceStatus.OnTrack -> Icons.Default.CheckCircle to "On track"
+        is PaceStatus.Remaining -> Icons.Default.Check to "Remaining: ${paceInfo.status.amount.formatToReadableNumber()} ₽"
     }
 
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(icon, null, tint = color, modifier = Modifier.size(14.dp))
-        Spacer(Modifier.width(4.dp))
-        Text(text, color = color, fontSize = 11.sp)
+        Icon(icon, null, tint = color, modifier = Modifier.size(Dimensions.IconSmall))
+        Spacer(Modifier.width(Dimensions.SpacingXSmall))
+        Text(text, color = color, fontSize = Typography.BodyMedium)
     }
 }
 
 @Composable
 fun DashboardBottomNav(navigate: Navigate) {
-    NavigationBar(containerColor = BackgroundDark) {
+    NavigationBar(containerColor = EColor.BackgroundDark) {
         NavigationBarItem(
             selected = true,
             onClick = { navigate(AppNavigation.envelopesList()) },
@@ -326,13 +306,3 @@ fun DashboardBottomNav(navigate: Navigate) {
         )
     }
 }
-
-private fun getPaceColor(
-    spendingPercentage: Float,
-    elapsedPercentage: Float
-): Color =
-    when {
-        spendingPercentage > 1.0f || spendingPercentage > elapsedPercentage + 0.15f -> PaceCoral
-        spendingPercentage > elapsedPercentage -> PaceAmber
-        else -> PaceMint
-    }

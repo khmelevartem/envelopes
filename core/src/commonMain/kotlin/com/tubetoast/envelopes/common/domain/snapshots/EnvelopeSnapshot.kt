@@ -3,7 +3,7 @@ package com.tubetoast.envelopes.common.domain.snapshots
 import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Envelope
 import com.tubetoast.envelopes.common.domain.models.Transaction
-import com.tubetoast.envelopes.common.domain.models.sum
+import com.tubetoast.envelopes.common.domain.models.summarize
 
 data class EnvelopeSnapshot(
     val envelope: Envelope,
@@ -17,7 +17,7 @@ data class EnvelopeSnapshot(
     val sum: Amount
         get() = transactions
             .map(Transaction<*>::amount)
-            .sum()
+            .summarize()
 
     val percentage: Float
         get() = if (envelope.limit.units != 0L) sum / envelope.limit else 0f

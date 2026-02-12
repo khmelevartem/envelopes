@@ -96,9 +96,9 @@ data class Amount(
     }
 }
 
-fun Iterable<Amount>.sum(): Amount = sumOf { it }
+fun Iterable<Amount>.summarize(): Amount = sumOf { it }
 
-fun Sequence<Amount>.sum(): Amount = sumOf { it }
+fun Sequence<Amount>.summarize(): Amount = sumOf { it }
 
 inline fun Iterable<Amount>.sumOf(selector: (Amount) -> Amount): Amount {
     var sum = Amount.ZERO

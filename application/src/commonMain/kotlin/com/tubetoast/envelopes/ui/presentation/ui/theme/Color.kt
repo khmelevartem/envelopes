@@ -7,11 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 object EColor {
+    // Core brand colors
     val Emerald = Color(0xff237D62)
     val Charcoal = Color(0xff49637b)
     val Haki = Color(0xff669672)
     val Vanilla = Color(0xffc9d7ff)
 
+    // Palette colors
     val Azure = Color(0xff6cbaff)
     val Mint = Color(0xff00e2cf)
     val Salad = Color(0xff8ef488)
@@ -19,6 +21,18 @@ object EColor {
     val Peach = Color(0xffffc5a3)
     val Rose = Color(0xffffd7ff)
     val Plum = Color(0xffa9a7fe)
+
+    // Pace/Status colors
+    val PaceMint = Color(0xFF00C896)
+    val PaceAmber = Color(0xFFFFB74D)
+    val PaceCoral = Color(0xFFFF5252)
+
+    // UI surface colors
+    val SurfaceDark = Color(0xFF2A2A36)
+    val BackgroundDark = Color(0xFF0F0E13)
+    val SurfaceLight = Color(0xFFF5F5F5)
+    val BackgroundLight = Color(0xFFFFFFFF)
+    val TrackBackground = Color(0xFF1C1C24)
 
     @Composable
     fun ePalette(isDarkTheme: Boolean = isSystemInDarkTheme()): List<Color> = if (isDarkTheme) darkPalette else lightPalette

@@ -4,7 +4,7 @@ import com.tubetoast.envelopes.common.domain.models.Amount
 import com.tubetoast.envelopes.common.domain.models.Date
 import com.tubetoast.envelopes.common.domain.models.DateRange
 import com.tubetoast.envelopes.common.domain.models.Transaction
-import com.tubetoast.envelopes.common.domain.models.sum
+import com.tubetoast.envelopes.common.domain.models.summarize
 import com.tubetoast.envelopes.common.domain.snapshots.EnvelopeSnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -47,5 +47,5 @@ class SpendingCalculator(
         .flatMap { it.transactions }
         .filter(transactionFilter)
         .map { it.amount }
-        .sum()
+        .summarize()
 }

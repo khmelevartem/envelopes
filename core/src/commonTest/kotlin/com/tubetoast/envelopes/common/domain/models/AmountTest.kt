@@ -12,7 +12,7 @@ class AmountTest :
                 Amount(2),
                 Amount(3),
                 Amount.ZERO
-            ).sum() shouldBe Amount(10)
+            ).summarize() shouldBe Amount(10)
         }
 
         test("testDiv") {

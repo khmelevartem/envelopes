@@ -24,9 +24,10 @@ class SettingsRepositoryKVStoreImpl(
     }
 
     override fun getSettingFlow(key: Setting.Key): StateFlow<Setting> =
-        flows.getOrPut(key) {
-            MutableStateFlow(getSetting(key))
-        }.asStateFlow()
+        flows
+            .getOrPut(key) {
+                MutableStateFlow(getSetting(key))
+            }.asStateFlow()
 
     override fun saveChanges(settings: List<Setting>) {
         saveChanges(*settings.toTypedArray())

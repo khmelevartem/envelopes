@@ -9,6 +9,31 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+object Typography {
+    val DisplayLarge = 42.sp
+    val DisplayMedium = 24.sp
+    val BodyLarge = 12.sp
+    val BodyMedium = 11.sp
+}
+
+object FontWeights {
+    val ExtraBold = FontWeight.ExtraBold
+    val Bold = FontWeight.Bold
+}
+
+object Dimensions {
+    val PaddingSmall = 8.dp
+    val PaddingMedium = 12.dp
+    val PaddingLarge = 24.dp
+    val SpacingSmall = 8.dp
+    val SpacingXSmall = 4.dp
+    val IconSmall = 14.dp
+    val PaddingBottomNav = 80.dp
+}
 
 private val DarkColorPalette = darkColorScheme(
     primary = EColor.Emerald.darken(),
